@@ -31,11 +31,14 @@ public class TenantDataServiceResolver {
         this.classes = classes;
     }
 
-    public final DataService resolve(final String tenantId) {
+    public final DataService resolve(final String tenantId) throws Exception {
         if (tenantDataServiceCache.exists(tenantId)) {
             return tenantDataServiceCache.get(tenantId);
         }
         final TenantConfiguration tenantConfiguration = tenantService.getTenantConfiguration(tenantId);
+        if (tenantConfiguration == null) {
+            throw new Exception("Provided tenant with id " + tenantId + " is not registered or invalid!");
+        }
         final Configuration configuration = configurationBuilder.build(
                 tenantConfiguration.getConnectorMetadata(),
                 classes

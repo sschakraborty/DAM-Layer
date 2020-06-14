@@ -19,7 +19,7 @@ public class GenericDAOImpl implements GenericDAO {
     }
 
     @Override
-    public DataService resolveFor(String tenantId) {
+    public DataService resolveFor(String tenantId) throws Exception {
         return this.tenantDataServiceResolver.resolve(tenantId);
     }
 }
