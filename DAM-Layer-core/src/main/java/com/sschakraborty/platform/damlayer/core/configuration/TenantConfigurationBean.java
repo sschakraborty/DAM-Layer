@@ -13,7 +13,7 @@ public class TenantConfigurationBean implements TenantConfiguration {
     private String name;
 
     @Embedded
-    private ConnectorMetadata connectorMetadata;
+    private ConnectorMetadataBean connectorMetadata;
 
     @Override
     public String getId() {
@@ -38,7 +38,7 @@ public class TenantConfigurationBean implements TenantConfiguration {
         return connectorMetadata;
     }
 
-    public void setConnectorMetadata(ConnectorMetadata connectorMetadata) {
+    public void setConnectorMetadata(ConnectorMetadataBean connectorMetadata) {
         this.connectorMetadata = connectorMetadata;
     }
 }

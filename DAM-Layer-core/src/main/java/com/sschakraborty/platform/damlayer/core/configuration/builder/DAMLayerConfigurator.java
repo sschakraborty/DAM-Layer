@@ -6,7 +6,8 @@ import com.sschakraborty.platform.damlayer.core.TenantDataServiceResolver;
 import com.sschakraborty.platform.damlayer.core.cache.TenantDataServiceCache;
 import com.sschakraborty.platform.damlayer.core.cache.TenantDataServiceMapCacheImpl;
 import com.sschakraborty.platform.damlayer.core.configuration.ConnectorMetadata;
-import com.sschakraborty.platform.damlayer.core.configuration.TenantConfiguration;
+import com.sschakraborty.platform.damlayer.core.configuration.ConnectorMetadataBean;
+import com.sschakraborty.platform.damlayer.core.configuration.TenantConfigurationBean;
 import com.sschakraborty.platform.damlayer.core.configuration.parser.ConfigurationBuilder;
 import com.sschakraborty.platform.damlayer.core.configuration.parser.ConfigurationBuilderImpl;
 import com.sschakraborty.platform.damlayer.core.marker.Model;
@@ -61,7 +62,10 @@ public class DAMLayerConfigurator {
     private TenantService buildTenantService(ConnectorMetadata connectorMetadata) {
         final Configuration configuration = configurationBuilder.build(
                 connectorMetadata,
-                Arrays.asList(TenantConfiguration.class)
+                Arrays.asList(
+                        TenantConfigurationBean.class,
+                        ConnectorMetadataBean.class
+                )
         );
         return new TenantServiceImpl(BuilderUtil.buildTransactionManager(configuration));
     }

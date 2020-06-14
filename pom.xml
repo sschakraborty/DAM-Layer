@@ -21,6 +21,10 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <mvn.plugin.jar.version>3.2.0</mvn.plugin.jar.version>
+        <mvn.plugin.surefire.version>2.22.2</mvn.plugin.surefire.version>
         <hibernate.version>5.4.17.Final</hibernate.version>
+        <hikaricp.version>3.4.5</hikaricp.version>
+        <mysql.driver.version>8.0.20</mysql.driver.version>
+        <junit.version>4.12</junit.version>
     </properties>
 </project>

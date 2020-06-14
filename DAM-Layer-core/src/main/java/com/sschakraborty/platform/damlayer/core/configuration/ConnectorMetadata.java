@@ -1,8 +1,8 @@
 package com.sschakraborty.platform.damlayer.core.configuration;
 
-import java.io.Serializable;
+import com.sschakraborty.platform.damlayer.core.marker.Model;
 
-public interface ConnectorMetadata extends Serializable {
+public interface ConnectorMetadata extends Model {
     static ConnectorMetadataBean createBean() {
         return new ConnectorMetadataBean();
     }
