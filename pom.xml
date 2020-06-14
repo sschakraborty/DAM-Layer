@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.sschakraborty.platform</groupId>
+    <artifactId>damlayer</artifactId>
+    <packaging>pom</packaging>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>DAM-Layer</name>
+    <description>Data Access and Management Layer</description>
+
+    <modules>
+        <module>DAM-Layer-core</module>
+    </modules>
+
+    <properties>
+        <damlayer.version>0.0.1-SNAPSHOT</damlayer.version>
+        <java.version>11</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <mvn.plugin.jar.version>3.2.0</mvn.plugin.jar.version>
+        <hibernate.version>5.4.17.Final</hibernate.version>
+    </properties>
+</project>
