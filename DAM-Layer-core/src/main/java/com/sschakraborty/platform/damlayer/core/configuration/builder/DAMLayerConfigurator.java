@@ -43,6 +43,14 @@ public class DAMLayerConfigurator {
         return this;
     }
 
+    public final DAMLayerConfigurator withAnnotatedModels(final List<Class<? extends Model>> classes) {
+        if (this.classes == null) {
+            this.classes = new ArrayList<>();
+        }
+        this.classes.addAll(classes);
+        return this;
+    }
+
     public GenericDAO build() throws Exception {
         if (this.primaryConnectorMetadata == null) {
             throw new Exception("Primary connector metadata has not been defined!");
