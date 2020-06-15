@@ -17,9 +17,49 @@ public class DAMLayerConfiguratorTest {
         configurator.withPrimaryConnectorMetadata(primaryConnectorMetadata);
         GenericDAO genericDAO = configurator.withAnnotatedModels().build();
 
-        genericDAO.registerTenant(getTenantConfiguration());
-        DataService dataService = genericDAO.resolveFor("too_too");
+        final TenantConfiguration tenantConfiguration = getTenantConfiguration();
+
+        try {
+            genericDAO.resolveConfiguration(tenantConfiguration.getId());
+            Assert.fail();
+        } catch (Exception e) {
+            Assert.assertTrue(true);
+        }
+
+        try {
+            genericDAO.resolveDataService(tenantConfiguration.getId());
+            Assert.fail();
+        } catch (Exception e) {
+            Assert.assertTrue(true);
+        }
+
+        genericDAO.registerTenant(tenantConfiguration);
+
+        TenantConfiguration fetchedConfig = genericDAO.resolveConfiguration(tenantConfiguration.getId());
+        Assert.assertNotNull(fetchedConfig);
+        Assert.assertEquals(tenantConfiguration.getName(), fetchedConfig.getName());
+
+        DataService dataService = genericDAO.resolveDataService(tenantConfiguration.getId());
         Assert.assertNotNull(dataService);
+
+        fetchedConfig = genericDAO.resolveConfiguration(tenantConfiguration.getId());
+        Assert.assertNotNull(fetchedConfig);
+
+        genericDAO.unregisterTenant(tenantConfiguration.getId());
+
+        try {
+            genericDAO.resolveConfiguration(tenantConfiguration.getId());
+            Assert.fail();
+        } catch (Exception e) {
+            Assert.assertTrue(true);
+        }
+
+        try {
+            genericDAO.resolveDataService(tenantConfiguration.getId());
+            Assert.fail();
+        } catch (Exception e) {
+            Assert.assertTrue(true);
+        }
     }
 
     private ConnectorMetadata getPrimaryConnectorMetadata() {

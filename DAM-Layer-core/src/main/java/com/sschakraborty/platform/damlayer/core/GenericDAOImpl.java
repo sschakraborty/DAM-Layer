@@ -6,20 +6,38 @@ import com.sschakraborty.platform.damlayer.core.service.tenant.TenantService;
 
 public class GenericDAOImpl implements GenericDAO {
     private final TenantService tenantService;
-    private final TenantDataServiceResolver tenantDataServiceResolver;
+    private final TenantDetailsResolver tenantDetailsResolver;
 
-    public GenericDAOImpl(TenantService tenantService, TenantDataServiceResolver tenantDataServiceResolver) {
+    public GenericDAOImpl(TenantService tenantService, TenantDetailsResolver tenantDetailsResolver) {
         this.tenantService = tenantService;
-        this.tenantDataServiceResolver = tenantDataServiceResolver;
+        this.tenantDetailsResolver = tenantDetailsResolver;
     }
 
     @Override
     public void registerTenant(TenantConfiguration tenantConfiguration) {
+        this.tenantDetailsResolver.refresh(tenantConfiguration.getId());
         this.tenantService.saveTenantConfiguration(tenantConfiguration);
     }
 
     @Override
-    public DataService resolveFor(String tenantId) throws Exception {
-        return this.tenantDataServiceResolver.resolve(tenantId);
+    public void unregisterTenant(String tenantId) {
+        try {
+            final TenantConfiguration tenantConfiguration = this.resolveConfiguration(tenantId);
+            this.tenantService.deleteTenantConfiguration(tenantConfiguration);
+        } catch (Exception e) {
+            // TODO: Log exception if required
+        } finally {
+            this.tenantDetailsResolver.refresh(tenantId);
+        }
+    }
+
+    @Override
+    public TenantConfiguration resolveConfiguration(String tenantId) throws Exception {
+        return this.tenantDetailsResolver.resolveConfiguration(tenantId);
+    }
+
+    @Override
+    public DataService resolveDataService(String tenantId) throws Exception {
+        return this.tenantDetailsResolver.resolveDataService(tenantId);
     }
 }

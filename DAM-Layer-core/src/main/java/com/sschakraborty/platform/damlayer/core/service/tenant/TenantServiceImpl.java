@@ -31,4 +31,12 @@ public class TenantServiceImpl implements TenantService {
             session.saveOrUpdate(tenantConfiguration);
         });
     }
+
+    @Override
+    public void deleteTenantConfiguration(TenantConfiguration tenantConfiguration) {
+        transactionManager.executeStateful((transactionUnit, transactionResult) -> {
+            final Session session = transactionUnit.getSession();
+            session.delete(tenantConfiguration);
+        });
+    }
 }

@@ -6,4 +6,6 @@ public interface TenantService {
     TenantConfiguration getTenantConfiguration(String tenantId);
 
     void saveTenantConfiguration(TenantConfiguration tenantConfiguration);
+
+    void deleteTenantConfiguration(TenantConfiguration tenantConfiguration);
 }

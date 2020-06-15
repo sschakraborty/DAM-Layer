@@ -2,9 +2,9 @@ package com.sschakraborty.platform.damlayer.core.configuration.builder;
 
 import com.sschakraborty.platform.damlayer.core.GenericDAO;
 import com.sschakraborty.platform.damlayer.core.GenericDAOImpl;
-import com.sschakraborty.platform.damlayer.core.TenantDataServiceResolver;
-import com.sschakraborty.platform.damlayer.core.cache.TenantDataServiceCache;
-import com.sschakraborty.platform.damlayer.core.cache.TenantDataServiceMapCacheImpl;
+import com.sschakraborty.platform.damlayer.core.TenantDetailsResolver;
+import com.sschakraborty.platform.damlayer.core.cache.TenantDetailsCache;
+import com.sschakraborty.platform.damlayer.core.cache.TenantDetailsMapCacheImpl;
 import com.sschakraborty.platform.damlayer.core.configuration.ConnectorMetadata;
 import com.sschakraborty.platform.damlayer.core.configuration.ConnectorMetadataBean;
 import com.sschakraborty.platform.damlayer.core.configuration.TenantConfigurationBean;
@@ -60,11 +60,11 @@ public class DAMLayerConfigurator {
         }
 
         final TenantService tenantService = buildTenantService(primaryConnectorMetadata);
-        final TenantDataServiceCache tenantDataServiceCache = new TenantDataServiceMapCacheImpl();
-        final TenantDataServiceResolver tenantDataServiceResolver = new TenantDataServiceResolver(
-                tenantService, tenantDataServiceCache, configurationBuilder, classes
+        final TenantDetailsCache tenantDetailsCache = new TenantDetailsMapCacheImpl();
+        final TenantDetailsResolver tenantDetailsResolver = new TenantDetailsResolver(
+                tenantService, tenantDetailsCache, configurationBuilder, classes
         );
-        return new GenericDAOImpl(tenantService, tenantDataServiceResolver);
+        return new GenericDAOImpl(tenantService, tenantDetailsResolver);
     }
 
     private TenantService buildTenantService(ConnectorMetadata connectorMetadata) {
