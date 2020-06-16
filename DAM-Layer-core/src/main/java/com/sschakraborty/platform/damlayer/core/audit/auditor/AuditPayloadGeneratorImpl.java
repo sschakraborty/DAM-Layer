@@ -25,7 +25,7 @@ public class AuditPayloadGeneratorImpl implements AuditPayloadGenerator {
             auditPayload.setTenantId(tenantConfiguration.getId());
             auditPayload.setTenantName(tenantConfiguration.getName());
             auditPayload.setClassName(model.getClass().getName());
-            auditPayload.setModelName(generateModelName(model.getClass(), model.getModelName()));
+            auditPayload.setModelName(generateModelName(model.getClass(), model.auditModelName()));
             auditPayload.setAuditText(generateAuditText(auditOperation, model));
             auditPayload.setExternalText(externalText);
             this.auditPayloads.add(auditPayload);
@@ -33,7 +33,7 @@ public class AuditPayloadGeneratorImpl implements AuditPayloadGenerator {
     }
 
     private String generateAuditText(AuditOperation auditOperation, Model model) {
-        final String auditText = model.getAuditText(auditOperation);
+        final String auditText = model.auditText(auditOperation);
         if (auditText != null && auditText.trim().length() != 0) {
             return auditText;
         }

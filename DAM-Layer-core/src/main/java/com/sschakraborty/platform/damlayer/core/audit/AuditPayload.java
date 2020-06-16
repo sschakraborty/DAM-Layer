@@ -101,7 +101,6 @@ public class AuditPayload implements Model {
         this.className = className;
     }
 
-    @Override
     public String getModelName() {
         return modelName;
     }
