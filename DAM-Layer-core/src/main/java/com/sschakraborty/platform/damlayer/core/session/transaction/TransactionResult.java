@@ -14,4 +14,6 @@ public interface TransactionResult {
     List<String> keys();
 
     boolean hasKey(String key);
+
+    String transactionStatus();
 }

@@ -6,6 +6,7 @@ public class TransactionResultImpl implements TransactionResult {
     private final Map<String, Object> responseMap;
     private boolean successful;
     private Exception cause;
+    private String transactionStatus;
 
     public TransactionResultImpl() {
         cause = null;
@@ -23,6 +24,10 @@ public class TransactionResultImpl implements TransactionResult {
 
     public void setCause(Exception cause) {
         this.cause = cause;
+    }
+
+    public void setTransactionStatus(String transactionStatus) {
+        this.transactionStatus = transactionStatus;
     }
 
     @Override
@@ -51,5 +56,10 @@ public class TransactionResultImpl implements TransactionResult {
     @Override
     public boolean hasKey(String key) {
         return this.responseMap.containsKey(key);
+    }
+
+    @Override
+    public String transactionStatus() {
+        return this.transactionStatus;
     }
 }

@@ -41,6 +41,7 @@ public class TransactionManagerImpl implements TransactionManager {
             transactionResult.setSuccessful(false);
             transactionResult.setCause(e);
         } finally {
+            transactionResult.setTransactionStatus(transaction.getStatus().name());
             session.close();
         }
 
