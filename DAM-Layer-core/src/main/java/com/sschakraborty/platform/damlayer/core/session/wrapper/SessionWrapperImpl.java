@@ -1,5 +1,6 @@
 package com.sschakraborty.platform.damlayer.core.session.wrapper;
 
+import com.sschakraborty.platform.damlayer.core.audit.AuditOperation;
 import com.sschakraborty.platform.damlayer.core.audit.auditor.AuditPayloadGenerator;
 import com.sschakraborty.platform.damlayer.core.marker.Model;
 import org.hibernate.Session;
@@ -17,22 +18,46 @@ public class SessionWrapperImpl implements SessionWrapper {
 
     @Override
     public void insert(Model model) {
-        session.save(model);
+        try {
+            session.save(model);
+            auditPayloadGenerator.generateFor(AuditOperation.INSERT, true, model, "SYS_CALL");
+        } catch (Exception e) {
+            auditPayloadGenerator.generateFor(AuditOperation.INSERT, false, model, "SYS_CALL");
+            throw e;
+        }
     }
 
     @Override
     public void update(Model model) {
-        session.update(model);
+        try {
+            session.update(model);
+            auditPayloadGenerator.generateFor(AuditOperation.UPDATE, true, model, "SYS_CALL");
+        } catch (Exception e) {
+            auditPayloadGenerator.generateFor(AuditOperation.UPDATE, false, model, "SYS_CALL");
+            throw e;
+        }
     }
 
     @Override
     public void save(Model model) {
-        session.saveOrUpdate(model);
+        try {
+            session.saveOrUpdate(model);
+            auditPayloadGenerator.generateFor(AuditOperation.SAVE, true, model, "SYS_CALL");
+        } catch (Exception e) {
+            auditPayloadGenerator.generateFor(AuditOperation.SAVE, false, model, "SYS_CALL");
+            throw e;
+        }
     }
 
     @Override
     public void delete(Model model) {
-        session.delete(model);
+        try {
+            session.delete(model);
+            auditPayloadGenerator.generateFor(AuditOperation.DELETE, true, model, "SYS_CALL");
+        } catch (Exception e) {
+            auditPayloadGenerator.generateFor(AuditOperation.DELETE, false, model, "SYS_CALL");
+            throw e;
+        }
     }
 
     @Override

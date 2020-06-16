@@ -4,6 +4,5 @@ public enum AuditOperation {
     INSERT,
     UPDATE,
     SAVE,
-    DELETE,
-    FETCH
+    DELETE
 }
