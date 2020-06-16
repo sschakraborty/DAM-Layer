@@ -43,7 +43,7 @@ public class TenantDetailsResolver {
                 tenantConfiguration.getConnectorMetadata(),
                 classes
         );
-        final TransactionManager transactionManager = BuilderUtil.buildTransactionManager(configuration);
+        final TransactionManager transactionManager = BuilderUtil.buildTransactionManager(configuration, tenantConfiguration);
         final DataServiceImpl dataService = new DataServiceImpl(transactionManager);
         {
             tenantDetailsCache.put(tenantId, tenantConfiguration, dataService);

@@ -1,5 +1,6 @@
 package com.sschakraborty.platform.damlayer.core.util;
 
+import com.sschakraborty.platform.damlayer.core.configuration.TenantConfiguration;
 import com.sschakraborty.platform.damlayer.core.session.SessionFactoryProvider;
 import com.sschakraborty.platform.damlayer.core.session.transaction.TransactionManager;
 import com.sschakraborty.platform.damlayer.core.session.transaction.TransactionManagerImpl;
@@ -10,8 +11,8 @@ public class BuilderUtil {
     private BuilderUtil() {
     }
 
-    public static TransactionManager buildTransactionManager(Configuration configuration) {
+    public static TransactionManager buildTransactionManager(Configuration configuration, TenantConfiguration tenantConfiguration) {
         final SessionFactory sessionFactory = SessionFactoryProvider.getSessionFactory(configuration);
-        return new TransactionManagerImpl(sessionFactory);
+        return new TransactionManagerImpl(sessionFactory, tenantConfiguration);
     }
 }

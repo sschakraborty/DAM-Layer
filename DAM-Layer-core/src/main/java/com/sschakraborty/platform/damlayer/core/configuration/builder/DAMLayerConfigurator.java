@@ -7,6 +7,7 @@ import com.sschakraborty.platform.damlayer.core.cache.TenantDetailsCache;
 import com.sschakraborty.platform.damlayer.core.cache.TenantDetailsMapCacheImpl;
 import com.sschakraborty.platform.damlayer.core.configuration.ConnectorMetadata;
 import com.sschakraborty.platform.damlayer.core.configuration.ConnectorMetadataBean;
+import com.sschakraborty.platform.damlayer.core.configuration.TenantConfiguration;
 import com.sschakraborty.platform.damlayer.core.configuration.TenantConfigurationBean;
 import com.sschakraborty.platform.damlayer.core.configuration.parser.ConfigurationBuilder;
 import com.sschakraborty.platform.damlayer.core.configuration.parser.ConfigurationBuilderImpl;
@@ -24,10 +25,9 @@ import java.util.List;
  * Implementation of a configurator in builder pattern for DAM Layer
  */
 public class DAMLayerConfigurator {
+    private final ConfigurationBuilder configurationBuilder = new ConfigurationBuilderImpl();
     private ConnectorMetadata primaryConnectorMetadata;
     private List<Class<? extends Model>> classes;
-
-    private ConfigurationBuilder configurationBuilder = new ConfigurationBuilderImpl();
 
     public final DAMLayerConfigurator withPrimaryConnectorMetadata(final ConnectorMetadata connectorMetadata) {
         this.primaryConnectorMetadata = connectorMetadata;
@@ -75,6 +75,10 @@ public class DAMLayerConfigurator {
                         ConnectorMetadataBean.class
                 )
         );
-        return new TenantServiceImpl(BuilderUtil.buildTransactionManager(configuration));
+        final TenantConfigurationBean tenantConfiguration = TenantConfiguration.createBean();
+        tenantConfiguration.setId("DAMLayer-SYSTEM-USER");
+        tenantConfiguration.setName("DAM-Layer-System-User-TENANT");
+        tenantConfiguration.setConnectorMetadata((ConnectorMetadataBean) connectorMetadata);
+        return new TenantServiceImpl(BuilderUtil.buildTransactionManager(configuration, tenantConfiguration));
     }
 }

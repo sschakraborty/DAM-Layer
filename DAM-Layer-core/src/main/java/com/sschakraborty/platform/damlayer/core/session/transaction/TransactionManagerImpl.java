@@ -1,5 +1,6 @@
 package com.sschakraborty.platform.damlayer.core.session.transaction;
 
+import com.sschakraborty.platform.damlayer.core.configuration.TenantConfiguration;
 import com.sschakraborty.platform.damlayer.core.session.wrapper.SessionWrapper;
 import com.sschakraborty.platform.damlayer.core.session.wrapper.SessionWrapperImpl;
 import org.hibernate.Session;
@@ -8,9 +9,11 @@ import org.hibernate.Transaction;
 
 public class TransactionManagerImpl implements TransactionManager {
     private final SessionFactory sessionFactory;
+    private final TenantConfiguration tenantConfiguration;
 
-    public TransactionManagerImpl(final SessionFactory sessionFactory) {
+    public TransactionManagerImpl(final SessionFactory sessionFactory, final TenantConfiguration tenantConfiguration) {
         this.sessionFactory = sessionFactory;
+        this.tenantConfiguration = tenantConfiguration;
     }
 
     @Override
