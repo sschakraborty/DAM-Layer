@@ -1,5 +1,6 @@
 package com.sschakraborty.platform.damlayer.core;
 
+import com.sschakraborty.platform.damlayer.core.audit.auditor.Auditor;
 import com.sschakraborty.platform.damlayer.core.cache.TenantDetailsCache;
 import com.sschakraborty.platform.damlayer.core.configuration.TenantConfiguration;
 import com.sschakraborty.platform.damlayer.core.configuration.parser.ConfigurationBuilder;
@@ -18,17 +19,20 @@ public class TenantDetailsResolver {
     private final TenantDetailsCache tenantDetailsCache;
     private final ConfigurationBuilder configurationBuilder;
     private final List<Class<? extends Model>> classes;
+    private final Auditor auditor;
 
     public TenantDetailsResolver(
             TenantService tenantService,
             TenantDetailsCache tenantDetailsCache,
             ConfigurationBuilder configurationBuilder,
-            List<Class<? extends Model>> classes
+            List<Class<? extends Model>> classes,
+            Auditor auditor
     ) {
         this.tenantService = tenantService;
         this.tenantDetailsCache = tenantDetailsCache;
         this.configurationBuilder = configurationBuilder;
         this.classes = classes;
+        this.auditor = auditor;
     }
 
     public final DataService resolveDataService(final String tenantId) throws Exception {
@@ -43,7 +47,11 @@ public class TenantDetailsResolver {
                 tenantConfiguration.getConnectorMetadata(),
                 classes
         );
-        final TransactionManager transactionManager = BuilderUtil.buildTransactionManager(configuration, tenantConfiguration);
+        final TransactionManager transactionManager = BuilderUtil.buildTransactionManager(
+                configuration,
+                tenantConfiguration,
+                auditor
+        );
         final DataServiceImpl dataService = new DataServiceImpl(transactionManager);
         {
             tenantDetailsCache.put(tenantId, tenantConfiguration, dataService);
@@ -58,6 +66,19 @@ public class TenantDetailsResolver {
         final TenantConfiguration tenantConfiguration = tenantService.getTenantConfiguration(tenantId);
         if (tenantConfiguration == null) {
             throw new Exception("Provided tenant with id " + tenantId + " is not registered or invalid!");
+        }
+        final Configuration configuration = configurationBuilder.build(
+                tenantConfiguration.getConnectorMetadata(),
+                classes
+        );
+        final TransactionManager transactionManager = BuilderUtil.buildTransactionManager(
+                configuration,
+                tenantConfiguration,
+                auditor
+        );
+        final DataServiceImpl dataService = new DataServiceImpl(transactionManager);
+        {
+            tenantDetailsCache.put(tenantId, tenantConfiguration, dataService);
         }
         return tenantConfiguration;
     }
