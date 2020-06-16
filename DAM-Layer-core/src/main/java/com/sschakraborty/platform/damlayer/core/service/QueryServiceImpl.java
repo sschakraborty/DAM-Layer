@@ -3,8 +3,8 @@ package com.sschakraborty.platform.damlayer.core.service;
 import com.sschakraborty.platform.damlayer.core.marker.Model;
 import com.sschakraborty.platform.damlayer.core.session.transaction.TransactionManager;
 import com.sschakraborty.platform.damlayer.core.session.transaction.TransactionResult;
+import com.sschakraborty.platform.damlayer.core.session.wrapper.SessionWrapper;
 import org.hibernate.Hibernate;
-import org.hibernate.Session;
 
 import java.io.Serializable;
 
@@ -21,8 +21,8 @@ public class QueryServiceImpl implements QueryService {
     @Override
     public <T extends Model> T fetch(Class<T> clazz, Serializable id) {
         final TransactionResult result = transactionManager.executeStateful((transactionUnit, transactionResult) -> {
-            final Session session = transactionUnit.getSession();
-            final T fetchedObj = session.get(clazz, id);
+            final SessionWrapper session = transactionUnit.getSession();
+            final T fetchedObj = session.fetch(clazz, id);
             transactionResult.put(FETCH_KEY, fetchedObj);
         });
         return result.hasKey(FETCH_KEY) ? (T) result.get(FETCH_KEY) : null;
@@ -32,8 +32,8 @@ public class QueryServiceImpl implements QueryService {
     @Override
     public <T extends Model> T fetchTree(Class<T> clazz, Serializable id) {
         final TransactionResult result = transactionManager.executeStateful((transactionUnit, transactionResult) -> {
-            final Session session = transactionUnit.getSession();
-            final T fetchedObj = session.get(clazz, id);
+            final SessionWrapper session = transactionUnit.getSession();
+            final T fetchedObj = session.fetch(clazz, id);
             {
                 Hibernate.unproxy(fetchedObj);
             }

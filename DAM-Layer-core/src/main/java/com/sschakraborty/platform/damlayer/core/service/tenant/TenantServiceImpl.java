@@ -4,7 +4,7 @@ import com.sschakraborty.platform.damlayer.core.configuration.TenantConfiguratio
 import com.sschakraborty.platform.damlayer.core.configuration.TenantConfigurationBean;
 import com.sschakraborty.platform.damlayer.core.session.transaction.TransactionManager;
 import com.sschakraborty.platform.damlayer.core.session.transaction.TransactionResult;
-import org.hibernate.Session;
+import com.sschakraborty.platform.damlayer.core.session.wrapper.SessionWrapper;
 
 public class TenantServiceImpl implements TenantService {
     private static final String CONFIG_KEY = "TENANT_CONFIG_KEY";
@@ -17,8 +17,8 @@ public class TenantServiceImpl implements TenantService {
     @Override
     public TenantConfiguration getTenantConfiguration(final String tenantId) {
         final TransactionResult result = transactionManager.executeStateful((transactionUnit, transactionResult) -> {
-            final Session session = transactionUnit.getSession();
-            final TenantConfiguration tenantConfiguration = session.get(TenantConfigurationBean.class, tenantId);
+            final SessionWrapper session = transactionUnit.getSession();
+            final TenantConfiguration tenantConfiguration = session.fetch(TenantConfigurationBean.class, tenantId);
             transactionResult.put(CONFIG_KEY, tenantConfiguration);
         });
         return result.hasKey(CONFIG_KEY) ? (TenantConfiguration) result.get(CONFIG_KEY) : null;
@@ -27,15 +27,15 @@ public class TenantServiceImpl implements TenantService {
     @Override
     public void saveTenantConfiguration(final TenantConfiguration tenantConfiguration) {
         transactionManager.executeStateful((transactionUnit, transactionResult) -> {
-            final Session session = transactionUnit.getSession();
-            session.saveOrUpdate(tenantConfiguration);
+            final SessionWrapper session = transactionUnit.getSession();
+            session.save(tenantConfiguration);
         });
     }
 
     @Override
     public void deleteTenantConfiguration(TenantConfiguration tenantConfiguration) {
         transactionManager.executeStateful((transactionUnit, transactionResult) -> {
-            final Session session = transactionUnit.getSession();
+            final SessionWrapper session = transactionUnit.getSession();
             session.delete(tenantConfiguration);
         });
     }

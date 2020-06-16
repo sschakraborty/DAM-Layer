@@ -1,10 +1,10 @@
 package com.sschakraborty.platform.damlayer.core.session.transaction;
 
-import org.hibernate.Session;
+import com.sschakraborty.platform.damlayer.core.session.wrapper.SessionWrapper;
 import org.hibernate.Transaction;
 
 public interface TransactionUnit {
-    Session getSession();
+    SessionWrapper getSession();
 
     Transaction getTransaction();
 }

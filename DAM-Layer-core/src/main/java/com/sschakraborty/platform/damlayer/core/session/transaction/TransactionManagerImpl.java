@@ -1,5 +1,7 @@
 package com.sschakraborty.platform.damlayer.core.session.transaction;
 
+import com.sschakraborty.platform.damlayer.core.session.wrapper.SessionWrapper;
+import com.sschakraborty.platform.damlayer.core.session.wrapper.SessionWrapperImpl;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -16,11 +18,12 @@ public class TransactionManagerImpl implements TransactionManager {
         final Session session = sessionFactory.openSession();
         final Transaction transaction = session.beginTransaction();
         final TransactionResultImpl transactionResult = new TransactionResultImpl();
+        final SessionWrapper sessionWrapper = new SessionWrapperImpl(session);
 
         final TransactionUnit transactionUnit = new TransactionUnit() {
             @Override
-            public Session getSession() {
-                return session;
+            public SessionWrapper getSession() {
+                return sessionWrapper;
             }
 
             @Override

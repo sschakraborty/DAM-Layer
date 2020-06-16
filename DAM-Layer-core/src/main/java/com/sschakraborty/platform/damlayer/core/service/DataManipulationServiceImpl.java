@@ -2,7 +2,7 @@ package com.sschakraborty.platform.damlayer.core.service;
 
 import com.sschakraborty.platform.damlayer.core.marker.Model;
 import com.sschakraborty.platform.damlayer.core.session.transaction.TransactionManager;
-import org.hibernate.Session;
+import com.sschakraborty.platform.damlayer.core.session.wrapper.SessionWrapper;
 
 import java.util.List;
 
@@ -16,15 +16,15 @@ public class DataManipulationServiceImpl implements DataManipulationService {
     @Override
     public void insert(List<Model> models) {
         transactionManager.executeStateful((transactionUnit, transactionResult) -> {
-            final Session session = transactionUnit.getSession();
-            models.forEach(session::save);
+            final SessionWrapper session = transactionUnit.getSession();
+            models.forEach(session::insert);
         });
     }
 
     @Override
     public void update(List<Model> models) {
         transactionManager.executeStateful((transactionUnit, transactionResult) -> {
-            final Session session = transactionUnit.getSession();
+            final SessionWrapper session = transactionUnit.getSession();
             models.forEach(session::update);
         });
     }
@@ -32,15 +32,15 @@ public class DataManipulationServiceImpl implements DataManipulationService {
     @Override
     public void save(List<Model> models) {
         transactionManager.executeStateful((transactionUnit, transactionResult) -> {
-            final Session session = transactionUnit.getSession();
-            models.forEach(session::saveOrUpdate);
+            final SessionWrapper session = transactionUnit.getSession();
+            models.forEach(session::save);
         });
     }
 
     @Override
     public void delete(List<Model> models) {
         transactionManager.executeStateful((transactionUnit, transactionResult) -> {
-            final Session session = transactionUnit.getSession();
+            final SessionWrapper session = transactionUnit.getSession();
             models.forEach(session::delete);
         });
     }
