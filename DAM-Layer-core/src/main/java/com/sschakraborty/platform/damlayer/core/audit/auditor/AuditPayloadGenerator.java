@@ -14,4 +14,6 @@ public interface AuditPayloadGenerator {
     void generateFor(AuditOperation auditOperation, boolean successful, Model model, String externalText);
 
     List<AuditPayload> getPayloads();
+
+    boolean shouldAudit();
 }

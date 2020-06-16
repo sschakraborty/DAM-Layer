@@ -51,4 +51,9 @@ public class AuditPayloadGeneratorImpl implements AuditPayloadGenerator {
     public List<AuditPayload> getPayloads() {
         return this.auditPayloads;
     }
+
+    @Override
+    public boolean shouldAudit() {
+        return !this.auditPayloads.isEmpty();
+    }
 }

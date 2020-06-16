@@ -68,7 +68,7 @@ public class TransactionManagerImpl implements TransactionManager {
 
     private void auditResource(AuditPayloadGenerator auditPayloadGenerator) {
         try {
-            if (this.auditor != null) {
+            if (this.auditor != null && auditPayloadGenerator.shouldAudit()) {
                 this.auditor.audit(auditPayloadGenerator.getPayloads());
             }
         } catch (Exception e) {
