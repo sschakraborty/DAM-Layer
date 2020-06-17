@@ -5,9 +5,15 @@ import com.sschakraborty.platform.damlayer.core.configuration.ConnectorMetadata;
 import com.sschakraborty.platform.damlayer.core.configuration.ConnectorMetadataBean;
 import com.sschakraborty.platform.damlayer.core.configuration.TenantConfiguration;
 import com.sschakraborty.platform.damlayer.core.configuration.TenantConfigurationBean;
+import com.sschakraborty.platform.damlayer.core.configuration.builder.model.Item;
+import com.sschakraborty.platform.damlayer.core.configuration.builder.model.Parcel;
+import com.sschakraborty.platform.damlayer.core.service.DataManipulationService;
 import com.sschakraborty.platform.damlayer.core.service.DataService;
+import com.sschakraborty.platform.damlayer.core.service.QueryService;
 import org.junit.Assert;
 import org.junit.Test;
+
+import java.util.Arrays;
 
 public class DAMLayerConfiguratorTest {
     @Test
@@ -15,7 +21,13 @@ public class DAMLayerConfiguratorTest {
         ConnectorMetadata primaryConnectorMetadata = getPrimaryConnectorMetadata();
         DAMLayerConfigurator configurator = new DAMLayerConfigurator();
         configurator.withPrimaryConnectorMetadata(primaryConnectorMetadata);
-        GenericDAO genericDAO = configurator.withAnnotatedModels().build();
+        configurator.withAnnotatedModels(
+                Parcel.class,
+                Item.class
+        );
+        GenericDAO genericDAO = configurator.build();
+
+        Parcel parcel = createDummyData();
 
         final TenantConfiguration tenantConfiguration = getTenantConfiguration();
 
@@ -45,6 +57,8 @@ public class DAMLayerConfiguratorTest {
         fetchedConfig = genericDAO.resolveConfiguration(tenantConfiguration.getId());
         Assert.assertNotNull(fetchedConfig);
 
+        testDataOperationsWithDummyDataAndDataService(dataService, parcel);
+
         genericDAO.unregisterTenant(tenantConfiguration.getId());
 
         try {
@@ -60,6 +74,39 @@ public class DAMLayerConfiguratorTest {
         } catch (Exception e) {
             Assert.assertTrue(true);
         }
+    }
+
+    private void testDataOperationsWithDummyDataAndDataService(DataService dataService, Parcel parcel) {
+        DataManipulationService dataManipulationService = dataService.getDataManipulationService();
+        QueryService queryService = dataService.getQueryService();
+
+        dataManipulationService.insert(parcel);
+
+        Parcel fetchedParcel = queryService.fetch(Parcel.class, parcel.getId());
+        Parcel fetchedParcelTree = queryService.fetchTree(Parcel.class, parcel.getId());
+        Assert.assertEquals(2, fetchedParcelTree.getItems().size());
+
+        dataManipulationService.delete(fetchedParcel);
+
+        fetchedParcel = queryService.fetch(Parcel.class, parcel.getId());
+        Assert.assertNull(fetchedParcel);
+    }
+
+    private Parcel createDummyData() {
+        Parcel parcel = new Parcel();
+        parcel.setFromAddress("India");
+        parcel.setToAddress("Canada");
+
+        Item item1 = new Item();
+        item1.setName("Item_1");
+        item1.setParcel(parcel);
+
+        Item item2 = new Item();
+        item2.setName("Item_2");
+        item2.setParcel(parcel);
+
+        parcel.setItems(Arrays.asList(item1, item2));
+        return parcel;
     }
 
     private ConnectorMetadata getPrimaryConnectorMetadata() {

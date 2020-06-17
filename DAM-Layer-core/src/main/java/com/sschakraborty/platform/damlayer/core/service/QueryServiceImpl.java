@@ -4,7 +4,7 @@ import com.sschakraborty.platform.damlayer.core.marker.Model;
 import com.sschakraborty.platform.damlayer.core.session.transaction.TransactionManager;
 import com.sschakraborty.platform.damlayer.core.session.transaction.TransactionResult;
 import com.sschakraborty.platform.damlayer.core.session.wrapper.SessionWrapper;
-import org.hibernate.Hibernate;
+import com.sschakraborty.platform.damlayer.core.util.ProxyUtil;
 
 import java.io.Serializable;
 
@@ -33,10 +33,7 @@ public class QueryServiceImpl implements QueryService {
     public <T extends Model> T fetchTree(Class<T> clazz, Serializable id) {
         final TransactionResult result = transactionManager.executeStateful((transactionUnit, transactionResult) -> {
             final SessionWrapper session = transactionUnit.getSession();
-            final T fetchedObj = session.fetch(clazz, id);
-            {
-                Hibernate.unproxy(fetchedObj);
-            }
+            final T fetchedObj = ProxyUtil.recursiveUnproxy(session.fetch(clazz, id));
             transactionResult.put(FETCH_KEY, fetchedObj);
         });
         return result.hasKey(FETCH_KEY) ? (T) result.get(FETCH_KEY) : null;
