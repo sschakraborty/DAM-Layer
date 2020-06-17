@@ -55,29 +55,29 @@ public class ProxyUtil {
                     }
 
                     if (value instanceof Object[]) {
-                        Object[] valueArray = (Object[]) value;
-                        Object[] result = (Object[]) Array.newInstance(value.getClass(), valueArray.length);
-                        for (int i = 0; i < valueArray.length; i++) {
-                            result[i] = recursiveUnproxy(valueArray[i], visitedSet);
+                        final Object[] valueArray = (Object[]) value;
+                        final Object[] result = (Object[]) Array.newInstance(value.getClass(), valueArray.length);
+                        for (int index = 0; index < valueArray.length; index++) {
+                            result[index] = recursiveUnproxy(valueArray[index], visitedSet);
                         }
                         value = result;
                         needToSetProperty = true;
                     }
 
                     if (value instanceof Set) {
-                        Set valueSet = (Set) value;
-                        Set result = new HashSet();
-                        for (Object o : valueSet) {
-                            result.add(recursiveUnproxy(o, visitedSet));
+                        final Set valueSet = (Set) value;
+                        final Set result = new HashSet();
+                        for (final Object setItem : valueSet) {
+                            result.add(recursiveUnproxy(setItem, visitedSet));
                         }
                         value = result;
                         needToSetProperty = true;
                     }
 
                     if (value instanceof Map) {
-                        Map valueMap = (Map) value;
-                        Map result = new HashMap();
-                        for (Object key : valueMap.keySet()) {
+                        final Map valueMap = (Map) value;
+                        final Map result = new HashMap();
+                        for (final Object key : valueMap.keySet()) {
                             result.put(recursiveUnproxy(key, visitedSet), recursiveUnproxy(valueMap.get(key), visitedSet));
                         }
                         value = result;
@@ -85,9 +85,9 @@ public class ProxyUtil {
                     }
 
                     if (value instanceof List) {
-                        List valueList = (List) value;
-                        List result = new ArrayList(valueList.size());
-                        for (Object listObject : valueList) {
+                        final List valueList = (List) value;
+                        final List result = new ArrayList(valueList.size());
+                        for (final Object listObject : valueList) {
                             result.add(recursiveUnproxy(listObject, visitedSet));
                         }
                         value = result;
