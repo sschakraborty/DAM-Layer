@@ -27,6 +27,7 @@
         <hibernate.version>5.4.17.Final</hibernate.version>
         <hikaricp.version>3.4.5</hikaricp.version>
         <mysql.driver.version>8.0.20</mysql.driver.version>
+        <beanshell.version>2.0b5</beanshell.version>
         <junit.version>4.12</junit.version>
     </properties>
 </project>
