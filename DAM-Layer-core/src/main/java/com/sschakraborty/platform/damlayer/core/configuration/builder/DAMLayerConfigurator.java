@@ -14,7 +14,6 @@ import com.sschakraborty.platform.damlayer.core.configuration.TenantConfiguratio
 import com.sschakraborty.platform.damlayer.core.configuration.TenantConfigurationBean;
 import com.sschakraborty.platform.damlayer.core.configuration.parser.ConfigurationBuilder;
 import com.sschakraborty.platform.damlayer.core.configuration.parser.ConfigurationBuilderImpl;
-import com.sschakraborty.platform.damlayer.core.marker.Model;
 import com.sschakraborty.platform.damlayer.core.service.tenant.TenantService;
 import com.sschakraborty.platform.damlayer.core.service.tenant.TenantServiceImpl;
 import com.sschakraborty.platform.damlayer.core.session.transaction.TransactionManager;
@@ -22,9 +21,7 @@ import com.sschakraborty.platform.damlayer.core.session.transaction.TransactionM
 import com.sschakraborty.platform.damlayer.core.util.BuilderUtil;
 import org.hibernate.cfg.Configuration;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * Implementation of a configurator in builder pattern for DAM Layer
@@ -32,28 +29,10 @@ import java.util.List;
 public class DAMLayerConfigurator {
     private final ConfigurationBuilder configurationBuilder = new ConfigurationBuilderImpl();
     private ConnectorMetadata primaryConnectorMetadata;
-    private List<Class<? extends Model>> classes;
     private Auditor auditor = null;
 
     public final DAMLayerConfigurator withPrimaryConnectorMetadata(final ConnectorMetadata connectorMetadata) {
         this.primaryConnectorMetadata = connectorMetadata;
-        return this;
-    }
-
-    @SafeVarargs
-    public final DAMLayerConfigurator withAnnotatedModels(final Class<? extends Model>... classes) {
-        if (this.classes == null) {
-            this.classes = new ArrayList<>();
-        }
-        this.classes.addAll(Arrays.asList(classes));
-        return this;
-    }
-
-    public final DAMLayerConfigurator withAnnotatedModels(final List<Class<? extends Model>> classes) {
-        if (this.classes == null) {
-            this.classes = new ArrayList<>();
-        }
-        this.classes.addAll(classes);
         return this;
     }
 
@@ -66,14 +45,10 @@ public class DAMLayerConfigurator {
         if (this.primaryConnectorMetadata == null) {
             throw new Exception("Primary connector metadata has not been defined!");
         }
-        if (this.classes == null) {
-            throw new Exception("No models found. Need to register at least one annotated model class!");
-        }
-
         final TenantService tenantService = buildTenantServiceAndPopulateAuditor(primaryConnectorMetadata);
         final TenantDetailsCache tenantDetailsCache = new TenantDetailsMapCacheImpl();
         final TenantDetailsResolver tenantDetailsResolver = new TenantDetailsResolver(
-                tenantService, tenantDetailsCache, configurationBuilder, classes, auditor
+                tenantService, tenantDetailsCache, configurationBuilder, auditor
         );
         return new GenericDAOImpl(tenantService, tenantDetailsResolver);
     }
@@ -100,11 +75,6 @@ public class DAMLayerConfigurator {
         tenantConfiguration.setId("DAMLayer-SYSTEM-USER");
         tenantConfiguration.setName("DAM-Layer-System-User-TENANT");
         tenantConfiguration.setConnectorMetadata((ConnectorMetadataBean) connectorMetadata);
-        final TransactionManager transactionManager = BuilderUtil.buildTransactionManager(
-                configuration,
-                tenantConfiguration,
-                null
-        );
-        return transactionManager;
+        return BuilderUtil.buildTransactionManager(configuration, tenantConfiguration, null);
     }
 }

@@ -21,10 +21,6 @@ public class DAMLayerConfiguratorTest {
         ConnectorMetadata primaryConnectorMetadata = getPrimaryConnectorMetadata();
         DAMLayerConfigurator configurator = new DAMLayerConfigurator();
         configurator.withPrimaryConnectorMetadata(primaryConnectorMetadata);
-        configurator.withAnnotatedModels(
-                Parcel.class,
-                Item.class
-        );
         GenericDAO genericDAO = configurator.build();
 
         Parcel parcel = createDummyData();
@@ -140,6 +136,10 @@ public class DAMLayerConfiguratorTest {
         tenantConfiguration.setName("Test_tenant");
         tenantConfiguration.setId("too_too");
         tenantConfiguration.setConnectorMetadata(conf);
+        tenantConfiguration.setAnnotatedClasses(Arrays.asList(
+                Parcel.class,
+                Item.class
+        ));
 
         return tenantConfiguration;
     }

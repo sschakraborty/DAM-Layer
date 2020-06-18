@@ -1,6 +1,10 @@
 package com.sschakraborty.platform.damlayer.core.configuration;
 
+import com.sschakraborty.platform.damlayer.core.marker.Model;
+
 import javax.persistence.*;
+import java.io.*;
+import java.util.List;
 
 @Entity
 @Table(name = "TENANT_CONFIG_METADATA")
@@ -14,6 +18,13 @@ public class TenantConfigurationBean implements TenantConfiguration {
 
     @Embedded
     private ConnectorMetadataBean connectorMetadata;
+
+    @Lob
+    @Column(name = "CLASSES_BIN_BYTES", nullable = false)
+    private byte[] annotatedClassesBytes;
+
+    @Transient
+    private transient List<Class<? extends Model>> annotatedClasses;
 
     @Override
     public String getId() {
@@ -40,5 +51,46 @@ public class TenantConfigurationBean implements TenantConfiguration {
 
     public void setConnectorMetadata(ConnectorMetadataBean connectorMetadata) {
         this.connectorMetadata = connectorMetadata;
+    }
+
+    public byte[] getAnnotatedClassesBytes() {
+        return annotatedClassesBytes;
+    }
+
+    public void setAnnotatedClassesBytes(byte[] annotatedClassesBytes) {
+        this.annotatedClassesBytes = annotatedClassesBytes;
+    }
+
+    @Override
+    public List<Class<? extends Model>> getAnnotatedClasses() {
+        return annotatedClasses;
+    }
+
+    public void setAnnotatedClasses(List<Class<? extends Model>> annotatedClasses) {
+        this.annotatedClasses = annotatedClasses;
+    }
+
+    @PrePersist
+    @PreUpdate
+    @PreRemove
+    private void createClassesBytes() throws IOException {
+        try (final ByteArrayOutputStream byteWriter = new ByteArrayOutputStream()) {
+            try (final ObjectOutputStream classWriter = new ObjectOutputStream(byteWriter)) {
+                if (annotatedClasses != null) {
+                    classWriter.writeObject(annotatedClasses);
+                }
+            }
+            annotatedClassesBytes = byteWriter.toByteArray();
+        }
+    }
+
+    @PostLoad
+    @SuppressWarnings("unchecked")
+    private void createClassesList() throws IOException, ClassNotFoundException {
+        try (ByteArrayInputStream byteReader = new ByteArrayInputStream(annotatedClassesBytes)) {
+            try (ObjectInputStream objectReader = new ObjectInputStream(byteReader)) {
+                annotatedClasses = (List<Class<? extends Model>>) objectReader.readObject();
+            }
+        }
     }
 }

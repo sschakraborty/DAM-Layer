@@ -2,6 +2,8 @@ package com.sschakraborty.platform.damlayer.core.configuration;
 
 import com.sschakraborty.platform.damlayer.core.marker.Model;
 
+import java.util.List;
+
 public interface TenantConfiguration extends Model {
     static TenantConfigurationBean createBean() {
         return new TenantConfigurationBean();
@@ -27,4 +29,9 @@ public interface TenantConfiguration extends Model {
      * @return Connector metadata for tenant
      */
     ConnectorMetadata getConnectorMetadata();
+
+    /**
+     * Returns the list of annotated classes
+     */
+    List<Class<? extends Model>> getAnnotatedClasses();
 }
