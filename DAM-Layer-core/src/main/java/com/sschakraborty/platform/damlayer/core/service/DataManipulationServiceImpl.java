@@ -14,34 +14,34 @@ public class DataManipulationServiceImpl implements DataManipulationService {
     }
 
     @Override
-    public void insert(List<Model> models) {
+    public void insert(String externalText, List<Model> models) {
         transactionManager.executeStateful((transactionUnit, transactionResult) -> {
             final SessionWrapper session = transactionUnit.getSession();
-            models.forEach(session::insert);
+            models.forEach(model -> session.insert(externalText, model));
         });
     }
 
     @Override
-    public void update(List<Model> models) {
+    public void update(String externalText, List<Model> models) {
         transactionManager.executeStateful((transactionUnit, transactionResult) -> {
             final SessionWrapper session = transactionUnit.getSession();
-            models.forEach(session::update);
+            models.forEach(model -> session.update(externalText, model));
         });
     }
 
     @Override
-    public void save(List<Model> models) {
+    public void save(String externalText, List<Model> models) {
         transactionManager.executeStateful((transactionUnit, transactionResult) -> {
             final SessionWrapper session = transactionUnit.getSession();
-            models.forEach(session::save);
+            models.forEach(model -> session.save(externalText, model));
         });
     }
 
     @Override
-    public void delete(List<Model> models) {
+    public void delete(String externalText, List<Model> models) {
         transactionManager.executeStateful((transactionUnit, transactionResult) -> {
             final SessionWrapper session = transactionUnit.getSession();
-            models.forEach(session::delete);
+            models.forEach(model -> session.delete(externalText, model));
         });
     }
 }

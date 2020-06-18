@@ -5,13 +5,13 @@ import com.sschakraborty.platform.damlayer.core.marker.Model;
 import java.io.Serializable;
 
 public interface SessionWrapper {
-    void insert(Model model);
+    void insert(String externalText, Model model);
 
-    void update(Model model);
+    void update(String externalText, Model model);
 
-    void save(Model model);
+    void save(String externalText, Model model);
 
-    void delete(Model model);
+    void delete(String externalText, Model model);
 
     <T extends Model> T fetch(Class<T> clazz, Serializable id);
 }

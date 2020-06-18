@@ -28,7 +28,7 @@ public class TenantServiceImpl implements TenantService {
     public void saveTenantConfiguration(final TenantConfiguration tenantConfiguration) {
         transactionManager.executeStateful((transactionUnit, transactionResult) -> {
             final SessionWrapper session = transactionUnit.getSession();
-            session.save(tenantConfiguration);
+            session.save(buildExternalText(tenantConfiguration), tenantConfiguration);
         });
     }
 
@@ -36,7 +36,15 @@ public class TenantServiceImpl implements TenantService {
     public void deleteTenantConfiguration(TenantConfiguration tenantConfiguration) {
         transactionManager.executeStateful((transactionUnit, transactionResult) -> {
             final SessionWrapper session = transactionUnit.getSession();
-            session.delete(tenantConfiguration);
+            session.delete(buildExternalText(tenantConfiguration), tenantConfiguration);
         });
+    }
+
+    private String buildExternalText(TenantConfiguration tenantConfiguration) {
+        return String.format(
+                "Operation performed for %s tenant with ID %s by Tenant Service",
+                tenantConfiguration.getName(),
+                tenantConfiguration.getId()
+        );
     }
 }

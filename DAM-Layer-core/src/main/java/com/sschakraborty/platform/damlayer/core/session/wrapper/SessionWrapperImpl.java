@@ -17,45 +17,45 @@ public class SessionWrapperImpl implements SessionWrapper {
     }
 
     @Override
-    public void insert(Model model) {
+    public void insert(String externalText, Model model) {
         try {
             session.save(model);
-            auditPayloadGenerator.generateFor(AuditOperation.INSERT, true, model, "SYS_CALL");
+            auditPayloadGenerator.generateFor(AuditOperation.INSERT, true, model, externalText);
         } catch (Exception e) {
-            auditPayloadGenerator.generateFor(AuditOperation.INSERT, false, model, "SYS_CALL");
+            auditPayloadGenerator.generateFor(AuditOperation.INSERT, false, model, externalText);
             throw e;
         }
     }
 
     @Override
-    public void update(Model model) {
+    public void update(String externalText, Model model) {
         try {
             session.update(model);
-            auditPayloadGenerator.generateFor(AuditOperation.UPDATE, true, model, "SYS_CALL");
+            auditPayloadGenerator.generateFor(AuditOperation.UPDATE, true, model, externalText);
         } catch (Exception e) {
-            auditPayloadGenerator.generateFor(AuditOperation.UPDATE, false, model, "SYS_CALL");
+            auditPayloadGenerator.generateFor(AuditOperation.UPDATE, false, model, externalText);
             throw e;
         }
     }
 
     @Override
-    public void save(Model model) {
+    public void save(String externalText, Model model) {
         try {
             session.saveOrUpdate(model);
-            auditPayloadGenerator.generateFor(AuditOperation.SAVE, true, model, "SYS_CALL");
+            auditPayloadGenerator.generateFor(AuditOperation.SAVE, true, model, externalText);
         } catch (Exception e) {
-            auditPayloadGenerator.generateFor(AuditOperation.SAVE, false, model, "SYS_CALL");
+            auditPayloadGenerator.generateFor(AuditOperation.SAVE, false, model, externalText);
             throw e;
         }
     }
 
     @Override
-    public void delete(Model model) {
+    public void delete(String externalText, Model model) {
         try {
             session.delete(model);
-            auditPayloadGenerator.generateFor(AuditOperation.DELETE, true, model, "SYS_CALL");
+            auditPayloadGenerator.generateFor(AuditOperation.DELETE, true, model, externalText);
         } catch (Exception e) {
-            auditPayloadGenerator.generateFor(AuditOperation.DELETE, false, model, "SYS_CALL");
+            auditPayloadGenerator.generateFor(AuditOperation.DELETE, false, model, externalText);
             throw e;
         }
     }
