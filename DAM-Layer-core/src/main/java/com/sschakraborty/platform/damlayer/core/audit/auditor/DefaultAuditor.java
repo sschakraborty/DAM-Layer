@@ -17,14 +17,7 @@ public class DefaultAuditor implements Auditor {
     public void audit(List<AuditPayload> auditPayloads) {
         tenantTransactionManager.executeStateful((transactionUnit, transactionResult) -> {
             final SessionWrapper session = transactionUnit.getSession();
-            auditPayloads.forEach(auditPayload -> session.insert(buildExternalText(auditPayload), auditPayload));
+            auditPayloads.forEach(auditPayload -> session.insert("", auditPayload));
         });
-    }
-
-    private String buildExternalText(AuditPayload auditPayload) {
-        return String.format(
-                "Audit with ID %s persisted from Default Auditor",
-                auditPayload.getAuditId()
-        );
     }
 }
