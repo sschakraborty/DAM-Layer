@@ -12,6 +12,7 @@
 
     <modules>
         <module>DAM-Layer-core</module>
+        <module>DAM-Layer-transformation</module>
     </modules>
 
     <properties>
