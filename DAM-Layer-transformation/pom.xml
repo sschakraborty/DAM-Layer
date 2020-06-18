@@ -10,5 +10,5 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>damlayer-transformation</artifactId>
-    <version>${damlayer.version}</version>
+    <name>DAM-Layer-transformation</name>
 </project>
