@@ -61,6 +61,11 @@ public class TransformerImpl implements Transformer {
         }
     }
 
+    @Override
+    public List<Entry> getAllEntries() {
+        return this.entryList;
+    }
+
     @SuppressWarnings("unchecked")
     private <S> Optional<Converter> getConverter(final S sourceObject) {
         return this.entryList.stream().filter(entry -> {
