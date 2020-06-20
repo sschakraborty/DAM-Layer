@@ -29,6 +29,7 @@ import java.util.Arrays;
 public class DAMLayerConfigurator {
     private final ConfigurationBuilder configurationBuilder = new ConfigurationBuilderImpl();
     private ConnectorMetadata primaryConnectorMetadata;
+    private int cacheSize;
     private Auditor auditor = null;
 
     public final DAMLayerConfigurator withPrimaryConnectorMetadata(final ConnectorMetadata connectorMetadata) {
@@ -41,12 +42,17 @@ public class DAMLayerConfigurator {
         return this;
     }
 
+    public final DAMLayerConfigurator withCacheSize(int cacheSize) {
+        this.cacheSize = cacheSize;
+        return this;
+    }
+
     public GenericDAO build() throws Exception {
         if (this.primaryConnectorMetadata == null) {
             throw new Exception("Primary connector metadata has not been defined!");
         }
         final TenantService tenantService = buildTenantServiceAndPopulateAuditor(primaryConnectorMetadata);
-        final TenantDetailsCache tenantDetailsCache = new TenantDetailsMapCacheImpl();
+        final TenantDetailsCache tenantDetailsCache = new TenantDetailsMapCacheImpl(cacheSize);
         final TenantDetailsResolver tenantDetailsResolver = new TenantDetailsResolver(
                 tenantService, tenantDetailsCache, configurationBuilder, auditor
         );
