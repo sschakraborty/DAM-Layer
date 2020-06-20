@@ -87,8 +87,8 @@ public class TenantConfigurationBean implements TenantConfiguration {
     @PostLoad
     @SuppressWarnings("unchecked")
     private void createClassesList() throws IOException, ClassNotFoundException {
-        try (ByteArrayInputStream byteReader = new ByteArrayInputStream(annotatedClassesBytes)) {
-            try (ObjectInputStream objectReader = new ObjectInputStream(byteReader)) {
+        try (final ByteArrayInputStream byteReader = new ByteArrayInputStream(annotatedClassesBytes)) {
+            try (final ObjectInputStream objectReader = new ObjectInputStream(byteReader)) {
                 annotatedClasses = (List<Class<? extends Model>>) objectReader.readObject();
             }
         }
