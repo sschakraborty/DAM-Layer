@@ -5,6 +5,9 @@ import com.sschakraborty.platform.damlayer.core.audit.auditor.AuditPayloadGenera
 import com.sschakraborty.platform.damlayer.core.marker.Model;
 import org.hibernate.Session;
 
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
 import java.io.Serializable;
 
 public class SessionWrapperImpl implements SessionWrapper {
@@ -63,5 +66,15 @@ public class SessionWrapperImpl implements SessionWrapper {
     @Override
     public <T extends Model> T fetch(Class<T> clazz, Serializable id) {
         return session.get(clazz, id);
+    }
+
+    @Override
+    public CriteriaBuilder criteriaBuilder() {
+        return session.getCriteriaBuilder();
+    }
+
+    @Override
+    public <T extends Model> TypedQuery<T> createQuery(CriteriaQuery<T> criteriaQuery) {
+        return session.createQuery(criteriaQuery);
     }
 }

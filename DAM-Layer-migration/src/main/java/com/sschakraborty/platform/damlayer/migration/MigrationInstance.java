@@ -24,7 +24,8 @@ public class MigrationInstance {
 
     public void dispatch() {
         migrationConfiguration.getTransformer().getAllEntries().forEach(entry -> {
-            this.executor.submit(new EntityMigrationExecutor(migrationConfiguration, entry));
+            final EntityMigrationExecutor executor = new EntityMigrationExecutor(migrationConfiguration, entry, 0);
+            this.executor.submit(executor);
         });
     }
 }

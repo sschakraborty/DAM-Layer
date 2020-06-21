@@ -2,6 +2,9 @@ package com.sschakraborty.platform.damlayer.core.session.wrapper;
 
 import com.sschakraborty.platform.damlayer.core.marker.Model;
 
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
 import java.io.Serializable;
 
 public interface SessionWrapper {
@@ -14,4 +17,8 @@ public interface SessionWrapper {
     void delete(String externalText, Model model);
 
     <T extends Model> T fetch(Class<T> clazz, Serializable id);
+
+    CriteriaBuilder criteriaBuilder();
+
+    <T extends Model> TypedQuery<T> createQuery(CriteriaQuery<T> criteriaQuery);
 }
