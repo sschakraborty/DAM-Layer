@@ -15,9 +15,9 @@ import java.util.List;
 public class EntityMigrationExecutor<S extends Model, D extends Model> extends AbstractMigrationExecutor<S, D> {
     private final int batchSize;
 
-    public EntityMigrationExecutor(MigrationConfiguration migrationConfiguration, Entry<S, D> currentEntry, int batchSize) {
+    public EntityMigrationExecutor(MigrationConfiguration migrationConfiguration, Entry<S, D> currentEntry) {
         super(migrationConfiguration, currentEntry);
-        this.batchSize = batchSize;
+        this.batchSize = migrationConfiguration.getBatchSize();
     }
 
     @Override

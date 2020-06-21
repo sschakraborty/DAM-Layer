@@ -9,6 +9,7 @@ public class MigrationConfiguration {
     private GenericDAO genericDAO;
     private String sourceTenantId;
     private String destinationTenantId;
+    private int batchSize = 0;
 
     public int getMaxThreadCount() {
         return maxThreadCount;
@@ -48,5 +49,13 @@ public class MigrationConfiguration {
 
     public void setDestinationTenantId(String destinationTenantId) {
         this.destinationTenantId = destinationTenantId;
+    }
+
+    public int getBatchSize() {
+        return batchSize;
+    }
+
+    public void setBatchSize(int batchSize) {
+        this.batchSize = batchSize;
     }
 }

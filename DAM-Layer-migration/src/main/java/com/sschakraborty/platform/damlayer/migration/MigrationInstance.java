@@ -22,9 +22,10 @@ public class MigrationInstance {
         return Executors.newFixedThreadPool(threadCount);
     }
 
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public void dispatch() {
         migrationConfiguration.getTransformer().getAllEntries().forEach(entry -> {
-            final EntityMigrationExecutor executor = new EntityMigrationExecutor(migrationConfiguration, entry, 0);
+            final EntityMigrationExecutor executor = new EntityMigrationExecutor(migrationConfiguration, entry);
             this.executor.submit(executor);
         });
     }
