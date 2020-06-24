@@ -28,6 +28,7 @@ public class AuditPayloadGeneratorImpl implements AuditPayloadGenerator {
             auditPayload.setModelName(generateModelName(model.getClass(), model.auditModelName()));
             auditPayload.setAuditText(generateAuditText(auditOperation, model));
             auditPayload.setExternalText(externalText);
+            auditPayload.setModelObject(model);
             this.auditPayloads.add(auditPayload);
         }
     }

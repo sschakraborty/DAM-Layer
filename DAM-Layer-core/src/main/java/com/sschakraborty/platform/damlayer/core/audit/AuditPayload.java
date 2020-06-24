@@ -41,6 +41,9 @@ public class AuditPayload implements Model {
     @Column(name = "EXTERNAL_TEXT", length = 2000)
     private String externalText;
 
+    @Transient
+    private transient Model modelObject;
+
     public AuditPayload() {
         this.generateAuditId();
     }
@@ -123,6 +126,14 @@ public class AuditPayload implements Model {
 
     public void setExternalText(String externalText) {
         this.externalText = externalText;
+    }
+
+    public Model getModelObject() {
+        return modelObject;
+    }
+
+    public void setModelObject(Model modelObject) {
+        this.modelObject = modelObject;
     }
 
     private void generateAuditId() {
