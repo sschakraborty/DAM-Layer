@@ -4,6 +4,7 @@ import com.sschakraborty.platform.damlayer.core.audit.auditor.AuditPayloadGenera
 import com.sschakraborty.platform.damlayer.core.audit.auditor.AuditPayloadGeneratorImpl;
 import com.sschakraborty.platform.damlayer.core.audit.auditor.Auditor;
 import com.sschakraborty.platform.damlayer.core.configuration.TenantConfiguration;
+import com.sschakraborty.platform.damlayer.core.session.IsolationMode;
 import com.sschakraborty.platform.damlayer.core.session.wrapper.SessionWrapper;
 import com.sschakraborty.platform.damlayer.core.session.wrapper.SessionWrapperImpl;
 import org.hibernate.Session;
@@ -30,8 +31,8 @@ public class TransactionManagerImpl implements TransactionManager {
     }
 
     @Override
-    public TransactionResult executeStateful(TransactionJob transactionJob) {
-        final Session session = sessionFactory.openSession();
+    public TransactionResult executeStateful(IsolationMode isolationMode, TransactionJob transactionJob) {
+        final Session session = buildSession(isolationMode);
         final Transaction transaction = session.beginTransaction();
         final TransactionResultImpl transactionResult = new TransactionResultImpl();
         final AuditPayloadGenerator auditPayloadGenerator = buildAuditPayloadGenerator();
@@ -64,6 +65,14 @@ public class TransactionManagerImpl implements TransactionManager {
 
         auditResource(auditPayloadGenerator);
         return transactionResult;
+    }
+
+    @SuppressWarnings("all")
+    private Session buildSession(final IsolationMode isolationMode) {
+        final Session session = sessionFactory.openSession();
+        session.doWork(connection -> connection.setAutoCommit(false));
+        session.doWork(connection -> connection.setTransactionIsolation(isolationMode.getIsolationCode()));
+        return session;
     }
 
     private void auditResource(AuditPayloadGenerator auditPayloadGenerator) {
