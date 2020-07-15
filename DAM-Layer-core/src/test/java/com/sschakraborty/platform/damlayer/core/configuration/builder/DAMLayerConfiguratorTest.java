@@ -54,6 +54,7 @@ public class DAMLayerConfiguratorTest {
         Assert.assertNotNull(fetchedConfig);
 
         testDataOperationsWithDummyDataAndDataService(dataService, parcel);
+        testPerformance(dataService);
 
         genericDAO.unregisterTenant(tenantConfiguration.getId());
 
@@ -86,6 +87,33 @@ public class DAMLayerConfiguratorTest {
 
         fetchedParcel = queryService.fetch(Parcel.class, parcel.getId());
         Assert.assertNull(fetchedParcel);
+    }
+
+    private void testPerformance(DataService dataService) {
+        final int queryCount = 1000;
+        final long expectedMilliseconds = 4000;
+
+        DataManipulationService dataManipulationService = dataService.getDataManipulationService();
+        QueryService queryService = dataService.getQueryService();
+
+        Parcel parcel = createDummyData();
+        dataManipulationService.insert(parcel);
+
+        long startTime = System.currentTimeMillis();
+        for (int i = 0; i < queryCount; i++) {
+            Parcel fetchedParcelTree = queryService.fetchTree(Parcel.class, parcel.getId());
+            Assert.assertEquals(2, fetchedParcelTree.getItems().size());
+        }
+        long endTime = System.currentTimeMillis();
+        long requiredMilliseconds = endTime - startTime;
+
+        Parcel fetchedParcel = queryService.fetch(Parcel.class, parcel.getId());
+        dataManipulationService.delete(fetchedParcel);
+
+        System.out.printf("Time taken for %d tree queries: %d ms", queryCount, requiredMilliseconds);
+        if (requiredMilliseconds > expectedMilliseconds) {
+            Assert.fail();
+        }
     }
 
     private Parcel createDummyData() {
@@ -131,6 +159,9 @@ public class DAMLayerConfiguratorTest {
         conf.setConnectionPort(3306);
         conf.setDatabaseName("DAMLayer_TooToo");
         conf.setDdlMode("create-drop");
+        conf.setMaxPoolSize(150);
+        conf.setIdleTimeout(1500);
+        conf.setConnectionTimeout(1500);
 
         TenantConfigurationBean tenantConfiguration = TenantConfiguration.createBean();
         tenantConfiguration.setName("Test_tenant");
