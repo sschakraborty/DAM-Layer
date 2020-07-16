@@ -31,6 +31,7 @@ public class ConfigurationBuilderImpl implements ConfigurationBuilder {
         properties.put("hibernate.hikari.maximumPoolSize", String.valueOf(metadata.getMaxPoolSize()));
         properties.put("hibernate.hikari.idleTimeout", String.valueOf(metadata.getIdleTimeout()));
         properties.put("hibernate.hikari.connectionTimeout", String.valueOf(metadata.getConnectionTimeout()));
+        properties.put("hibernate.connection.isolation", String.valueOf(metadata.getIsolationMode().getIsolationCode()));
         properties.put("hibernate.hikari.minimumIdle", "20");
         properties.put("hibernate.connection.provider_class", CONNECTION_POOL_PROVIDER);
         properties.put("hibernate.format_sql", "true");

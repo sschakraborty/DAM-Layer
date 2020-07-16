@@ -1,6 +1,7 @@
 package com.sschakraborty.platform.damlayer.core.configuration;
 
 import com.sschakraborty.platform.damlayer.core.marker.Model;
+import com.sschakraborty.platform.damlayer.core.session.IsolationMode;
 
 public interface ConnectorMetadata extends Model {
     static ConnectorMetadataBean createBean() {
@@ -34,4 +35,6 @@ public interface ConnectorMetadata extends Model {
     int getIdleTimeout();
 
     int getConnectionTimeout();
+
+    IsolationMode getIsolationMode();
 }

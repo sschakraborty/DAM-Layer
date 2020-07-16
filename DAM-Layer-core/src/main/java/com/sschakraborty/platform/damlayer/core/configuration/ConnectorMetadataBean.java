@@ -1,9 +1,8 @@
 package com.sschakraborty.platform.damlayer.core.configuration;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
+import com.sschakraborty.platform.damlayer.core.session.IsolationMode;
+
+import javax.persistence.*;
 
 @Embeddable
 public class ConnectorMetadataBean implements ConnectorMetadata {
@@ -49,6 +48,10 @@ public class ConnectorMetadataBean implements ConnectorMetadata {
     @Column(name = "CONN_TIMEOUT", nullable = false)
     private int connectionTimeout;
 
+    @Column(name = "CONN_ISOLATION", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private IsolationMode isolationMode = IsolationMode.TRANSACTION_READ_COMMITTED;
+
     @PrePersist
     private void prePersist() {
         checkForDefaults();
@@ -71,6 +74,9 @@ public class ConnectorMetadataBean implements ConnectorMetadata {
         }
         if (connectionTimeout <= 0) {
             connectionTimeout = 10000;
+        }
+        if (isolationMode == null) {
+            isolationMode = IsolationMode.TRANSACTION_READ_COMMITTED;
         }
     }
 
@@ -198,5 +204,17 @@ public class ConnectorMetadataBean implements ConnectorMetadata {
 
     public void setConnectionTimeout(int connectionTimeout) {
         this.connectionTimeout = connectionTimeout;
+    }
+
+    @Override
+    public IsolationMode getIsolationMode() {
+        return isolationMode;
+    }
+
+    public void setIsolationMode(IsolationMode isolationMode) {
+        this.isolationMode = isolationMode;
+        if (this.isolationMode == null) {
+            this.isolationMode = IsolationMode.TRANSACTION_READ_COMMITTED;
+        }
     }
 }
