@@ -14,6 +14,7 @@
         <module>DAM-Layer-core</module>
         <module>DAM-Layer-transformation</module>
         <module>DAM-Layer-migration</module>
+        <module>DAM-Layer-audit</module>
     </modules>
 
     <properties>
