@@ -1,6 +1,8 @@
 package com.sschakraborty.platform.damlayer.core.configuration.builder;
 
 import com.sschakraborty.platform.damlayer.audit.core.Auditor;
+import com.sschakraborty.platform.damlayer.audit.core.engine.AuditEngine;
+import com.sschakraborty.platform.damlayer.audit.core.engine.AuditEngineImpl;
 import com.sschakraborty.platform.damlayer.audit.payload.AuditPayload;
 import com.sschakraborty.platform.damlayer.core.GenericDAO;
 import com.sschakraborty.platform.damlayer.core.GenericDAOImpl;
@@ -30,7 +32,7 @@ public class DAMLayerConfigurator {
     private final ConfigurationBuilder configurationBuilder = new ConfigurationBuilderImpl();
     private ConnectorMetadata primaryConnectorMetadata;
     private int cacheSize;
-    private Auditor auditor = null;
+    private AuditEngine auditEngine = null;
 
     public final DAMLayerConfigurator withPrimaryConnectorMetadata(final ConnectorMetadata connectorMetadata) {
         this.primaryConnectorMetadata = connectorMetadata;
@@ -38,7 +40,7 @@ public class DAMLayerConfigurator {
     }
 
     public final DAMLayerConfigurator withAuditor(Auditor auditor) {
-        this.auditor = auditor;
+        this.auditEngine = new AuditEngineImpl(auditor);
         return this;
     }
 
@@ -51,24 +53,21 @@ public class DAMLayerConfigurator {
         if (this.primaryConnectorMetadata == null) {
             throw new Exception("Primary connector metadata has not been defined!");
         }
-        final TenantService tenantService = buildTenantServiceAndPopulateAuditor(primaryConnectorMetadata);
+        final TransactionManager tenantTransactionManager = createAuditEngineAndTenantTransactionManager();
+        final TenantService tenantService = new TenantServiceImpl(tenantTransactionManager);
         final TenantDetailsCache tenantDetailsCache = new TenantDetailsMapCacheImpl(cacheSize);
-        final TenantDetailsResolver tenantDetailsResolver = new TenantDetailsResolver(
-                tenantService, tenantDetailsCache, configurationBuilder, auditor
-        );
+        final TenantDetailsResolver tenantDetailsResolver = new TenantDetailsResolver(tenantService, tenantDetailsCache, configurationBuilder, auditEngine);
         return new GenericDAOImpl(tenantService, tenantDetailsResolver);
     }
 
-    private TenantService buildTenantServiceAndPopulateAuditor(ConnectorMetadata connectorMetadata) {
-        final TransactionManager transactionManager = buildTenantTransactionManager(connectorMetadata);
-        {
-            this.auditor = (this.auditor == null) ? new DefaultAuditor(transactionManager) : this.auditor;
-            ((TransactionManagerImpl) transactionManager).setAuditor(this.auditor);
-        }
-        return new TenantServiceImpl(transactionManager);
+    private TransactionManager createAuditEngineAndTenantTransactionManager() {
+        final TransactionManagerImpl transactionManager = (TransactionManagerImpl) buildTenantTransactionManagerWithoutAuditEngine(primaryConnectorMetadata);
+        this.auditEngine = (this.auditEngine == null) ? new AuditEngineImpl(new DefaultAuditor(transactionManager)) : this.auditEngine;
+        transactionManager.setAuditEngine(auditEngine);
+        return transactionManager;
     }
 
-    private TransactionManager buildTenantTransactionManager(ConnectorMetadata connectorMetadata) {
+    private TransactionManager buildTenantTransactionManagerWithoutAuditEngine(ConnectorMetadata connectorMetadata) {
         final Configuration configuration = configurationBuilder.build(
                 connectorMetadata,
                 Arrays.asList(

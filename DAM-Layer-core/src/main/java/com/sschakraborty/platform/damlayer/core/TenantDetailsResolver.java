@@ -1,6 +1,6 @@
 package com.sschakraborty.platform.damlayer.core;
 
-import com.sschakraborty.platform.damlayer.audit.core.Auditor;
+import com.sschakraborty.platform.damlayer.audit.core.engine.AuditEngine;
 import com.sschakraborty.platform.damlayer.core.cache.TenantDetailsCache;
 import com.sschakraborty.platform.damlayer.core.configuration.TenantConfiguration;
 import com.sschakraborty.platform.damlayer.core.configuration.parser.ConfigurationBuilder;
@@ -15,18 +15,18 @@ public class TenantDetailsResolver {
     private final TenantService tenantService;
     private final TenantDetailsCache tenantDetailsCache;
     private final ConfigurationBuilder configurationBuilder;
-    private final Auditor auditor;
+    private final AuditEngine auditEngine;
 
     public TenantDetailsResolver(
             TenantService tenantService,
             TenantDetailsCache tenantDetailsCache,
             ConfigurationBuilder configurationBuilder,
-            Auditor auditor
+            AuditEngine auditEngine
     ) {
         this.tenantService = tenantService;
         this.tenantDetailsCache = tenantDetailsCache;
         this.configurationBuilder = configurationBuilder;
-        this.auditor = auditor;
+        this.auditEngine = auditEngine;
     }
 
     public final DataService resolveDataService(final String tenantId) throws Exception {
@@ -41,11 +41,7 @@ public class TenantDetailsResolver {
                 tenantConfiguration.getConnectorMetadata(),
                 tenantConfiguration.getAnnotatedClasses()
         );
-        final TransactionManager transactionManager = BuilderUtil.buildTransactionManager(
-                configuration,
-                tenantConfiguration,
-                auditor
-        );
+        final TransactionManager transactionManager = BuilderUtil.buildTransactionManager(configuration, tenantConfiguration, auditEngine);
         final DataServiceImpl dataService = new DataServiceImpl(transactionManager);
         {
             tenantDetailsCache.put(tenantId, tenantConfiguration, dataService);
@@ -65,11 +61,7 @@ public class TenantDetailsResolver {
                 tenantConfiguration.getConnectorMetadata(),
                 tenantConfiguration.getAnnotatedClasses()
         );
-        final TransactionManager transactionManager = BuilderUtil.buildTransactionManager(
-                configuration,
-                tenantConfiguration,
-                auditor
-        );
+        final TransactionManager transactionManager = BuilderUtil.buildTransactionManager(configuration, tenantConfiguration, auditEngine);
         final DataServiceImpl dataService = new DataServiceImpl(transactionManager);
         {
             tenantDetailsCache.put(tenantId, tenantConfiguration, dataService);

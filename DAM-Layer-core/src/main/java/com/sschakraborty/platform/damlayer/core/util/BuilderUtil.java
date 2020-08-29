@@ -1,6 +1,6 @@
 package com.sschakraborty.platform.damlayer.core.util;
 
-import com.sschakraborty.platform.damlayer.audit.core.Auditor;
+import com.sschakraborty.platform.damlayer.audit.core.engine.AuditEngine;
 import com.sschakraborty.platform.damlayer.core.configuration.TenantConfiguration;
 import com.sschakraborty.platform.damlayer.core.session.SessionFactoryProvider;
 import com.sschakraborty.platform.damlayer.core.session.transaction.TransactionManager;
@@ -12,12 +12,8 @@ public class BuilderUtil {
     private BuilderUtil() {
     }
 
-    public static TransactionManager buildTransactionManager(
-            Configuration configuration,
-            TenantConfiguration tenantConfiguration,
-            Auditor auditor
-    ) {
+    public static TransactionManager buildTransactionManager(Configuration configuration, TenantConfiguration tenantConfiguration, AuditEngine auditEngine) {
         final SessionFactory sessionFactory = SessionFactoryProvider.getSessionFactory(configuration);
-        return new TransactionManagerImpl(sessionFactory, tenantConfiguration, auditor);
+        return new TransactionManagerImpl(sessionFactory, tenantConfiguration, auditEngine);
     }
 }

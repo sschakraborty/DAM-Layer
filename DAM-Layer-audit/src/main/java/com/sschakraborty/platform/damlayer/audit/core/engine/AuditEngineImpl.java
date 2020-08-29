@@ -1,5 +1,6 @@
-package com.sschakraborty.platform.damlayer.audit.payload.generator;
+package com.sschakraborty.platform.damlayer.audit.core.engine;
 
+import com.sschakraborty.platform.damlayer.audit.core.Auditor;
 import com.sschakraborty.platform.damlayer.audit.payload.AuditPayload;
 import com.sschakraborty.platform.damlayer.shared.audit.AuditOperation;
 import com.sschakraborty.platform.damlayer.shared.core.marker.Model;
@@ -7,18 +8,17 @@ import com.sschakraborty.platform.damlayer.shared.core.marker.Model;
 import java.util.LinkedList;
 import java.util.List;
 
-public class AuditPayloadGeneratorImpl implements AuditPayloadGenerator {
-    private final List<AuditPayload> auditPayloads = new LinkedList<>();
-    private final String tenantId;
-    private final String tenantName;
+public class AuditEngineImpl implements AuditEngine {
+    private final Auditor auditor;
+    private List<AuditPayload> auditPayloads;
 
-    public AuditPayloadGeneratorImpl(String tenantId, String tenantName) {
-        this.tenantId = tenantId;
-        this.tenantName = tenantName;
+    public AuditEngineImpl(final Auditor auditor) {
+        this.auditor = auditor;
+        this.audit();
     }
 
     @Override
-    public void generateFor(AuditOperation auditOperation, boolean successful, Model model, String externalText) {
+    public void generateFor(AuditOperation auditOperation, boolean successful, Model model, String externalText, String tenantId, String tenantName) {
         if (this.isAuditAllowed(model)) {
             final AuditPayload auditPayload = new AuditPayload();
             auditPayload.setAuditOperation(auditOperation);
@@ -31,6 +31,19 @@ public class AuditPayloadGeneratorImpl implements AuditPayloadGenerator {
             auditPayload.setExternalText(externalText);
             auditPayload.setModelObject(model);
             this.auditPayloads.add(auditPayload);
+        }
+    }
+
+    @Override
+    public void audit() {
+        try {
+            if (this.shouldAudit()) {
+                this.auditor.audit(this.auditPayloads);
+            }
+        } catch (Exception e) {
+            // TODO: Log if required
+        } finally {
+            this.auditPayloads = new LinkedList<>();
         }
     }
 
@@ -49,13 +62,11 @@ public class AuditPayloadGeneratorImpl implements AuditPayloadGenerator {
         return modelName;
     }
 
-    @Override
-    public List<AuditPayload> getPayloads() {
-        return this.auditPayloads;
+    private boolean shouldAudit() {
+        return this.auditPayloads != null && !this.auditPayloads.isEmpty();
     }
 
-    @Override
-    public boolean shouldAudit() {
-        return !this.auditPayloads.isEmpty();
+    private boolean isAuditAllowed(Model model) {
+        return !(model instanceof AuditPayload);
     }
 }

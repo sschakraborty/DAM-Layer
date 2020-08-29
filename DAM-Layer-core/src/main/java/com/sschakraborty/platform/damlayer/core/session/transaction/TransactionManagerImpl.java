@@ -1,8 +1,6 @@
 package com.sschakraborty.platform.damlayer.core.session.transaction;
 
-import com.sschakraborty.platform.damlayer.audit.core.Auditor;
-import com.sschakraborty.platform.damlayer.audit.payload.generator.AuditPayloadGenerator;
-import com.sschakraborty.platform.damlayer.audit.payload.generator.AuditPayloadGeneratorImpl;
+import com.sschakraborty.platform.damlayer.audit.core.engine.AuditEngine;
 import com.sschakraborty.platform.damlayer.core.configuration.TenantConfiguration;
 import com.sschakraborty.platform.damlayer.core.session.IsolationMode;
 import com.sschakraborty.platform.damlayer.core.session.wrapper.SessionWrapper;
@@ -14,20 +12,16 @@ import org.hibernate.Transaction;
 public class TransactionManagerImpl implements TransactionManager {
     private final SessionFactory sessionFactory;
     private final TenantConfiguration tenantConfiguration;
-    private Auditor auditor;
+    private AuditEngine auditEngine;
 
-    public TransactionManagerImpl(
-            final SessionFactory sessionFactory,
-            final TenantConfiguration tenantConfiguration,
-            final Auditor auditor
-    ) {
+    public TransactionManagerImpl(SessionFactory sessionFactory, TenantConfiguration tenantConfiguration, AuditEngine auditEngine) {
         this.sessionFactory = sessionFactory;
         this.tenantConfiguration = tenantConfiguration;
-        this.auditor = auditor;
+        this.auditEngine = auditEngine;
     }
 
-    public void setAuditor(Auditor auditor) {
-        this.auditor = auditor;
+    public void setAuditEngine(AuditEngine auditEngine) {
+        this.auditEngine = auditEngine;
     }
 
     @Override
@@ -35,9 +29,7 @@ public class TransactionManagerImpl implements TransactionManager {
         final Session session = buildSession(isolationMode);
         final Transaction transaction = session.beginTransaction();
         final TransactionResultImpl transactionResult = new TransactionResultImpl();
-        final AuditPayloadGenerator auditPayloadGenerator = buildAuditPayloadGenerator();
-        final SessionWrapper sessionWrapper = new SessionWrapperImpl(session, auditPayloadGenerator);
-
+        final SessionWrapper sessionWrapper = new SessionWrapperImpl(session, auditEngine, tenantConfiguration);
         final TransactionUnit transactionUnit = new TransactionUnit() {
             @Override
             public SessionWrapper getSession() {
@@ -61,9 +53,8 @@ public class TransactionManagerImpl implements TransactionManager {
         } finally {
             transactionResult.setTransactionStatus(transaction.getStatus().name());
             session.close();
+            auditEngine.audit();
         }
-
-        auditResource(auditPayloadGenerator);
         return transactionResult;
     }
 
@@ -73,19 +64,5 @@ public class TransactionManagerImpl implements TransactionManager {
         session.doWork(connection -> connection.setAutoCommit(false));
         session.doWork(connection -> connection.setTransactionIsolation(isolationMode.getIsolationCode()));
         return session;
-    }
-
-    private void auditResource(AuditPayloadGenerator auditPayloadGenerator) {
-        try {
-            if (this.auditor != null && auditPayloadGenerator.shouldAudit()) {
-                this.auditor.audit(auditPayloadGenerator.getPayloads());
-            }
-        } catch (Exception e) {
-            // TODO: Log if required
-        }
-    }
-
-    private AuditPayloadGenerator buildAuditPayloadGenerator() {
-        return new AuditPayloadGeneratorImpl(tenantConfiguration.getId(), tenantConfiguration.getName());
     }
 }
