@@ -46,6 +46,10 @@ public class AuditPayload implements Model {
     @Column(name = "AUDIT_REMARK")
     private String auditRemark;
 
+    @Lob
+    @Column(name = "AUDIT_RESOURCE")
+    private String auditResource;
+
     @Transient
     private transient Model modelObject;
 
@@ -139,6 +143,14 @@ public class AuditPayload implements Model {
 
     public void setAuditRemark(String auditRemark) {
         this.auditRemark = auditRemark;
+    }
+
+    public String getAuditResource() {
+        return auditResource;
+    }
+
+    public void setAuditResource(String auditResource) {
+        this.auditResource = auditResource;
     }
 
     public Model getModelObject() {

@@ -3,6 +3,7 @@ package com.sschakraborty.platform.damlayer.audit.core.engine;
 import com.sschakraborty.platform.damlayer.audit.annotation.AuditResource;
 import com.sschakraborty.platform.damlayer.audit.core.Auditor;
 import com.sschakraborty.platform.damlayer.audit.core.creator.remark.AuditRemarkCreatorProvider;
+import com.sschakraborty.platform.damlayer.audit.core.creator.resource.AuditResourceCreatorProvider;
 import com.sschakraborty.platform.damlayer.audit.payload.AuditPayload;
 import com.sschakraborty.platform.damlayer.shared.audit.DataOperation;
 import com.sschakraborty.platform.damlayer.shared.core.marker.Model;
@@ -34,6 +35,7 @@ public class AuditEngineImpl implements AuditEngine {
                 auditPayload.setInternalText(generateAuditText(dataOperation, model));
                 auditPayload.setExternalText(externalText);
                 auditPayload.setAuditRemark(getRemark(dataOperation, successful, model, auditResource));
+                auditPayload.setAuditResource(getResource(model, auditResource));
                 auditPayload.setModelObject(model);
                 this.auditPayloads.add(auditPayload);
             }
@@ -78,5 +80,9 @@ public class AuditEngineImpl implements AuditEngine {
 
     private String getRemark(DataOperation dataOperation, boolean successful, Model model, AuditResource auditResource) {
         return AuditRemarkCreatorProvider.getCreator(auditResource.remarkCreator()).createRemark(dataOperation, model, successful);
+    }
+
+    private String getResource(Model model, AuditResource auditResource) {
+        return AuditResourceCreatorProvider.getCreator(auditResource.resourceCreator()).createResource(model);
     }
 }
