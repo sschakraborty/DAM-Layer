@@ -1,6 +1,6 @@
 package com.sschakraborty.platform.damlayer.core.configuration.builder.model;
 
-import com.sschakraborty.platform.damlayer.core.marker.Model;
+import com.sschakraborty.platform.damlayer.shared.core.marker.Model;
 
 import javax.persistence.*;
 

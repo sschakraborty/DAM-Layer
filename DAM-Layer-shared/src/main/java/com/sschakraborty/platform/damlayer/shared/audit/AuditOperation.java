@@ -1,4 +1,4 @@
-package com.sschakraborty.platform.damlayer.core.audit;
+package com.sschakraborty.platform.damlayer.shared.audit;
 
 public enum AuditOperation {
     INSERT,

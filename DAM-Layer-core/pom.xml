@@ -14,6 +14,16 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.sschakraborty.platform</groupId>
+            <artifactId>damlayer-shared</artifactId>
+            <version>${damlayer.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sschakraborty.platform</groupId>
+            <artifactId>damlayer-audit</artifactId>
+            <version>${damlayer.version}</version>
+        </dependency>
+        <dependency>
             <groupId>commons-beanutils</groupId>
             <artifactId>commons-beanutils</artifactId>
             <version>${apache.beanutils.version}</version>

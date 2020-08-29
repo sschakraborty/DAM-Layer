@@ -1,6 +1,6 @@
 package com.sschakraborty.platform.damlayer.core.session.wrapper;
 
-import com.sschakraborty.platform.damlayer.core.marker.Model;
+import com.sschakraborty.platform.damlayer.shared.core.marker.Model;
 
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;

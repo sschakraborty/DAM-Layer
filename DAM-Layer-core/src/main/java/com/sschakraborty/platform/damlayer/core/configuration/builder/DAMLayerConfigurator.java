@@ -1,10 +1,10 @@
 package com.sschakraborty.platform.damlayer.core.configuration.builder;
 
+import com.sschakraborty.platform.damlayer.audit.core.AuditPayload;
+import com.sschakraborty.platform.damlayer.audit.core.Auditor;
 import com.sschakraborty.platform.damlayer.core.GenericDAO;
 import com.sschakraborty.platform.damlayer.core.GenericDAOImpl;
 import com.sschakraborty.platform.damlayer.core.TenantDetailsResolver;
-import com.sschakraborty.platform.damlayer.core.audit.AuditPayload;
-import com.sschakraborty.platform.damlayer.core.audit.auditor.Auditor;
 import com.sschakraborty.platform.damlayer.core.audit.auditor.DefaultAuditor;
 import com.sschakraborty.platform.damlayer.core.cache.TenantDetailsCache;
 import com.sschakraborty.platform.damlayer.core.cache.TenantDetailsMapCacheImpl;

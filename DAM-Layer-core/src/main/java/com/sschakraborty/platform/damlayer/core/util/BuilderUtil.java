@@ -1,6 +1,6 @@
 package com.sschakraborty.platform.damlayer.core.util;
 
-import com.sschakraborty.platform.damlayer.core.audit.auditor.Auditor;
+import com.sschakraborty.platform.damlayer.audit.core.Auditor;
 import com.sschakraborty.platform.damlayer.core.configuration.TenantConfiguration;
 import com.sschakraborty.platform.damlayer.core.session.SessionFactoryProvider;
 import com.sschakraborty.platform.damlayer.core.session.transaction.TransactionManager;

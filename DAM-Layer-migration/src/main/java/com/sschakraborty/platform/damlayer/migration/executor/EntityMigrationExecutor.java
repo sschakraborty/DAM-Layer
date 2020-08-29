@@ -1,12 +1,12 @@
 package com.sschakraborty.platform.damlayer.migration.executor;
 
-import com.sschakraborty.platform.damlayer.core.marker.Model;
 import com.sschakraborty.platform.damlayer.migration.MigrationConfiguration;
 import com.sschakraborty.platform.damlayer.migration.stage.Stage;
 import com.sschakraborty.platform.damlayer.migration.stage.minibatch.DestinationDataWriteStage;
 import com.sschakraborty.platform.damlayer.migration.stage.minibatch.EntityTransformationStage;
 import com.sschakraborty.platform.damlayer.migration.stage.minibatch.FinalizeStage;
 import com.sschakraborty.platform.damlayer.migration.stage.minibatch.SourceDataReadStage;
+import com.sschakraborty.platform.damlayer.shared.core.marker.Model;
 import com.sschakraborty.platform.damlayer.transformation.entry.Entry;
 
 import java.util.Arrays;

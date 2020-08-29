@@ -12,6 +12,14 @@
     <artifactId>damlayer-audit</artifactId>
     <name>DAM-Layer-audit</name>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.sschakraborty.platform</groupId>
+            <artifactId>damlayer-shared</artifactId>
+            <version>${damlayer.version}</version>
+        </dependency>
+    </dependencies>
+
     <build>
         <plugins>
             <plugin>

@@ -1,6 +1,7 @@
 package com.sschakraborty.platform.damlayer.core.audit.auditor;
 
-import com.sschakraborty.platform.damlayer.core.audit.AuditPayload;
+import com.sschakraborty.platform.damlayer.audit.core.AuditPayload;
+import com.sschakraborty.platform.damlayer.audit.core.Auditor;
 import com.sschakraborty.platform.damlayer.core.session.transaction.TransactionManager;
 import com.sschakraborty.platform.damlayer.core.session.wrapper.SessionWrapper;
 

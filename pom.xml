@@ -15,6 +15,7 @@
         <module>DAM-Layer-transformation</module>
         <module>DAM-Layer-migration</module>
         <module>DAM-Layer-audit</module>
+        <module>DAM-Layer-shared</module>
     </modules>
 
     <properties>
@@ -27,6 +28,7 @@
         <mvn.plugin.surefire.version>2.22.2</mvn.plugin.surefire.version>
         <apache.beanutils.version>1.9.4</apache.beanutils.version>
         <hibernate.version>5.4.17.Final</hibernate.version>
+        <javax.persistence-api.version>2.2</javax.persistence-api.version>
         <hikaricp.version>3.4.5</hikaricp.version>
         <mysql.driver.version>8.0.20</mysql.driver.version>
         <beanshell.version>2.0b5</beanshell.version>

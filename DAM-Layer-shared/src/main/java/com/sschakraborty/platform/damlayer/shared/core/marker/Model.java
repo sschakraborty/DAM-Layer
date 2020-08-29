@@ -1,6 +1,6 @@
-package com.sschakraborty.platform.damlayer.core.marker;
+package com.sschakraborty.platform.damlayer.shared.core.marker;
 
-import com.sschakraborty.platform.damlayer.core.audit.AuditOperation;
+import com.sschakraborty.platform.damlayer.shared.audit.AuditOperation;
 
 public interface Model {
     default String auditModelName() {
