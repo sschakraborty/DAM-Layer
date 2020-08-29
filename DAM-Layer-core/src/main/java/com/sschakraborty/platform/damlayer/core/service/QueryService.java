@@ -6,11 +6,11 @@ import java.io.Serializable;
 
 public interface QueryService {
     default <T extends Model> T fetch(Class<T> clazz, Serializable id) {
-        return fetch("", clazz, id);
+        return fetch("Operation performed by Default-SYS-USER", clazz, id);
     }
 
     default <T extends Model> T fetchTree(Class<T> clazz, Serializable id) {
-        return fetchTree("", clazz, id);
+        return fetchTree("Operation performed by Default-SYS-USER", clazz, id);
     }
 
     <T extends Model> T fetch(String externalText, Class<T> clazz, Serializable id);

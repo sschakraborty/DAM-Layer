@@ -4,8 +4,8 @@ import com.sschakraborty.platform.damlayer.shared.audit.DataOperation;
 import com.sschakraborty.platform.damlayer.shared.core.marker.Model;
 
 import javax.persistence.*;
-import java.sql.Date;
-import java.time.LocalDate;
+import java.sql.Timestamp;
+import java.time.Instant;
 
 @Entity
 @Table(name = "AUDIT_RESOURCE")
@@ -22,7 +22,7 @@ public class AuditPayload implements Model {
     private boolean successful;
 
     @Column(name = "DATE_TIME", nullable = false)
-    private Date dateTime = Date.valueOf(LocalDate.now());
+    private Timestamp timestamp = Timestamp.from(Instant.now());
 
     @Column(name = "TENANT_ID", nullable = false)
     private String tenantId;
@@ -81,12 +81,12 @@ public class AuditPayload implements Model {
         this.successful = successful;
     }
 
-    public Date getDateTime() {
-        return dateTime;
+    public Timestamp getTimestamp() {
+        return timestamp;
     }
 
-    public void setDateTime(Date dateTime) {
-        this.dateTime = dateTime;
+    public void setTimestamp(Timestamp timestamp) {
+        this.timestamp = timestamp;
     }
 
     public String getTenantId() {
@@ -162,9 +162,9 @@ public class AuditPayload implements Model {
     }
 
     private void generateAuditId() {
-        final int suffixLength = 50;
+        final int suffixLength = 25;
         final StringBuilder id = new StringBuilder();
-        id.append(this.getDateTime()).append("-");
+        id.append(this.getTimestamp()).append("-");
         for (int counter = 0; counter < suffixLength; counter++) {
             id.append((char) ('A' + ((int) (Math.random() * 26))));
         }
@@ -180,7 +180,7 @@ public class AuditPayload implements Model {
 
         if (isSuccessful() != that.isSuccessful()) return false;
         if (getDataOperation() != that.getDataOperation()) return false;
-        if (!getDateTime().equals(that.getDateTime())) return false;
+        if (!getTimestamp().equals(that.getTimestamp())) return false;
         if (!getTenantId().equals(that.getTenantId())) return false;
         if (!getTenantName().equals(that.getTenantName())) return false;
         if (!getClassName().equals(that.getClassName())) return false;
@@ -193,7 +193,7 @@ public class AuditPayload implements Model {
     public int hashCode() {
         int result = getDataOperation().hashCode();
         result = 31 * result + (isSuccessful() ? 1 : 0);
-        result = 31 * result + getDateTime().hashCode();
+        result = 31 * result + getTimestamp().hashCode();
         result = 31 * result + getTenantId().hashCode();
         result = 31 * result + getTenantName().hashCode();
         result = 31 * result + getClassName().hashCode();

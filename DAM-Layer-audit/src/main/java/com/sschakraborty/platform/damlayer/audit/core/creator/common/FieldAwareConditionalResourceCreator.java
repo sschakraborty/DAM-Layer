@@ -36,7 +36,7 @@ public class FieldAwareConditionalResourceCreator {
                 }
             }
         }
-        return model.getModelName() + " " + Json.encode(fieldMap);
+        return Json.encode(fieldMap);
     }
 
     protected interface AuditFieldConditionPredicate {

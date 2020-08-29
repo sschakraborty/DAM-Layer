@@ -18,12 +18,15 @@ public class Parcel implements Model {
     private int id;
 
     @Column(name = "FROM_ADDRESS", nullable = false)
+    @AuditField
     private String fromAddress;
 
     @Column(name = "TO_ADDRESS", nullable = false)
+    @AuditField
     private String toAddress;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "parcel")
+    @AuditField(fieldType = AuditField.Type.SECRET)
     private List<Item> items;
 
     public int getId() {
