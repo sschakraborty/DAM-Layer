@@ -2,7 +2,7 @@ package com.sschakraborty.platform.damlayer.core.session.wrapper;
 
 import com.sschakraborty.platform.damlayer.audit.core.engine.AuditEngine;
 import com.sschakraborty.platform.damlayer.core.configuration.TenantConfiguration;
-import com.sschakraborty.platform.damlayer.shared.audit.AuditOperation;
+import com.sschakraborty.platform.damlayer.shared.audit.DataOperation;
 import com.sschakraborty.platform.damlayer.shared.core.marker.Model;
 import org.hibernate.Session;
 
@@ -29,7 +29,7 @@ public class SessionWrapperImpl implements SessionWrapper {
             session.save(model);
             success = true;
         } finally {
-            auditEngine.generateFor(AuditOperation.INSERT, success, model, externalText, tenantConfiguration.getId(), tenantConfiguration.getName());
+            auditEngine.generateFor(DataOperation.INSERT, success, model, externalText, tenantConfiguration.getId(), tenantConfiguration.getName());
         }
     }
 
@@ -40,7 +40,7 @@ public class SessionWrapperImpl implements SessionWrapper {
             session.update(model);
             success = true;
         } finally {
-            auditEngine.generateFor(AuditOperation.UPDATE, success, model, externalText, tenantConfiguration.getId(), tenantConfiguration.getName());
+            auditEngine.generateFor(DataOperation.UPDATE, success, model, externalText, tenantConfiguration.getId(), tenantConfiguration.getName());
         }
     }
 
@@ -51,7 +51,7 @@ public class SessionWrapperImpl implements SessionWrapper {
             session.saveOrUpdate(model);
             success = true;
         } finally {
-            auditEngine.generateFor(AuditOperation.SAVE, success, model, externalText, tenantConfiguration.getId(), tenantConfiguration.getName());
+            auditEngine.generateFor(DataOperation.SAVE, success, model, externalText, tenantConfiguration.getId(), tenantConfiguration.getName());
         }
     }
 
@@ -62,13 +62,23 @@ public class SessionWrapperImpl implements SessionWrapper {
             session.delete(model);
             success = true;
         } finally {
-            auditEngine.generateFor(AuditOperation.DELETE, success, model, externalText, tenantConfiguration.getId(), tenantConfiguration.getName());
+            auditEngine.generateFor(DataOperation.DELETE, success, model, externalText, tenantConfiguration.getId(), tenantConfiguration.getName());
         }
     }
 
     @Override
-    public <T extends Model> T fetch(Class<T> clazz, Serializable id) {
-        return session.get(clazz, id);
+    public <T extends Model> T fetch(String externalText, Class<T> clazz, Serializable id) {
+        T fetchedObject = null;
+        boolean success = false;
+        try {
+            fetchedObject = session.get(clazz, id);
+            if (fetchedObject != null) {
+                success = true;
+            }
+            return fetchedObject;
+        } finally {
+            auditEngine.generateFor(DataOperation.FETCH, success, fetchedObject, externalText, tenantConfiguration.getId(), tenantConfiguration.getName());
+        }
     }
 
     @Override

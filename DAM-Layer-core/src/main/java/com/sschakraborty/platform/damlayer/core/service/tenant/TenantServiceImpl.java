@@ -7,6 +7,7 @@ import com.sschakraborty.platform.damlayer.core.session.transaction.TransactionR
 import com.sschakraborty.platform.damlayer.core.session.wrapper.SessionWrapper;
 
 public class TenantServiceImpl implements TenantService {
+    private static final String FETCH_EXTERNAL_TEXT = "Fetch operation performed by Tenant Service";
     private static final String CONFIG_KEY = "TENANT_CONFIG_KEY";
     private final TransactionManager transactionManager;
 
@@ -18,7 +19,7 @@ public class TenantServiceImpl implements TenantService {
     public TenantConfiguration getTenantConfiguration(final String tenantId) {
         final TransactionResult result = transactionManager.executeStateful((transactionUnit, transactionResult) -> {
             final SessionWrapper session = transactionUnit.getSession();
-            final TenantConfiguration tenantConfiguration = session.fetch(TenantConfigurationBean.class, tenantId);
+            final TenantConfiguration tenantConfiguration = session.fetch(FETCH_EXTERNAL_TEXT, TenantConfigurationBean.class, tenantId);
             transactionResult.put(CONFIG_KEY, tenantConfiguration);
         });
         return result.hasKey(CONFIG_KEY) ? (TenantConfiguration) result.get(CONFIG_KEY) : null;

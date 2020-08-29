@@ -19,10 +19,10 @@ public class QueryServiceImpl implements QueryService {
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T extends Model> T fetch(Class<T> clazz, Serializable id) {
+    public <T extends Model> T fetch(String externalText, Class<T> clazz, Serializable id) {
         final TransactionResult result = transactionManager.executeStateful((transactionUnit, transactionResult) -> {
             final SessionWrapper session = transactionUnit.getSession();
-            final T fetchedObj = session.fetch(clazz, id);
+            final T fetchedObj = session.fetch(externalText, clazz, id);
             transactionResult.put(FETCH_KEY, fetchedObj);
         });
         return result.hasKey(FETCH_KEY) ? (T) result.get(FETCH_KEY) : null;
@@ -30,10 +30,10 @@ public class QueryServiceImpl implements QueryService {
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T extends Model> T fetchTree(Class<T> clazz, Serializable id) {
+    public <T extends Model> T fetchTree(String externalText, Class<T> clazz, Serializable id) {
         final TransactionResult result = transactionManager.executeStateful((transactionUnit, transactionResult) -> {
             final SessionWrapper session = transactionUnit.getSession();
-            final T fetchedObj = ProxyUtil.recursiveUnproxy(session.fetch(clazz, id));
+            final T fetchedObj = ProxyUtil.recursiveUnproxy(session.fetch(externalText, clazz, id));
             transactionResult.put(FETCH_KEY, fetchedObj);
         });
         return result.hasKey(FETCH_KEY) ? (T) result.get(FETCH_KEY) : null;

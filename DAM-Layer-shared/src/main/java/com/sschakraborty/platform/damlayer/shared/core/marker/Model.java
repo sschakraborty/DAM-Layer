@@ -1,13 +1,13 @@
 package com.sschakraborty.platform.damlayer.shared.core.marker;
 
-import com.sschakraborty.platform.damlayer.shared.audit.AuditOperation;
+import com.sschakraborty.platform.damlayer.shared.audit.DataOperation;
 
 public interface Model {
-    default String auditModelName() {
+    default String getModelName() {
         return null;
     }
 
-    default String auditText(AuditOperation auditOperation) {
+    default String getInternalText(DataOperation dataOperation) {
         return null;
     }
 }

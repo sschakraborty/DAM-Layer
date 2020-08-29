@@ -16,7 +16,7 @@ public interface SessionWrapper {
 
     void delete(String externalText, Model model);
 
-    <T extends Model> T fetch(Class<T> clazz, Serializable id);
+    <T extends Model> T fetch(String externalText, Class<T> clazz, Serializable id);
 
     CriteriaBuilder criteriaBuilder();
 

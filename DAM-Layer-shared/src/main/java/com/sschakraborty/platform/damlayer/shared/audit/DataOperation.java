@@ -1,8 +1,9 @@
 package com.sschakraborty.platform.damlayer.shared.audit;
 
-public enum AuditOperation {
+public enum DataOperation {
     INSERT,
     UPDATE,
     SAVE,
-    DELETE
+    DELETE,
+    FETCH
 }

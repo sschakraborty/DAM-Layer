@@ -1,15 +1,16 @@
 package com.sschakraborty.platform.damlayer.audit.annotation;
 
-import com.sschakraborty.platform.damlayer.audit.core.AuditResourceCreator;
+import com.sschakraborty.platform.damlayer.audit.core.creator.AuditResourceCreator;
+import com.sschakraborty.platform.damlayer.audit.core.creator.DefaultAuditResourceCreator;
 
 public @interface AuditResource {
     /**
-     * @return Name for the audit resource
+     * @return a flag which indicates whether auditing is disabled for this particular resource
      */
-    String value() default "Unnamed Resource";
+    boolean disableAuditing() default false;
 
     /**
-     * @return Creator class
+     * @return Returns the audit resource creator class
      */
-    Class<? extends AuditResourceCreator> resourceCreatorClass();
+    Class<? extends AuditResourceCreator> value() default DefaultAuditResourceCreator.class;
 }

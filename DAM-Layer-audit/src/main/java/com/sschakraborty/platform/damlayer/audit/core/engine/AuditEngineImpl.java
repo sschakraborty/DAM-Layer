@@ -2,7 +2,7 @@ package com.sschakraborty.platform.damlayer.audit.core.engine;
 
 import com.sschakraborty.platform.damlayer.audit.core.Auditor;
 import com.sschakraborty.platform.damlayer.audit.payload.AuditPayload;
-import com.sschakraborty.platform.damlayer.shared.audit.AuditOperation;
+import com.sschakraborty.platform.damlayer.shared.audit.DataOperation;
 import com.sschakraborty.platform.damlayer.shared.core.marker.Model;
 
 import java.util.LinkedList;
@@ -18,16 +18,16 @@ public class AuditEngineImpl implements AuditEngine {
     }
 
     @Override
-    public void generateFor(AuditOperation auditOperation, boolean successful, Model model, String externalText, String tenantId, String tenantName) {
+    public void generateFor(DataOperation dataOperation, boolean successful, Model model, String externalText, String tenantId, String tenantName) {
         if (this.isAuditAllowed(model)) {
             final AuditPayload auditPayload = new AuditPayload();
-            auditPayload.setAuditOperation(auditOperation);
+            auditPayload.setDataOperation(dataOperation);
             auditPayload.setSuccessful(successful);
             auditPayload.setTenantId(tenantId);
             auditPayload.setTenantName(tenantName);
             auditPayload.setClassName(model.getClass().getName());
-            auditPayload.setModelName(generateModelName(model.getClass(), model.auditModelName()));
-            auditPayload.setAuditText(generateAuditText(auditOperation, model));
+            auditPayload.setModelName(generateModelName(model.getClass(), model.getModelName()));
+            auditPayload.setInternalText(generateAuditText(dataOperation, model));
             auditPayload.setExternalText(externalText);
             auditPayload.setModelObject(model);
             this.auditPayloads.add(auditPayload);
@@ -47,8 +47,8 @@ public class AuditEngineImpl implements AuditEngine {
         }
     }
 
-    private String generateAuditText(AuditOperation auditOperation, Model model) {
-        final String auditText = model.auditText(auditOperation);
+    private String generateAuditText(DataOperation dataOperation, Model model) {
+        final String auditText = model.getInternalText(dataOperation);
         if (auditText != null && auditText.trim().length() != 0) {
             return auditText;
         }
@@ -67,6 +67,6 @@ public class AuditEngineImpl implements AuditEngine {
     }
 
     private boolean isAuditAllowed(Model model) {
-        return !(model instanceof AuditPayload);
+        return model != null && !(model instanceof AuditPayload);
     }
 }

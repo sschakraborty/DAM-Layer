@@ -1,6 +1,6 @@
 package com.sschakraborty.platform.damlayer.audit.payload;
 
-import com.sschakraborty.platform.damlayer.shared.audit.AuditOperation;
+import com.sschakraborty.platform.damlayer.shared.audit.DataOperation;
 import com.sschakraborty.platform.damlayer.shared.core.marker.Model;
 
 import javax.persistence.*;
@@ -16,7 +16,7 @@ public class AuditPayload implements Model {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "OPERATION", nullable = false)
-    private AuditOperation auditOperation;
+    private DataOperation dataOperation;
 
     @Column(name = "SUCCESSFUL", nullable = false)
     private boolean successful;
@@ -36,8 +36,8 @@ public class AuditPayload implements Model {
     @Column(name = "MODEL_NAME", nullable = false)
     private String modelName;
 
-    @Column(name = "AUDIT_TEXT", nullable = false, length = 2000)
-    private String auditText;
+    @Column(name = "INTERNAL_TEXT", nullable = false, length = 2000)
+    private String internalText;
 
     @Column(name = "EXTERNAL_TEXT", length = 2000)
     private String externalText;
@@ -57,12 +57,12 @@ public class AuditPayload implements Model {
         this.auditId = auditId;
     }
 
-    public AuditOperation getAuditOperation() {
-        return auditOperation;
+    public DataOperation getDataOperation() {
+        return dataOperation;
     }
 
-    public void setAuditOperation(AuditOperation auditOperation) {
-        this.auditOperation = auditOperation;
+    public void setDataOperation(DataOperation dataOperation) {
+        this.dataOperation = dataOperation;
     }
 
     public boolean isSuccessful() {
@@ -113,12 +113,12 @@ public class AuditPayload implements Model {
         this.modelName = modelName;
     }
 
-    public String getAuditText() {
-        return auditText;
+    public String getInternalText() {
+        return internalText;
     }
 
-    public void setAuditText(String auditText) {
-        this.auditText = auditText;
+    public void setInternalText(String internalText) {
+        this.internalText = internalText;
     }
 
     public String getExternalText() {
@@ -145,5 +145,37 @@ public class AuditPayload implements Model {
             id.append((char) ('A' + ((int) (Math.random() * 26))));
         }
         setAuditId(id.toString());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        AuditPayload that = (AuditPayload) o;
+
+        if (isSuccessful() != that.isSuccessful()) return false;
+        if (getDataOperation() != that.getDataOperation()) return false;
+        if (!getDateTime().equals(that.getDateTime())) return false;
+        if (!getTenantId().equals(that.getTenantId())) return false;
+        if (!getTenantName().equals(that.getTenantName())) return false;
+        if (!getClassName().equals(that.getClassName())) return false;
+        if (!getModelName().equals(that.getModelName())) return false;
+        if (!getInternalText().equals(that.getInternalText())) return false;
+        return getExternalText().equals(that.getExternalText());
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getDataOperation().hashCode();
+        result = 31 * result + (isSuccessful() ? 1 : 0);
+        result = 31 * result + getDateTime().hashCode();
+        result = 31 * result + getTenantId().hashCode();
+        result = 31 * result + getTenantName().hashCode();
+        result = 31 * result + getClassName().hashCode();
+        result = 31 * result + getModelName().hashCode();
+        result = 31 * result + getInternalText().hashCode();
+        result = 31 * result + getExternalText().hashCode();
+        return result;
     }
 }
