@@ -1,4 +1,4 @@
-package com.sschakraborty.platform.damlayer.audit.core;
+package com.sschakraborty.platform.damlayer.audit.payload;
 
 import com.sschakraborty.platform.damlayer.shared.audit.AuditOperation;
 import com.sschakraborty.platform.damlayer.shared.core.marker.Model;

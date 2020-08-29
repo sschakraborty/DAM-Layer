@@ -1,8 +1,8 @@
 package com.sschakraborty.platform.damlayer.core.session.transaction;
 
-import com.sschakraborty.platform.damlayer.audit.core.AuditPayloadGenerator;
 import com.sschakraborty.platform.damlayer.audit.core.Auditor;
-import com.sschakraborty.platform.damlayer.core.audit.auditor.AuditPayloadGeneratorImpl;
+import com.sschakraborty.platform.damlayer.audit.payload.generator.AuditPayloadGenerator;
+import com.sschakraborty.platform.damlayer.audit.payload.generator.AuditPayloadGeneratorImpl;
 import com.sschakraborty.platform.damlayer.core.configuration.TenantConfiguration;
 import com.sschakraborty.platform.damlayer.core.session.IsolationMode;
 import com.sschakraborty.platform.damlayer.core.session.wrapper.SessionWrapper;
@@ -86,6 +86,6 @@ public class TransactionManagerImpl implements TransactionManager {
     }
 
     private AuditPayloadGenerator buildAuditPayloadGenerator() {
-        return new AuditPayloadGeneratorImpl(tenantConfiguration);
+        return new AuditPayloadGeneratorImpl(tenantConfiguration.getId(), tenantConfiguration.getName());
     }
 }

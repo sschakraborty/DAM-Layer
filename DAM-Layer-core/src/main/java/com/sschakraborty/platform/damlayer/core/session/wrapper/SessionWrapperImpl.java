@@ -1,6 +1,6 @@
 package com.sschakraborty.platform.damlayer.core.session.wrapper;
 
-import com.sschakraborty.platform.damlayer.audit.core.AuditPayloadGenerator;
+import com.sschakraborty.platform.damlayer.audit.payload.generator.AuditPayloadGenerator;
 import com.sschakraborty.platform.damlayer.shared.audit.AuditOperation;
 import com.sschakraborty.platform.damlayer.shared.core.marker.Model;
 import org.hibernate.Session;
