@@ -16,6 +16,8 @@ import org.junit.Test;
 import java.util.Arrays;
 
 public class DAMLayerConfiguratorTest {
+    private static final boolean RUN_PERFORMANCE_TESTS = false;
+
     @Test
     public void testMultiTenancy() throws Exception {
         ConnectorMetadata primaryConnectorMetadata = getPrimaryConnectorMetadata();
@@ -54,7 +56,9 @@ public class DAMLayerConfiguratorTest {
         Assert.assertNotNull(fetchedConfig);
 
         testDataOperationsWithDummyDataAndDataService(dataService, parcel);
-        testPerformance(dataService);
+        if (RUN_PERFORMANCE_TESTS) {
+            testPerformance(dataService);
+        }
 
         genericDAO.unregisterTenant(tenantConfiguration.getId());
 

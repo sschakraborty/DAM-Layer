@@ -11,7 +11,7 @@ import java.util.Map;
 public class IdentifierCreator {
     public static String getIdentifier(Model model) {
         final Map<String, Object> introspection = new LinkedHashMap<>();
-        final Field[] fields = model.getClass().getFields();
+        final Field[] fields = model.getClass().getDeclaredFields();
         for (final Field field : fields) {
             final AuditField auditField = field.getAnnotation(AuditField.class);
             if (auditField != null && auditField.identifier()) {
