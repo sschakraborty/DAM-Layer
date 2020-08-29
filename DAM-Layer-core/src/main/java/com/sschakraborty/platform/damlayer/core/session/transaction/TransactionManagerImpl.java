@@ -26,34 +26,34 @@ public class TransactionManagerImpl implements TransactionManager {
 
     @Override
     public TransactionResult executeStateful(IsolationMode isolationMode, TransactionJob transactionJob) {
-        final Session session = buildSession(isolationMode);
-        final Transaction transaction = session.beginTransaction();
         final TransactionResultImpl transactionResult = new TransactionResultImpl();
-        final SessionWrapper sessionWrapper = new SessionWrapperImpl(session, auditEngine, tenantConfiguration);
-        final TransactionUnit transactionUnit = new TransactionUnit() {
-            @Override
-            public SessionWrapper getSession() {
-                return sessionWrapper;
-            }
+        try (final Session session = buildSession(isolationMode)) {
+            final Transaction transaction = session.beginTransaction();
+            final SessionWrapper sessionWrapper = new SessionWrapperImpl(session, auditEngine, tenantConfiguration);
+            final TransactionUnit transactionUnit = new TransactionUnit() {
+                @Override
+                public SessionWrapper getSession() {
+                    return sessionWrapper;
+                }
 
-            @Override
-            public Transaction getTransaction() {
-                return transaction;
-            }
-        };
+                @Override
+                public Transaction getTransaction() {
+                    return transaction;
+                }
+            };
 
-        try {
-            transactionJob.execute(transactionUnit, transactionResult);
-            transaction.commit();
-            transactionResult.setSuccessful(true);
-        } catch (Exception e) {
-            transaction.rollback();
-            transactionResult.setSuccessful(false);
-            transactionResult.setCause(e);
-        } finally {
-            transactionResult.setTransactionStatus(transaction.getStatus().name());
-            session.close();
-            auditEngine.audit();
+            try {
+                transactionJob.execute(transactionUnit, transactionResult);
+                transaction.commit();
+                transactionResult.setSuccessful(true);
+            } catch (Exception e) {
+                transaction.rollback();
+                transactionResult.setSuccessful(false);
+                transactionResult.setCause(e);
+            } finally {
+                transactionResult.setTransactionStatus(transaction.getStatus().name());
+                auditEngine.audit();
+            }
         }
         return transactionResult;
     }
