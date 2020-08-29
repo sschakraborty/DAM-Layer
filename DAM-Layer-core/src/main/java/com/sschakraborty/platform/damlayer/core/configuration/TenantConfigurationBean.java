@@ -1,5 +1,7 @@
 package com.sschakraborty.platform.damlayer.core.configuration;
 
+import com.sschakraborty.platform.damlayer.audit.annotation.AuditField;
+import com.sschakraborty.platform.damlayer.audit.annotation.AuditResource;
 import com.sschakraborty.platform.damlayer.shared.core.marker.Model;
 
 import javax.persistence.*;
@@ -8,12 +10,15 @@ import java.util.List;
 
 @Entity
 @Table(name = "TENANT_CONFIG_METADATA")
+@AuditResource
 public class TenantConfigurationBean implements TenantConfiguration {
     @Id
     @Column(name = "TENANT_ID", nullable = false, length = 25)
+    @AuditField(identifier = true)
     private String id;
 
     @Column(name = "TENANT_NAME", nullable = false)
+    @AuditField(identifier = true)
     private String name;
 
     @Embedded

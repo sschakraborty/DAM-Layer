@@ -16,25 +16,27 @@ public class AuditEngineImpl implements AuditEngine {
 
     public AuditEngineImpl(final Auditor auditor) {
         this.auditor = auditor;
-        this.audit();
+        this.auditPayloads = new LinkedList<>();
     }
 
     @Override
     public void generateFor(DataOperation dataOperation, boolean successful, Model model, String externalText, String tenantId, String tenantName) {
         if (this.isAuditAllowed(model)) {
             final AuditResource auditResource = model.getClass().getAnnotation(AuditResource.class);
-            final AuditPayload auditPayload = new AuditPayload();
-            auditPayload.setDataOperation(dataOperation);
-            auditPayload.setSuccessful(successful);
-            auditPayload.setTenantId(tenantId);
-            auditPayload.setTenantName(tenantName);
-            auditPayload.setClassName(model.getClass().getName());
-            auditPayload.setModelName(generateModelName(model.getClass(), model.getModelName()));
-            auditPayload.setInternalText(generateAuditText(dataOperation, model));
-            auditPayload.setExternalText(externalText);
-            auditPayload.setAuditRemark(getRemark(dataOperation, successful, model, auditResource));
-            auditPayload.setModelObject(model);
-            this.auditPayloads.add(auditPayload);
+            if (auditResource != null) {
+                final AuditPayload auditPayload = new AuditPayload();
+                auditPayload.setDataOperation(dataOperation);
+                auditPayload.setSuccessful(successful);
+                auditPayload.setTenantId(tenantId);
+                auditPayload.setTenantName(tenantName);
+                auditPayload.setClassName(model.getClass().getName());
+                auditPayload.setModelName(generateModelName(model.getClass(), model.getModelName()));
+                auditPayload.setInternalText(generateAuditText(dataOperation, model));
+                auditPayload.setExternalText(externalText);
+                auditPayload.setAuditRemark(getRemark(dataOperation, successful, model, auditResource));
+                auditPayload.setModelObject(model);
+                this.auditPayloads.add(auditPayload);
+            }
         }
     }
 
@@ -42,12 +44,12 @@ public class AuditEngineImpl implements AuditEngine {
     public void audit() {
         try {
             if (this.shouldAudit()) {
-                this.auditor.audit(this.auditPayloads);
+                final List<AuditPayload> payloads = this.auditPayloads;
+                this.auditPayloads = new LinkedList<>();
+                this.auditor.audit(payloads);
             }
         } catch (Exception e) {
             // TODO: Log if required
-        } finally {
-            this.auditPayloads = new LinkedList<>();
         }
     }
 

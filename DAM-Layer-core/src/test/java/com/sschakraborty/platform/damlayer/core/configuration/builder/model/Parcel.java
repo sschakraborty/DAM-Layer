@@ -1,5 +1,7 @@
 package com.sschakraborty.platform.damlayer.core.configuration.builder.model;
 
+import com.sschakraborty.platform.damlayer.audit.annotation.AuditField;
+import com.sschakraborty.platform.damlayer.audit.annotation.AuditResource;
 import com.sschakraborty.platform.damlayer.shared.core.marker.Model;
 
 import javax.persistence.*;
@@ -7,10 +9,12 @@ import java.util.List;
 
 @Entity
 @Table(name = "PARCEL")
+@AuditResource
 public class Parcel implements Model {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ID")
+    @AuditField(identifier = true)
     private int id;
 
     @Column(name = "FROM_ADDRESS", nullable = false)
