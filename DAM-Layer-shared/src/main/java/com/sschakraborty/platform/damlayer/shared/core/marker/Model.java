@@ -4,7 +4,7 @@ import com.sschakraborty.platform.damlayer.shared.audit.DataOperation;
 
 public interface Model {
     default String getModelName() {
-        return null;
+        return this.getClass().getName();
     }
 
     default String getInternalText(DataOperation dataOperation) {

@@ -42,6 +42,10 @@ public class AuditPayload implements Model {
     @Column(name = "EXTERNAL_TEXT", length = 2000)
     private String externalText;
 
+    @Lob
+    @Column(name = "AUDIT_REMARK")
+    private String auditRemark;
+
     @Transient
     private transient Model modelObject;
 
@@ -127,6 +131,14 @@ public class AuditPayload implements Model {
 
     public void setExternalText(String externalText) {
         this.externalText = externalText;
+    }
+
+    public String getAuditRemark() {
+        return auditRemark;
+    }
+
+    public void setAuditRemark(String auditRemark) {
+        this.auditRemark = auditRemark;
     }
 
     public Model getModelObject() {

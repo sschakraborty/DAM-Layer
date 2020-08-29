@@ -1,6 +1,8 @@
 package com.sschakraborty.platform.damlayer.audit.core.engine;
 
+import com.sschakraborty.platform.damlayer.audit.annotation.AuditResource;
 import com.sschakraborty.platform.damlayer.audit.core.Auditor;
+import com.sschakraborty.platform.damlayer.audit.core.creator.remark.AuditRemarkCreatorProvider;
 import com.sschakraborty.platform.damlayer.audit.payload.AuditPayload;
 import com.sschakraborty.platform.damlayer.shared.audit.DataOperation;
 import com.sschakraborty.platform.damlayer.shared.core.marker.Model;
@@ -20,6 +22,7 @@ public class AuditEngineImpl implements AuditEngine {
     @Override
     public void generateFor(DataOperation dataOperation, boolean successful, Model model, String externalText, String tenantId, String tenantName) {
         if (this.isAuditAllowed(model)) {
+            final AuditResource auditResource = model.getClass().getAnnotation(AuditResource.class);
             final AuditPayload auditPayload = new AuditPayload();
             auditPayload.setDataOperation(dataOperation);
             auditPayload.setSuccessful(successful);
@@ -29,6 +32,7 @@ public class AuditEngineImpl implements AuditEngine {
             auditPayload.setModelName(generateModelName(model.getClass(), model.getModelName()));
             auditPayload.setInternalText(generateAuditText(dataOperation, model));
             auditPayload.setExternalText(externalText);
+            auditPayload.setAuditRemark(getRemark(dataOperation, successful, model, auditResource));
             auditPayload.setModelObject(model);
             this.auditPayloads.add(auditPayload);
         }
@@ -68,5 +72,9 @@ public class AuditEngineImpl implements AuditEngine {
 
     private boolean isAuditAllowed(Model model) {
         return model != null && !(model instanceof AuditPayload);
+    }
+
+    private String getRemark(DataOperation dataOperation, boolean successful, Model model, AuditResource auditResource) {
+        return AuditRemarkCreatorProvider.getCreator(auditResource.remarkCreator()).createRemark(dataOperation, model, successful);
     }
 }
