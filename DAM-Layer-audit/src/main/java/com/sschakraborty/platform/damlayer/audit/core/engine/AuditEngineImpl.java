@@ -1,6 +1,7 @@
 package com.sschakraborty.platform.damlayer.audit.core.engine;
 
 import com.sschakraborty.platform.damlayer.audit.annotation.AuditResource;
+import com.sschakraborty.platform.damlayer.audit.configuration.AuditConfiguration;
 import com.sschakraborty.platform.damlayer.audit.core.Auditor;
 import com.sschakraborty.platform.damlayer.audit.core.creator.remark.AuditRemarkCreatorProvider;
 import com.sschakraborty.platform.damlayer.audit.core.creator.resource.AuditResourceCreatorProvider;
@@ -16,21 +17,22 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class AuditEngineImpl implements AuditEngine {
-    private static final int AUDIT_INTERVAL_MILLIS = 5000;
     private static final boolean SERIAL_EXECUTION = false;
+    private final AuditConfiguration auditConfiguration;
     private final Vertx vertx;
     private final Auditor auditor;
     private final List<AuditPayload> auditPayloads;
 
-    public AuditEngineImpl(final Auditor auditor) {
+    public AuditEngineImpl(final Auditor auditor, final AuditConfiguration auditConfiguration) {
         this.vertx = Vertx.vertx(
                 new VertxOptions()
-                        .setWorkerPoolSize(2)
+                        .setWorkerPoolSize(auditConfiguration.getThreadPoolSize())
                         .setMaxWorkerExecuteTime(10000)
                         .setMaxWorkerExecuteTimeUnit(TimeUnit.MILLISECONDS)
                         .setEventLoopPoolSize(1)
                         .setInternalBlockingPoolSize(1)
         );
+        this.auditConfiguration = auditConfiguration;
         this.auditor = auditor;
         this.auditPayloads = new LinkedList<>();
         this.initializeHooks();
@@ -83,8 +85,11 @@ public class AuditEngineImpl implements AuditEngine {
     }
 
     private void initializeHooks() {
-        this.vertx.setPeriodic(AUDIT_INTERVAL_MILLIS, id -> this.vertx.executeBlocking(promise -> this.audit(), SERIAL_EXECUTION, result -> {
-        }));
+        this.vertx.setPeriodic(
+                this.auditConfiguration.getAuditIntervalMillis(),
+                id -> this.vertx.executeBlocking(promise -> this.audit(), SERIAL_EXECUTION, result -> {
+                })
+        );
         Runtime.getRuntime().addShutdownHook(new Thread(this::audit));
     }
 
@@ -108,10 +113,10 @@ public class AuditEngineImpl implements AuditEngine {
     }
 
     private String getRemark(DataOperation dataOperation, boolean successful, Model model, AuditResource auditResource) {
-        return AuditRemarkCreatorProvider.getCreator(auditResource.remarkCreator()).createRemark(dataOperation, model, successful);
+        return AuditRemarkCreatorProvider.getCreator(this.auditConfiguration, auditResource.remarkCreator()).createRemark(dataOperation, model, successful);
     }
 
     private String getResource(Model model, AuditResource auditResource) {
-        return AuditResourceCreatorProvider.getCreator(auditResource.resourceCreator()).createResource(model);
+        return AuditResourceCreatorProvider.getCreator(this.auditConfiguration, auditResource.resourceCreator()).createResource(model);
     }
 }

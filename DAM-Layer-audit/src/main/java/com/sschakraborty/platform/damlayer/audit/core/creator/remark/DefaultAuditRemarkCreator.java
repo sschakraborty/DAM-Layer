@@ -1,12 +1,17 @@
 package com.sschakraborty.platform.damlayer.audit.core.creator.remark;
 
 import com.sschakraborty.platform.damlayer.audit.annotation.AuditField;
+import com.sschakraborty.platform.damlayer.audit.configuration.AuditConfiguration;
 import com.sschakraborty.platform.damlayer.audit.core.creator.common.FieldAwareConditionalResourceCreator;
 import com.sschakraborty.platform.damlayer.shared.audit.DataOperation;
 import com.sschakraborty.platform.damlayer.shared.core.marker.Model;
 
 public class DefaultAuditRemarkCreator extends FieldAwareConditionalResourceCreator implements AuditRemarkCreator {
     private static final AuditFieldConditionPredicate PREDICATE = AuditField::identifier;
+
+    public DefaultAuditRemarkCreator(final AuditConfiguration auditConfiguration) {
+        super(auditConfiguration.getCryptoKey(), auditConfiguration.getSecretMask());
+    }
 
     @Override
     public String createRemark(DataOperation dataOperation, Model model, boolean success) {

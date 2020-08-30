@@ -1,5 +1,6 @@
 package com.sschakraborty.platform.damlayer.core.configuration.builder;
 
+import com.sschakraborty.platform.damlayer.audit.configuration.AuditConfiguration;
 import com.sschakraborty.platform.damlayer.audit.core.Auditor;
 import com.sschakraborty.platform.damlayer.audit.core.engine.AuditEngine;
 import com.sschakraborty.platform.damlayer.audit.core.engine.AuditEngineImpl;
@@ -40,7 +41,12 @@ public class DAMLayerConfigurator {
     }
 
     public final DAMLayerConfigurator withAuditor(Auditor auditor) {
-        this.auditEngine = new AuditEngineImpl(auditor);
+        this.auditEngine = new AuditEngineImpl(auditor, new AuditConfiguration());
+        return this;
+    }
+
+    public final DAMLayerConfigurator withAuditorAndAuditConfiguration(Auditor auditor, AuditConfiguration auditConfiguration) {
+        this.auditEngine = new AuditEngineImpl(auditor, auditConfiguration);
         return this;
     }
 
@@ -62,7 +68,7 @@ public class DAMLayerConfigurator {
 
     private TransactionManager createAuditEngineAndTenantTransactionManager() {
         final TransactionManagerImpl transactionManager = (TransactionManagerImpl) buildTenantTransactionManagerWithoutAuditEngine(primaryConnectorMetadata);
-        this.auditEngine = (this.auditEngine == null) ? new AuditEngineImpl(new DefaultAuditor(transactionManager)) : this.auditEngine;
+        this.auditEngine = (this.auditEngine == null) ? new AuditEngineImpl(new DefaultAuditor(transactionManager), new AuditConfiguration()) : this.auditEngine;
         transactionManager.setAuditEngine(auditEngine);
         return transactionManager;
     }
