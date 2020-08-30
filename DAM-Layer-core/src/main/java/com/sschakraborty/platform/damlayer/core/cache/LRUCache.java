@@ -18,9 +18,6 @@ public class LRUCache<K, T> implements Cache<K, T> {
         }
     }
 
-    public LRUCache() {
-    }
-
     @Override
     public void put(K key, T data) {
         if (exists(key)) {
