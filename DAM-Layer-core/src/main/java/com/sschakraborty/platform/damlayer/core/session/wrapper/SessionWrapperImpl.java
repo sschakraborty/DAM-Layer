@@ -29,7 +29,7 @@ public class SessionWrapperImpl implements SessionWrapper {
             session.save(model);
             success = true;
         } finally {
-            auditEngine.generateFor(DataOperation.INSERT, success, model, externalText, tenantConfiguration.getId(), tenantConfiguration.getName());
+            auditEngine.generate(DataOperation.INSERT, success, model, externalText, tenantConfiguration.getId(), tenantConfiguration.getName());
         }
     }
 
@@ -40,7 +40,7 @@ public class SessionWrapperImpl implements SessionWrapper {
             session.update(model);
             success = true;
         } finally {
-            auditEngine.generateFor(DataOperation.UPDATE, success, model, externalText, tenantConfiguration.getId(), tenantConfiguration.getName());
+            auditEngine.generate(DataOperation.UPDATE, success, model, externalText, tenantConfiguration.getId(), tenantConfiguration.getName());
         }
     }
 
@@ -51,7 +51,7 @@ public class SessionWrapperImpl implements SessionWrapper {
             session.saveOrUpdate(model);
             success = true;
         } finally {
-            auditEngine.generateFor(DataOperation.SAVE, success, model, externalText, tenantConfiguration.getId(), tenantConfiguration.getName());
+            auditEngine.generate(DataOperation.SAVE, success, model, externalText, tenantConfiguration.getId(), tenantConfiguration.getName());
         }
     }
 
@@ -62,7 +62,7 @@ public class SessionWrapperImpl implements SessionWrapper {
             session.delete(model);
             success = true;
         } finally {
-            auditEngine.generateFor(DataOperation.DELETE, success, model, externalText, tenantConfiguration.getId(), tenantConfiguration.getName());
+            auditEngine.generate(DataOperation.DELETE, success, model, externalText, tenantConfiguration.getId(), tenantConfiguration.getName());
         }
     }
 
@@ -77,7 +77,7 @@ public class SessionWrapperImpl implements SessionWrapper {
             }
             return fetchedObject;
         } finally {
-            auditEngine.generateFor(DataOperation.FETCH, success, fetchedObject, externalText, tenantConfiguration.getId(), tenantConfiguration.getName());
+            auditEngine.generate(DataOperation.FETCH, success, fetchedObject, externalText, tenantConfiguration.getId(), tenantConfiguration.getName());
         }
     }
 

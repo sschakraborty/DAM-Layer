@@ -16,7 +16,7 @@ import org.junit.Test;
 import java.util.Arrays;
 
 public class DAMLayerConfiguratorTest {
-    private static final boolean RUN_PERFORMANCE_TESTS = false;
+    private static final boolean RUN_PERFORMANCE_TESTS = true;
 
     @Test
     public void testMultiTenancy() throws Exception {

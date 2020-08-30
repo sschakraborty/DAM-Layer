@@ -52,7 +52,6 @@ public class TransactionManagerImpl implements TransactionManager {
                 transactionResult.setCause(e);
             } finally {
                 transactionResult.setTransactionStatus(transaction.getStatus().name());
-                auditEngine.audit();
             }
         }
         return transactionResult;
