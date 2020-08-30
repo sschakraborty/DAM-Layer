@@ -94,8 +94,8 @@ public class DAMLayerConfiguratorTest {
     }
 
     private void testPerformance(DataService dataService) {
-        final int queryCount = 1000;
-        final long expectedMilliseconds = 4000;
+        final int queryCount = 2000;
+        final long expectedMilliseconds = 5000;
 
         DataManipulationService dataManipulationService = dataService.getDataManipulationService();
         QueryService queryService = dataService.getQueryService();

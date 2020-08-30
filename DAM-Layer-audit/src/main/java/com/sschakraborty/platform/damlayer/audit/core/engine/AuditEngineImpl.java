@@ -10,15 +10,30 @@ import com.sschakraborty.platform.damlayer.shared.core.marker.Model;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
 
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class AuditEngineImpl implements AuditEngine {
+    private static final int AUDIT_INTERVAL_MILLIS = 5000;
+    private static final boolean SERIAL_EXECUTION = false;
     private final Vertx vertx;
     private final Auditor auditor;
+    private final List<AuditPayload> auditPayloads;
 
     public AuditEngineImpl(final Auditor auditor) {
+        this.vertx = Vertx.vertx(
+                new VertxOptions()
+                        .setWorkerPoolSize(2)
+                        .setMaxWorkerExecuteTime(10000)
+                        .setMaxWorkerExecuteTimeUnit(TimeUnit.MILLISECONDS)
+                        .setEventLoopPoolSize(1)
+                        .setInternalBlockingPoolSize(1)
+        );
         this.auditor = auditor;
-        this.vertx = Vertx.vertx(new VertxOptions().setWorkerPoolSize(1).setInternalBlockingPoolSize(1).setEventLoopPoolSize(1));
+        this.auditPayloads = new LinkedList<>();
+        this.initializeHooks();
     }
 
     @Override
@@ -39,12 +54,38 @@ public class AuditEngineImpl implements AuditEngine {
                     auditPayload.setAuditRemark(getRemark(dataOperation, successful, model, auditResource));
                     auditPayload.setAuditResource(getResource(model, auditResource));
                     auditPayload.setModelObject(model);
-                    this.auditor.audit(Collections.singletonList(auditPayload));
+                    synchronized (this.auditPayloads) {
+                        this.auditPayloads.add(auditPayload);
+                    }
                 }
             }
-        }, result -> {
+        }, SERIAL_EXECUTION, result -> {
             // TODO: Log if required
         });
+    }
+
+    private void audit() {
+        try {
+            synchronized (this.auditor) {
+                final List<AuditPayload> copyList;
+                synchronized (this.auditPayloads) {
+                    copyList = new ArrayList<>(this.auditPayloads.size());
+                    copyList.addAll(this.auditPayloads);
+                    this.auditPayloads.clear();
+                }
+                if (!copyList.isEmpty()) {
+                    this.auditor.audit(copyList);
+                }
+            }
+        } catch (Exception e) {
+            // TODO: Log if required
+        }
+    }
+
+    private void initializeHooks() {
+        this.vertx.setPeriodic(AUDIT_INTERVAL_MILLIS, id -> this.vertx.executeBlocking(promise -> this.audit(), SERIAL_EXECUTION, result -> {
+        }));
+        Runtime.getRuntime().addShutdownHook(new Thread(this::audit));
     }
 
     private String generateAuditText(DataOperation dataOperation, Model model) {

@@ -1,11 +1,12 @@
 package com.sschakraborty.platform.damlayer.audit.core.creator.resource;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 public class AuditResourceCreatorProvider {
-    private static final Map<Class<? extends AuditResourceCreator>, AuditResourceCreator> CREATOR_MAP = new HashMap<>();
+    private static final Map<Class<? extends AuditResourceCreator>, AuditResourceCreator> CREATOR_MAP = Collections.synchronizedMap(new HashMap<>());
 
     @SuppressWarnings("unchecked")
     public static <T extends AuditResourceCreator> T getCreator(Class<T> creatorClass) {
