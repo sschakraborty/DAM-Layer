@@ -14,6 +14,7 @@ import io.vertx.core.VertxOptions;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -48,18 +49,7 @@ public class AuditEngineImpl implements AuditEngine {
                 if (auditResource != null && auditResource.enabled()) {
                     final List<Model> fieldModels = fetchModelFields(baseModel);
                     fieldModels.forEach(model -> {
-                        final AuditPayload auditPayload = new AuditPayload();
-                        auditPayload.setDataOperation(dataOperation);
-                        auditPayload.setSuccessful(successful);
-                        auditPayload.setTenantId(tenantId);
-                        auditPayload.setTenantName(tenantName);
-                        auditPayload.setClassName(model.getClass().getName());
-                        auditPayload.setModelName(generateModelName(model.getClass(), model.getModelName()));
-                        auditPayload.setInternalText(generateAuditText(dataOperation, model));
-                        auditPayload.setExternalText(externalText);
-                        auditPayload.setAuditRemark(getRemark(dataOperation, successful, model, auditResource));
-                        auditPayload.setAuditResource(getResource(model, auditResource));
-                        auditPayload.setModelObject(model);
+                        final AuditPayload auditPayload = generateAuditPayload(dataOperation, successful, externalText, tenantId, tenantName, auditResource, model);
                         synchronized (this.auditPayloads) {
                             this.auditPayloads.add(auditPayload);
                         }
@@ -71,6 +61,22 @@ public class AuditEngineImpl implements AuditEngine {
         });
     }
 
+    private AuditPayload generateAuditPayload(DataOperation dataOperation, boolean successful, String externalText, String tenantId, String tenantName, AuditResource auditResource, Model model) {
+        final AuditPayload auditPayload = new AuditPayload();
+        auditPayload.setDataOperation(dataOperation);
+        auditPayload.setSuccessful(successful);
+        auditPayload.setTenantId(tenantId);
+        auditPayload.setTenantName(tenantName);
+        auditPayload.setClassName(model.getClass().getName());
+        auditPayload.setModelName(generateModelName(model.getClass(), model.getModelName()));
+        auditPayload.setInternalText(generateAuditText(dataOperation, model));
+        auditPayload.setExternalText(externalText);
+        auditPayload.setAuditRemark(getRemark(dataOperation, successful, model, auditResource));
+        auditPayload.setAuditResource(getResource(model, auditResource));
+        auditPayload.setModelObject(model);
+        return auditPayload;
+    }
+
     private List<Model> fetchModelFields(Model model) {
         final List<Model> models = new LinkedList<>();
         models.add(model);
@@ -79,12 +85,14 @@ public class AuditEngineImpl implements AuditEngine {
             if (auditField != null && auditField.enabled()) {
                 try {
                     field.setAccessible(true);
-                    Object object = field.get(model);
-                    if (object instanceof Model) {
-                        final AuditResource auditResource = object.getClass().getAnnotation(AuditResource.class);
-                        if (auditResource != null && auditResource.enabled()) {
-                            models.add((Model) object);
+                    final Object object = field.get(model);
+                    if (object instanceof Collection) {
+                        final Collection<?> collection = (Collection<?>) object;
+                        for (final Object collectionObj : collection) {
+                            populateModels(models, collectionObj);
                         }
+                    } else {
+                        populateModels(models, object);
                     }
                 } catch (IllegalAccessException ignored) {
                 } finally {
@@ -93,6 +101,15 @@ public class AuditEngineImpl implements AuditEngine {
             }
         }
         return models;
+    }
+
+    private void populateModels(List<Model> models, Object object) {
+        if (object instanceof Model) {
+            final AuditResource auditResource = object.getClass().getAnnotation(AuditResource.class);
+            if (auditResource != null && auditResource.enabled()) {
+                models.add((Model) object);
+            }
+        }
     }
 
     private void audit() {

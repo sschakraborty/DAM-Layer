@@ -26,6 +26,7 @@ public class Parcel implements Model {
     private String toAddress;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "parcel")
+    @AuditField
     private List<Item> items;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)

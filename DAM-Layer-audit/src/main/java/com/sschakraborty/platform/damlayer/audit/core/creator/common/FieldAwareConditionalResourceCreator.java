@@ -6,13 +6,16 @@ import com.sschakraborty.platform.damlayer.audit.utility.AuditCrypto;
 import com.sschakraborty.platform.damlayer.shared.core.marker.Model;
 
 import java.lang.reflect.Field;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class FieldAwareConditionalResourceCreator {
     public static final AuditFieldConditionPredicate IDENTIFIER_MAKING_PREDICATE = AuditField::identifier;
     private final byte[] cryptoKey;
     private final String secretMask;
+
     public FieldAwareConditionalResourceCreator(byte[] cryptoKey, String secretMask) {
         this.cryptoKey = cryptoKey;
         this.secretMask = secretMask;
@@ -38,8 +41,7 @@ public class FieldAwareConditionalResourceCreator {
                     if (value != null) {
                         fieldMap.put(field.getName(), value);
                     }
-                } catch (IllegalAccessException e) {
-                    // TODO: Log if required
+                } catch (IllegalAccessException ignored) {
                 } finally {
                     field.setAccessible(false);
                 }
@@ -59,6 +61,14 @@ public class FieldAwareConditionalResourceCreator {
 
     private Object processAuditEnabledModels(Object value) {
         if (value == null) return null;
+        if (value instanceof Collection) {
+            final Collection<?> collection = (Collection<?>) value;
+            return collection.stream().map(this::processObject).collect(Collectors.toList());
+        }
+        return processObject(value);
+    }
+
+    private Object processObject(Object value) {
         final AuditResource auditResource = value.getClass().getAnnotation(AuditResource.class);
         if (value instanceof Model && auditResource != null) {
             if (auditResource.enabled()) {
