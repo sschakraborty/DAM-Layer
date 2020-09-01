@@ -16,10 +16,12 @@ public class Item implements Model {
     private int id;
 
     @Column(name = "NAME")
+    @AuditField(identifier = true)
     private String name;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "PARCEL_ID", nullable = false)
+    @AuditField
     private Parcel parcel;
 
     public int getId() {

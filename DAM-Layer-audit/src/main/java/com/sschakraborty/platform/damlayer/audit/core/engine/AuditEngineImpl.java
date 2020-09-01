@@ -1,5 +1,6 @@
 package com.sschakraborty.platform.damlayer.audit.core.engine;
 
+import com.sschakraborty.platform.damlayer.audit.annotation.AuditField;
 import com.sschakraborty.platform.damlayer.audit.annotation.AuditResource;
 import com.sschakraborty.platform.damlayer.audit.configuration.AuditConfiguration;
 import com.sschakraborty.platform.damlayer.audit.core.Auditor;
@@ -11,6 +12,7 @@ import com.sschakraborty.platform.damlayer.shared.core.marker.Model;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -39,31 +41,58 @@ public class AuditEngineImpl implements AuditEngine {
     }
 
     @Override
-    public void generate(DataOperation dataOperation, boolean successful, Model model, String externalText, String tenantId, String tenantName) {
+    public void generate(DataOperation dataOperation, boolean successful, Model baseModel, String externalText, String tenantId, String tenantName) {
         this.vertx.executeBlocking(promise -> {
-            if (this.isAuditAllowed(model)) {
-                final AuditResource auditResource = model.getClass().getAnnotation(AuditResource.class);
-                if (auditResource != null) {
-                    final AuditPayload auditPayload = new AuditPayload();
-                    auditPayload.setDataOperation(dataOperation);
-                    auditPayload.setSuccessful(successful);
-                    auditPayload.setTenantId(tenantId);
-                    auditPayload.setTenantName(tenantName);
-                    auditPayload.setClassName(model.getClass().getName());
-                    auditPayload.setModelName(generateModelName(model.getClass(), model.getModelName()));
-                    auditPayload.setInternalText(generateAuditText(dataOperation, model));
-                    auditPayload.setExternalText(externalText);
-                    auditPayload.setAuditRemark(getRemark(dataOperation, successful, model, auditResource));
-                    auditPayload.setAuditResource(getResource(model, auditResource));
-                    auditPayload.setModelObject(model);
-                    synchronized (this.auditPayloads) {
-                        this.auditPayloads.add(auditPayload);
-                    }
+            if (this.isAuditAllowed(baseModel)) {
+                final AuditResource auditResource = baseModel.getClass().getAnnotation(AuditResource.class);
+                if (auditResource != null && auditResource.enabled()) {
+                    final List<Model> fieldModels = fetchModelFields(baseModel);
+                    fieldModels.forEach(model -> {
+                        final AuditPayload auditPayload = new AuditPayload();
+                        auditPayload.setDataOperation(dataOperation);
+                        auditPayload.setSuccessful(successful);
+                        auditPayload.setTenantId(tenantId);
+                        auditPayload.setTenantName(tenantName);
+                        auditPayload.setClassName(model.getClass().getName());
+                        auditPayload.setModelName(generateModelName(model.getClass(), model.getModelName()));
+                        auditPayload.setInternalText(generateAuditText(dataOperation, model));
+                        auditPayload.setExternalText(externalText);
+                        auditPayload.setAuditRemark(getRemark(dataOperation, successful, model, auditResource));
+                        auditPayload.setAuditResource(getResource(model, auditResource));
+                        auditPayload.setModelObject(model);
+                        synchronized (this.auditPayloads) {
+                            this.auditPayloads.add(auditPayload);
+                        }
+                    });
                 }
             }
         }, SERIAL_EXECUTION, result -> {
             // TODO: Log if required
         });
+    }
+
+    private List<Model> fetchModelFields(Model model) {
+        final List<Model> models = new LinkedList<>();
+        models.add(model);
+        for (Field field : model.getClass().getDeclaredFields()) {
+            final AuditField auditField = field.getAnnotation(AuditField.class);
+            if (auditField != null && auditField.enabled()) {
+                try {
+                    field.setAccessible(true);
+                    Object object = field.get(model);
+                    if (object instanceof Model) {
+                        final AuditResource auditResource = object.getClass().getAnnotation(AuditResource.class);
+                        if (auditResource != null && auditResource.enabled()) {
+                            models.add((Model) object);
+                        }
+                    }
+                } catch (IllegalAccessException ignored) {
+                } finally {
+                    field.setAccessible(false);
+                }
+            }
+        }
+        return models;
     }
 
     private void audit() {

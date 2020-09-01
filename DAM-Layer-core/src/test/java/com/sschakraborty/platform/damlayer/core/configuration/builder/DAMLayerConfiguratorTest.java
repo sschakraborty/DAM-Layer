@@ -16,7 +16,7 @@ import org.junit.Test;
 import java.util.Arrays;
 
 public class DAMLayerConfiguratorTest {
-    private static final boolean RUN_PERFORMANCE_TESTS = true;
+    private static final boolean RUN_PERFORMANCE_TESTS = false;
 
     @Test
     public void testMultiTenancy() throws Exception {
@@ -83,13 +83,13 @@ public class DAMLayerConfiguratorTest {
 
         dataManipulationService.insert(parcel);
 
-        Parcel fetchedParcel = queryService.fetch(Parcel.class, parcel.getId());
+        Parcel fetchedParcel = queryService.fetchTree(Parcel.class, parcel.getId());
         Parcel fetchedParcelTree = queryService.fetchTree(Parcel.class, parcel.getId());
-        Assert.assertEquals(2, fetchedParcelTree.getItems().size());
+        Assert.assertEquals(3, fetchedParcelTree.getItems().size());
 
         dataManipulationService.delete(fetchedParcel);
 
-        fetchedParcel = queryService.fetch(Parcel.class, parcel.getId());
+        fetchedParcel = queryService.fetchTree(Parcel.class, parcel.getId());
         Assert.assertNull(fetchedParcel);
     }
 
@@ -133,7 +133,12 @@ public class DAMLayerConfiguratorTest {
         item2.setName("Item_2");
         item2.setParcel(parcel);
 
+        Item item3 = new Item();
+        item3.setName("Item_2");
+        item3.setParcel(parcel);
+
         parcel.setItems(Arrays.asList(item1, item2));
+        parcel.setPrimaryItem(item3);
         return parcel;
     }
 

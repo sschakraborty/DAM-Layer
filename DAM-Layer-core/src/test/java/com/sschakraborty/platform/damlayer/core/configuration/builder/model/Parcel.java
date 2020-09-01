@@ -18,16 +18,19 @@ public class Parcel implements Model {
     private int id;
 
     @Column(name = "FROM_ADDRESS", nullable = false)
-    @AuditField
+    @AuditField(identifier = true)
     private String fromAddress;
 
     @Column(name = "TO_ADDRESS", nullable = false)
-    @AuditField
+    @AuditField(identifier = true)
     private String toAddress;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "parcel")
-    @AuditField(fieldType = AuditField.Type.SECRET)
     private List<Item> items;
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @AuditField
+    private Item primaryItem;
 
     public int getId() {
         return id;
@@ -59,5 +62,13 @@ public class Parcel implements Model {
 
     public void setItems(List<Item> items) {
         this.items = items;
+    }
+
+    public Item getPrimaryItem() {
+        return primaryItem;
+    }
+
+    public void setPrimaryItem(Item primaryItem) {
+        this.primaryItem = primaryItem;
     }
 }

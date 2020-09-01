@@ -3,6 +3,7 @@ package com.sschakraborty.platform.damlayer.audit.core.creator.resource;
 import com.sschakraborty.platform.damlayer.audit.configuration.AuditConfiguration;
 import com.sschakraborty.platform.damlayer.audit.core.creator.common.FieldAwareConditionalResourceCreator;
 import com.sschakraborty.platform.damlayer.shared.core.marker.Model;
+import io.vertx.core.json.Json;
 
 public class DefaultAuditResourceCreator extends FieldAwareConditionalResourceCreator implements AuditResourceCreator {
     private static final AuditFieldConditionPredicate PREDICATE = auditField -> true;
@@ -13,6 +14,6 @@ public class DefaultAuditResourceCreator extends FieldAwareConditionalResourceCr
 
     @Override
     public String createResource(Model model) {
-        return createResource(model, PREDICATE);
+        return Json.encode(createResource(model, PREDICATE));
     }
 }
