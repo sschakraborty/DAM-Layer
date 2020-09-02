@@ -159,7 +159,7 @@ public class AuditEngineImpl implements AuditEngine {
     }
 
     private String getRemark(DataOperation dataOperation, boolean successful, Model model, AuditResource auditResource) {
-        return AuditRemarkCreatorProvider.getCreator(this.auditConfiguration, auditResource.remarkCreator()).createRemark(dataOperation, model, successful);
+        return AuditRemarkCreatorProvider.getCreator(this.auditConfiguration, auditResource.remarkCreator()).createRemark(model.getModelName(), dataOperation, model, successful);
     }
 
     private String getResource(Model model, AuditResource auditResource) {

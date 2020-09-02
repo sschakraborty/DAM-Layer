@@ -3,16 +3,15 @@ package com.sschakraborty.platform.damlayer.audit.core.creator.common;
 import com.sschakraborty.platform.damlayer.audit.annotation.AuditField;
 import com.sschakraborty.platform.damlayer.audit.annotation.AuditResource;
 import com.sschakraborty.platform.damlayer.audit.utility.AuditCrypto;
-import com.sschakraborty.platform.damlayer.shared.core.marker.Model;
 
 import java.lang.reflect.Field;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class FieldAwareConditionalResourceCreator {
-    public static final AuditFieldConditionPredicate IDENTIFIER_MAKING_PREDICATE = AuditField::identifier;
+    private static final Predicate<Field> IDENTIFIER_MAKING_PREDICATE = (field -> field.getAnnotation(AuditField.class).identifier());
+    private static final Predicate<Field> RESOURCE_MAKING_PREDICATE = (field -> true);
     private final byte[] cryptoKey;
     private final String secretMask;
 
@@ -21,68 +20,76 @@ public class FieldAwareConditionalResourceCreator {
         this.secretMask = secretMask;
     }
 
-    protected Map<String, Object> createResource(Model model, AuditFieldConditionPredicate predicate) {
-        final Map<String, Object> fieldMap = new LinkedHashMap<>();
-        final Field[] fields = model.getClass().getDeclaredFields();
-        for (final Field field : fields) {
+    protected Object createIdentifier(Object model) {
+        return createResource(model, IDENTIFIER_MAKING_PREDICATE);
+    }
+
+    protected Object createResource(Object model) {
+        return createResource(model, RESOURCE_MAKING_PREDICATE);
+    }
+
+    private boolean isAuditEnabled(Object object) {
+        final AuditResource auditResource = object.getClass().getAnnotation(AuditResource.class);
+        return auditResource != null && auditResource.enabled();
+    }
+
+    private List<Field> getAllAuditEnabledFields(Object model) {
+        return Arrays.stream(model.getClass().getDeclaredFields()).filter(field -> {
             final AuditField auditField = field.getAnnotation(AuditField.class);
-            if (auditField != null && auditField.enabled() && predicate.calculate(auditField)) {
-                field.setAccessible(true);
-                try {
-                    final AuditField.Type auditFieldType = auditField.fieldType();
-                    Object value;
-                    if (AuditField.Type.SECRET == auditFieldType) {
-                        value = secretMask;
-                    } else if (AuditField.Type.ENCRYPTED == auditFieldType) {
-                        value = processEncryptedField(model, field);
-                    } else {
-                        value = processAuditEnabledModels(field.get(model));
+            return auditField != null && auditField.enabled();
+        }).collect(Collectors.toList());
+    }
+
+    private Object processFieldValue(Object fieldValue) {
+        if (fieldValue instanceof Map) {
+            final Map<?, ?> valueMap = (Map<?, ?>) fieldValue;
+            final Map<Object, Object> returnMap = new HashMap<>();
+            for (Map.Entry<?, ?> entry : valueMap.entrySet()) {
+                returnMap.put(entry.getKey(), processFieldValue(entry.getValue()));
+            }
+            return returnMap;
+        }
+        if (fieldValue instanceof Collection) {
+            return ((Collection<?>) fieldValue).stream().map(this::processFieldValue).collect(Collectors.toList());
+        }
+        if (fieldValue instanceof Object[]) {
+            return Arrays.stream((Object[]) fieldValue).map(this::processFieldValue).collect(Collectors.toList());
+        }
+        if (isAuditEnabled(fieldValue)) {
+            return createIdentifier(fieldValue);
+        } else {
+            return fieldValue;
+        }
+    }
+
+    private Map<String, Object> createResource(Object model, Predicate<Field> predicate) {
+        final Map<String, Object> fieldMap = new HashMap<>();
+        if (isAuditEnabled(model)) {
+            final List<Field> allAuditEnabledFields = getAllAuditEnabledFields(model);
+            final List<Field> selectedFields = allAuditEnabledFields.stream().filter(predicate).collect(Collectors.toList());
+            for (Field field : selectedFields) {
+                AuditField auditField = field.getAnnotation(AuditField.class);
+                final String fieldName = field.getName();
+                Object fieldValue = null;
+                if (AuditField.Type.SECRET == auditField.fieldType()) {
+                    fieldValue = secretMask;
+                } else {
+                    try {
+                        field.setAccessible(true);
+                        fieldValue = processFieldValue(field.get(model));
+                        if (AuditField.Type.ENCRYPTED == auditField.fieldType()) {
+                            fieldValue = AuditCrypto.encrypt(fieldValue, cryptoKey);
+                        }
+                    } catch (IllegalAccessException ignored) {
+                    } finally {
+                        field.setAccessible(false);
                     }
-                    if (value != null) {
-                        fieldMap.put(field.getName(), value);
-                    }
-                } catch (IllegalAccessException ignored) {
-                } finally {
-                    field.setAccessible(false);
+                }
+                if (fieldValue != null) {
+                    fieldMap.put(fieldName, fieldValue);
                 }
             }
         }
         return fieldMap;
-    }
-
-    private Object processEncryptedField(Model model, Field field) throws IllegalAccessException {
-        Object value;
-        value = processAuditEnabledModels(field.get(model));
-        if (value != null) {
-            value = AuditCrypto.encrypt(value, cryptoKey);
-        }
-        return value;
-    }
-
-    private Object processAuditEnabledModels(Object value) {
-        if (value == null) return null;
-        if (value instanceof Collection) {
-            final Collection<?> collection = (Collection<?>) value;
-            return collection.stream().map(this::processObject).collect(Collectors.toList());
-        }
-        return processObject(value);
-    }
-
-    private Object processObject(Object value) {
-        final AuditResource auditResource = value.getClass().getAnnotation(AuditResource.class);
-        if (value instanceof Model && auditResource != null) {
-            if (auditResource.enabled()) {
-                final Model model = (Model) value;
-                return createResource(model, IDENTIFIER_MAKING_PREDICATE);
-            } else {
-                return null;
-            }
-        } else {
-            return value;
-        }
-    }
-
-    protected interface AuditFieldConditionPredicate {
-        boolean calculate(AuditField auditField);
     }
 }
