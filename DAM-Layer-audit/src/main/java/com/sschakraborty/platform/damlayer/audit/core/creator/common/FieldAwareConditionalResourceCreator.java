@@ -41,6 +41,7 @@ public class FieldAwareConditionalResourceCreator {
     }
 
     private Object processFieldValue(Object fieldValue) {
+        if (fieldValue == null) return null;
         if (fieldValue instanceof Map) {
             final Map<?, ?> valueMap = (Map<?, ?>) fieldValue;
             final Map<Object, Object> returnMap = new HashMap<>();
@@ -77,7 +78,7 @@ public class FieldAwareConditionalResourceCreator {
                     try {
                         field.setAccessible(true);
                         fieldValue = processFieldValue(field.get(model));
-                        if (AuditField.Type.ENCRYPTED == auditField.fieldType()) {
+                        if (AuditField.Type.ENCRYPTED == auditField.fieldType() && fieldValue != null) {
                             fieldValue = AuditCrypto.encrypt(fieldValue, cryptoKey);
                         }
                     } catch (IllegalAccessException ignored) {
