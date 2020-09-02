@@ -1,5 +1,7 @@
 package com.sschakraborty.platform.damlayer.core.session.wrapper;
 
+import com.sschakraborty.platform.damlayer.audit.annotation.AuditField;
+import com.sschakraborty.platform.damlayer.audit.annotation.AuditResource;
 import com.sschakraborty.platform.damlayer.audit.core.engine.AuditEngine;
 import com.sschakraborty.platform.damlayer.core.configuration.TenantConfiguration;
 import com.sschakraborty.platform.damlayer.shared.audit.DataOperation;
@@ -69,16 +71,23 @@ public class SessionWrapperImpl implements SessionWrapper {
     @Override
     public <T extends Model> T fetch(String externalText, Class<T> clazz, Serializable id) {
         T fetchedObject = null;
-        boolean success = false;
         try {
             fetchedObject = session.get(clazz, id);
-            if (fetchedObject != null) {
-                success = true;
-            }
             return fetchedObject;
         } finally {
-            auditEngine.generate(DataOperation.FETCH, success, fetchedObject, externalText, tenantConfiguration.getId(), tenantConfiguration.getName());
+            if (fetchedObject != null) {
+                final DataOperation dataOperation = DataOperation.FETCH;
+                auditEngine.generate(dataOperation, true, generateFetchModel(dataOperation, fetchedObject, id), externalText, tenantConfiguration.getId(), tenantConfiguration.getName());
+            }
         }
+    }
+
+    private <T extends Model> Model generateFetchModel(DataOperation dataOperation, T fetchedObject, Serializable id) {
+        String internalText = fetchedObject.getInternalText(dataOperation);
+        if (internalText == null) {
+            internalText = "Fetched " + fetchedObject.getModelName();
+        }
+        return new FetchModel(id, fetchedObject.getModelName(), internalText);
     }
 
     @Override
@@ -89,5 +98,41 @@ public class SessionWrapperImpl implements SessionWrapper {
     @Override
     public <T extends Model> TypedQuery<T> createQuery(CriteriaQuery<T> criteriaQuery) {
         return session.createQuery(criteriaQuery);
+    }
+
+    @AuditResource
+    private static class FetchModel implements Model {
+        private final String modelName;
+        private final String internalText;
+        @AuditField(identifier = true)
+        private Serializable entityFetchId;
+
+        private FetchModel(Serializable entityFetchId, String modelName, String internalText) {
+            this.entityFetchId = entityFetchId;
+            this.modelName = modelName;
+            this.internalText = internalText;
+        }
+
+        public Serializable getEntityFetchId() {
+            return entityFetchId;
+        }
+
+        public void setEntityFetchId(Serializable entityFetchId) {
+            this.entityFetchId = entityFetchId;
+        }
+
+        public String getInternalText() {
+            return internalText;
+        }
+
+        @Override
+        public String getModelName() {
+            return modelName;
+        }
+
+        @Override
+        public String getInternalText(DataOperation dataOperation) {
+            return internalText;
+        }
     }
 }
