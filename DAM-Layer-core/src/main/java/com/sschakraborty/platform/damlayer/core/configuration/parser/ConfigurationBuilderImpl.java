@@ -10,7 +10,7 @@ public class ConfigurationBuilderImpl implements ConfigurationBuilder {
     private static final String CONNECTION_POOL_PROVIDER = "org.hibernate.hikaricp.internal.HikariCPConnectionProvider";
 
     @Override
-    public Configuration build(ConnectorMetadata metadata, List<Class<? extends Model>> classes) {
+    public Configuration build(ConnectorMetadata metadata, List<Class<?>> classes) {
         final Configuration configuration = new Configuration();
         configuration.setProperties(buildProperties(metadata));
         classes.forEach(configuration::addAnnotatedClass);

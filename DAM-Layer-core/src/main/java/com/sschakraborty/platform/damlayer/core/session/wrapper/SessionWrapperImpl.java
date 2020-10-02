@@ -23,51 +23,59 @@ public class SessionWrapperImpl implements SessionWrapper {
     }
 
     @Override
-    public void insert(String externalText, Model model) {
+    public void insert(String externalText, Object model) {
         boolean success = false;
         try {
             session.save(model);
             success = true;
         } finally {
-            auditEngine.generate(DataOperation.INSERT, success, model, externalText, tenantConfiguration.getId(), tenantConfiguration.getName());
+            if (model instanceof AuditModel) {
+                auditEngine.generate(DataOperation.INSERT, success, (AuditModel) model, externalText, tenantConfiguration.getId(), tenantConfiguration.getName());
+            }
         }
     }
 
     @Override
-    public void update(String externalText, Model model) {
+    public void update(String externalText, Object model) {
         boolean success = false;
         try {
             session.update(model);
             success = true;
         } finally {
-            auditEngine.generate(DataOperation.UPDATE, success, model, externalText, tenantConfiguration.getId(), tenantConfiguration.getName());
+            if (model instanceof AuditModel) {
+                auditEngine.generate(DataOperation.UPDATE, success, (AuditModel) model, externalText, tenantConfiguration.getId(), tenantConfiguration.getName());
+            }
         }
     }
 
     @Override
-    public void save(String externalText, Model model) {
+    public void save(String externalText, Object model) {
         boolean success = false;
         try {
             session.saveOrUpdate(model);
             success = true;
         } finally {
-            auditEngine.generate(DataOperation.SAVE, success, model, externalText, tenantConfiguration.getId(), tenantConfiguration.getName());
+            if (model instanceof AuditModel) {
+                auditEngine.generate(DataOperation.SAVE, success, (AuditModel) model, externalText, tenantConfiguration.getId(), tenantConfiguration.getName());
+            }
         }
     }
 
     @Override
-    public void delete(String externalText, Model model) {
+    public void delete(String externalText, Object model) {
         boolean success = false;
         try {
             session.delete(model);
             success = true;
         } finally {
-            auditEngine.generate(DataOperation.DELETE, success, model, externalText, tenantConfiguration.getId(), tenantConfiguration.getName());
+            if (model instanceof AuditModel) {
+                auditEngine.generate(DataOperation.DELETE, success, (AuditModel) model, externalText, tenantConfiguration.getId(), tenantConfiguration.getName());
+            }
         }
     }
 
     @Override
-    public <T extends AuditModel> T fetch(String externalText, Class<T> clazz, Serializable id) {
+    public <T> T fetch(String externalText, Class<T> clazz, Serializable id) {
         return session.get(clazz, id);
     }
 
@@ -77,7 +85,7 @@ public class SessionWrapperImpl implements SessionWrapper {
     }
 
     @Override
-    public <T extends AuditModel> TypedQuery<T> createQuery(CriteriaQuery<T> criteriaQuery) {
+    public <T> TypedQuery<T> createQuery(CriteriaQuery<T> criteriaQuery) {
         return session.createQuery(criteriaQuery);
     }
 }

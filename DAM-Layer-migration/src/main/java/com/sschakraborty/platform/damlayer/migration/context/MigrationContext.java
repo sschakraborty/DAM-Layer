@@ -1,6 +1,5 @@
 package com.sschakraborty.platform.damlayer.migration.context;
 
-import com.sschakraborty.platform.damlayer.audit.core.AuditModel;
 import com.sschakraborty.platform.damlayer.core.session.wrapper.SessionWrapper;
 
 import java.util.List;
@@ -22,11 +21,11 @@ public interface MigrationContext {
 
     void setFetchOffset(int offset);
 
-    <S extends AuditModel> List<S> getSourceObjects();
+    <S> List<S> getSourceObjects();
 
-    <S extends AuditModel> void setSourceObjects(List<S> sourceObjects);
+    <S> void setSourceObjects(List<S> sourceObjects);
 
-    <D extends AuditModel> List<D> getDestinationObjects();
+    <D> List<D> getDestinationObjects();
 
-    <D extends AuditModel> void setDestinationObjects(List<D> destinationObjects);
+    <D> void setDestinationObjects(List<D> destinationObjects);
 }

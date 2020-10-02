@@ -28,14 +28,17 @@ public class TenantConfiguration {
     private byte[] annotatedClassesBytes;
 
     @Transient
-    private transient List<Class<? extends Model>> annotatedClasses;
+    private transient List<Class<?>> annotatedClasses;
+
+    public static TenantConfiguration createBean() {
+        return new TenantConfiguration();
+    }
 
     /**
      * Unique identifier for the tenant (used as a key for cache)
      *
      * @return id
      */
-    @Override
     public String getId() {
         return id;
     }
@@ -49,7 +52,6 @@ public class TenantConfiguration {
      *
      * @return Name of the tenant
      */
-    @Override
     public String getName() {
         return name;
     }
@@ -63,7 +65,6 @@ public class TenantConfiguration {
      *
      * @return Connector metadata for tenant
      */
-    @Override
     public ConnectorMetadata getConnectorMetadata() {
         return connectorMetadata;
     }
@@ -83,12 +84,11 @@ public class TenantConfiguration {
     /**
      * Returns the list of annotated classes
      */
-    @Override
-    public List<Class<? extends Model>> getAnnotatedClasses() {
+    public List<Class<?>> getAnnotatedClasses() {
         return annotatedClasses;
     }
 
-    public void setAnnotatedClasses(List<Class<? extends Model>> annotatedClasses) {
+    public void setAnnotatedClasses(List<Class<?>> annotatedClasses) {
         this.annotatedClasses = annotatedClasses;
     }
 
@@ -111,7 +111,7 @@ public class TenantConfiguration {
     private void createClassesList() throws IOException, ClassNotFoundException {
         try (final ByteArrayInputStream byteReader = new ByteArrayInputStream(annotatedClassesBytes)) {
             try (final ObjectInputStream objectReader = new ObjectInputStream(byteReader)) {
-                annotatedClasses = (List<Class<? extends Model>>) objectReader.readObject();
+                annotatedClasses = (List<Class<?>>) objectReader.readObject();
             }
         }
     }

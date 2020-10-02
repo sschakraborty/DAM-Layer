@@ -2,6 +2,7 @@ package com.sschakraborty.platform.damlayer.core;
 
 import com.sschakraborty.platform.damlayer.audit.core.engine.AuditEngine;
 import com.sschakraborty.platform.damlayer.core.cache.TenantDetailsCache;
+import com.sschakraborty.platform.damlayer.core.configuration.TenantConfiguration;
 import com.sschakraborty.platform.damlayer.core.configuration.parser.ConfigurationBuilder;
 import com.sschakraborty.platform.damlayer.core.service.DataService;
 import com.sschakraborty.platform.damlayer.core.service.DataServiceImpl;

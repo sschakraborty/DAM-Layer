@@ -1,6 +1,5 @@
 package com.sschakraborty.platform.damlayer.core.service;
 
-import com.sschakraborty.platform.damlayer.audit.core.AuditModel;
 import com.sschakraborty.platform.damlayer.core.session.transaction.TransactionManager;
 import com.sschakraborty.platform.damlayer.core.session.transaction.TransactionResult;
 import com.sschakraborty.platform.damlayer.core.session.wrapper.SessionWrapper;
@@ -19,7 +18,7 @@ public class QueryServiceImpl implements QueryService {
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T extends AuditModel> T fetch(String externalText, Class<T> clazz, Serializable id) {
+    public <T> T fetch(String externalText, Class<T> clazz, Serializable id) {
         final TransactionResult result = transactionManager.executeStateful((transactionUnit, transactionResult) -> {
             final SessionWrapper session = transactionUnit.getSession();
             final T fetchedObj = session.fetch(externalText, clazz, id);
@@ -30,7 +29,7 @@ public class QueryServiceImpl implements QueryService {
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T extends AuditModel> T fetchTree(String externalText, Class<T> clazz, Serializable id) {
+    public <T> T fetchTree(String externalText, Class<T> clazz, Serializable id) {
         final TransactionResult result = transactionManager.executeStateful((transactionUnit, transactionResult) -> {
             final SessionWrapper session = transactionUnit.getSession();
             final T fetchedObj = ProxyUtil.traverseProxyTree(session.fetch(externalText, clazz, id));

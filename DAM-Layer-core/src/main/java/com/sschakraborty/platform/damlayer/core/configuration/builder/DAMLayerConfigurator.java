@@ -4,6 +4,7 @@ import com.sschakraborty.platform.damlayer.audit.configuration.AuditConfiguratio
 import com.sschakraborty.platform.damlayer.audit.core.Auditor;
 import com.sschakraborty.platform.damlayer.audit.core.engine.AuditEngine;
 import com.sschakraborty.platform.damlayer.audit.core.engine.AuditEngineImpl;
+import com.sschakraborty.platform.damlayer.audit.payload.AuditPayload;
 import com.sschakraborty.platform.damlayer.core.DataManager;
 import com.sschakraborty.platform.damlayer.core.DataManagerImpl;
 import com.sschakraborty.platform.damlayer.core.TenantDetailsResolver;
@@ -73,11 +74,7 @@ public class DAMLayerConfigurator {
     private TransactionManager buildTenantTransactionManagerWithoutAuditEngine(ConnectorMetadata connectorMetadata) {
         final Configuration configuration = configurationBuilder.build(
                 connectorMetadata,
-                Arrays.asList(
-                        TenantConfiguration.class,
-                        ConnectorMetadata.class,
-                        AuditPayloadModel.class
-                )
+                Arrays.asList(TenantConfiguration.class, ConnectorMetadata.class, AuditPayload.class)
         );
         final TenantConfiguration tenantConfiguration = TenantConfiguration.createBean();
         tenantConfiguration.setId("DAMLayer-SYSTEM-USER");

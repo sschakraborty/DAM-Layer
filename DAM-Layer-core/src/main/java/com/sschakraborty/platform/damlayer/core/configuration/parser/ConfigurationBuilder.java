@@ -12,5 +12,5 @@ public interface ConfigurationBuilder {
      * @param metadata The connector metadata
      * @return Hibernate configuration
      */
-    Configuration build(ConnectorMetadata metadata, List<Class<? extends Model>> classes);
+    Configuration build(ConnectorMetadata metadata, List<Class<?>> classes);
 }

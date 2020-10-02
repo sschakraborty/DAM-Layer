@@ -13,7 +13,7 @@ public class DataManipulationServiceImpl implements DataManipulationService {
     }
 
     @Override
-    public void insert(String externalText, List<Model> models) {
+    public void insert(String externalText, List<Object> models) {
         transactionManager.executeStateful((transactionUnit, transactionResult) -> {
             final SessionWrapper session = transactionUnit.getSession();
             models.forEach(model -> session.insert(externalText, model));
@@ -21,7 +21,7 @@ public class DataManipulationServiceImpl implements DataManipulationService {
     }
 
     @Override
-    public void update(String externalText, List<Model> models) {
+    public void update(String externalText, List<Object> models) {
         transactionManager.executeStateful((transactionUnit, transactionResult) -> {
             final SessionWrapper session = transactionUnit.getSession();
             models.forEach(model -> session.update(externalText, model));
@@ -29,7 +29,7 @@ public class DataManipulationServiceImpl implements DataManipulationService {
     }
 
     @Override
-    public void save(String externalText, List<Model> models) {
+    public void save(String externalText, List<Object> models) {
         transactionManager.executeStateful((transactionUnit, transactionResult) -> {
             final SessionWrapper session = transactionUnit.getSession();
             models.forEach(model -> session.save(externalText, model));
@@ -37,7 +37,7 @@ public class DataManipulationServiceImpl implements DataManipulationService {
     }
 
     @Override
-    public void delete(String externalText, List<Model> models) {
+    public void delete(String externalText, List<Object> models) {
         transactionManager.executeStateful((transactionUnit, transactionResult) -> {
             final SessionWrapper session = transactionUnit.getSession();
             models.forEach(model -> session.delete(externalText, model));
