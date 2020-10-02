@@ -3,12 +3,12 @@ package com.sschakraborty.platform.damlayer.audit.core.engine;
 import com.sschakraborty.platform.damlayer.audit.annotation.AuditField;
 import com.sschakraborty.platform.damlayer.audit.annotation.AuditResource;
 import com.sschakraborty.platform.damlayer.audit.configuration.AuditConfiguration;
+import com.sschakraborty.platform.damlayer.audit.core.AuditModel;
 import com.sschakraborty.platform.damlayer.audit.core.Auditor;
 import com.sschakraborty.platform.damlayer.audit.core.creator.remark.AuditRemarkCreatorProvider;
 import com.sschakraborty.platform.damlayer.audit.core.creator.resource.AuditResourceCreatorProvider;
 import com.sschakraborty.platform.damlayer.audit.payload.AuditPayload;
-import com.sschakraborty.platform.damlayer.shared.audit.DataOperation;
-import com.sschakraborty.platform.damlayer.shared.core.marker.Model;
+import com.sschakraborty.platform.damlayer.audit.payload.DataOperation;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
 
@@ -39,12 +39,12 @@ public class AuditEngineImpl implements AuditEngine {
     }
 
     @Override
-    public void generate(DataOperation dataOperation, boolean successful, Model baseModel, String externalText, String tenantId, String tenantName) {
+    public void generate(DataOperation dataOperation, boolean successful, AuditModel baseModel, String externalText, String tenantId, String tenantName) {
         this.vertx.executeBlocking(promise -> {
             if (this.isAuditAllowed(baseModel)) {
                 final AuditResource auditResource = baseModel.getClass().getAnnotation(AuditResource.class);
                 if (auditResource != null && auditResource.enabled()) {
-                    final List<Model> fieldModels = fetchModelFields(baseModel);
+                    final List<AuditModel> fieldModels = fetchModelFields(baseModel);
                     fieldModels.forEach(model -> {
                         final AuditPayload auditPayload = generateAuditPayload(
                                 dataOperation, successful, externalText, tenantId, tenantName, auditResource, model
@@ -87,7 +87,7 @@ public class AuditEngineImpl implements AuditEngine {
         Runtime.getRuntime().addShutdownHook(new Thread(this::audit));
     }
 
-    private AuditPayload generateAuditPayload(DataOperation dataOperation, boolean successful, String externalText, String tenantId, String tenantName, AuditResource auditResource, Model model) {
+    private AuditPayload generateAuditPayload(DataOperation dataOperation, boolean successful, String externalText, String tenantId, String tenantName, AuditResource auditResource, AuditModel model) {
         final String modelName = generateModelName(model.getClass(), model.getModelName());
         final AuditPayload auditPayload = new AuditPayload();
         auditPayload.setDataOperation(dataOperation);
@@ -104,8 +104,8 @@ public class AuditEngineImpl implements AuditEngine {
         return auditPayload;
     }
 
-    private List<Model> fetchModelFields(Model model) {
-        final List<Model> models = new LinkedList<>();
+    private List<AuditModel> fetchModelFields(AuditModel model) {
+        final List<AuditModel> models = new LinkedList<>();
         models.add(model);
         for (Field field : model.getClass().getDeclaredFields()) {
             final AuditField auditField = field.getAnnotation(AuditField.class);
@@ -136,16 +136,16 @@ public class AuditEngineImpl implements AuditEngine {
         return models;
     }
 
-    private void populateModel(List<Model> models, Object object) {
-        if (object instanceof Model) {
+    private void populateModel(List<AuditModel> models, Object object) {
+        if (object instanceof AuditModel) {
             final AuditResource auditResource = object.getClass().getAnnotation(AuditResource.class);
             if (auditResource != null && auditResource.enabled()) {
-                models.add((Model) object);
+                models.add((AuditModel) object);
             }
         }
     }
 
-    private String generateInternalText(DataOperation dataOperation, Model model) {
+    private String generateInternalText(DataOperation dataOperation, AuditModel model) {
         final String auditText = model.getInternalText(dataOperation);
         if (auditText != null && auditText.trim().length() != 0) {
             return auditText;
@@ -153,7 +153,7 @@ public class AuditEngineImpl implements AuditEngine {
         return model.toString();
     }
 
-    private String generateModelName(Class<? extends Model> clazz, String modelName) {
+    private String generateModelName(Class<? extends AuditModel> clazz, String modelName) {
         if (modelName == null || modelName.trim().length() == 0) {
             return clazz.getSimpleName();
         }

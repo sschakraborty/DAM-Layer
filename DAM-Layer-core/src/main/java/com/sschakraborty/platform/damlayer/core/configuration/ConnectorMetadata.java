@@ -1,7 +1,7 @@
 package com.sschakraborty.platform.damlayer.core.configuration;
 
+import com.sschakraborty.platform.damlayer.core.Model;
 import com.sschakraborty.platform.damlayer.core.session.IsolationMode;
-import com.sschakraborty.platform.damlayer.shared.core.marker.Model;
 
 public interface ConnectorMetadata extends Model {
     static ConnectorMetadataBean createBean() {

@@ -1,7 +1,7 @@
 package com.sschakraborty.platform.damlayer.core.configuration.parser;
 
+import com.sschakraborty.platform.damlayer.core.Model;
 import com.sschakraborty.platform.damlayer.core.configuration.ConnectorMetadata;
-import com.sschakraborty.platform.damlayer.shared.core.marker.Model;
 import org.hibernate.cfg.Configuration;
 
 import java.util.List;

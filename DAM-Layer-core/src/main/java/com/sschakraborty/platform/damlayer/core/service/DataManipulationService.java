@@ -1,6 +1,6 @@
 package com.sschakraborty.platform.damlayer.core.service;
 
-import com.sschakraborty.platform.damlayer.shared.core.marker.Model;
+import com.sschakraborty.platform.damlayer.core.Model;
 
 import java.util.Arrays;
 import java.util.List;

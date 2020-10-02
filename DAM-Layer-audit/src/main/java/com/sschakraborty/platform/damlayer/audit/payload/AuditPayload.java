@@ -1,7 +1,6 @@
 package com.sschakraborty.platform.damlayer.audit.payload;
 
-import com.sschakraborty.platform.damlayer.shared.audit.DataOperation;
-import com.sschakraborty.platform.damlayer.shared.core.marker.Model;
+import com.sschakraborty.platform.damlayer.audit.core.AuditModel;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -9,7 +8,7 @@ import java.time.Instant;
 
 @Entity
 @Table(name = "AUDIT_RESOURCE")
-public class AuditPayload implements Model {
+public class AuditPayload implements AuditModel {
     @Id
     @Column(name = "AUDIT_ID", nullable = false)
     private String auditId;
@@ -51,7 +50,7 @@ public class AuditPayload implements Model {
     private String auditResource;
 
     @Transient
-    private transient Model modelObject;
+    private transient AuditModel modelObject;
 
     public AuditPayload() {
         this.generateAuditId();
@@ -153,11 +152,11 @@ public class AuditPayload implements Model {
         this.auditResource = auditResource;
     }
 
-    public Model getModelObject() {
+    public AuditModel getModelObject() {
         return modelObject;
     }
 
-    public void setModelObject(Model modelObject) {
+    public void setModelObject(AuditModel modelObject) {
         this.modelObject = modelObject;
     }
 

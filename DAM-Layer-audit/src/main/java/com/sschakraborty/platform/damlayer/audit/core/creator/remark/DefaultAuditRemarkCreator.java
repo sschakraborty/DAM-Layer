@@ -2,7 +2,7 @@ package com.sschakraborty.platform.damlayer.audit.core.creator.remark;
 
 import com.sschakraborty.platform.damlayer.audit.configuration.AuditConfiguration;
 import com.sschakraborty.platform.damlayer.audit.core.creator.common.FieldAwareConditionalResourceCreator;
-import com.sschakraborty.platform.damlayer.shared.audit.DataOperation;
+import com.sschakraborty.platform.damlayer.audit.payload.DataOperation;
 import io.vertx.core.json.Json;
 
 public class DefaultAuditRemarkCreator extends FieldAwareConditionalResourceCreator implements AuditRemarkCreator {

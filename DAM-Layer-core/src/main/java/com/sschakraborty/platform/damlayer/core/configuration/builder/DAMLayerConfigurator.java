@@ -4,10 +4,10 @@ import com.sschakraborty.platform.damlayer.audit.configuration.AuditConfiguratio
 import com.sschakraborty.platform.damlayer.audit.core.Auditor;
 import com.sschakraborty.platform.damlayer.audit.core.engine.AuditEngine;
 import com.sschakraborty.platform.damlayer.audit.core.engine.AuditEngineImpl;
-import com.sschakraborty.platform.damlayer.audit.payload.AuditPayload;
 import com.sschakraborty.platform.damlayer.core.DataManager;
 import com.sschakraborty.platform.damlayer.core.DataManagerImpl;
 import com.sschakraborty.platform.damlayer.core.TenantDetailsResolver;
+import com.sschakraborty.platform.damlayer.core.audit.AuditPayloadModel;
 import com.sschakraborty.platform.damlayer.core.audit.DefaultAuditor;
 import com.sschakraborty.platform.damlayer.core.cache.TenantDetailsCache;
 import com.sschakraborty.platform.damlayer.core.cache.TenantDetailsMapCacheImpl;
@@ -79,7 +79,7 @@ public class DAMLayerConfigurator {
                 Arrays.asList(
                         TenantConfigurationBean.class,
                         ConnectorMetadataBean.class,
-                        AuditPayload.class
+                        AuditPayloadModel.class
                 )
         );
         final TenantConfigurationBean tenantConfiguration = TenantConfiguration.createBean();

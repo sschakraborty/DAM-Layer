@@ -1,10 +1,10 @@
 package com.sschakraborty.platform.damlayer.migration.stage.minibatch;
 
+import com.sschakraborty.platform.damlayer.core.Model;
 import com.sschakraborty.platform.damlayer.core.session.wrapper.SessionWrapper;
 import com.sschakraborty.platform.damlayer.migration.MigrationConfiguration;
 import com.sschakraborty.platform.damlayer.migration.context.MigrationContext;
 import com.sschakraborty.platform.damlayer.migration.stage.Stage;
-import com.sschakraborty.platform.damlayer.shared.core.marker.Model;
 import com.sschakraborty.platform.damlayer.transformation.entry.Entry;
 
 import javax.persistence.TypedQuery;

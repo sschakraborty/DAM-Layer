@@ -1,9 +1,9 @@
 package com.sschakraborty.platform.damlayer.core.session.wrapper;
 
 import com.sschakraborty.platform.damlayer.audit.core.engine.AuditEngine;
+import com.sschakraborty.platform.damlayer.audit.payload.DataOperation;
+import com.sschakraborty.platform.damlayer.core.Model;
 import com.sschakraborty.platform.damlayer.core.configuration.TenantConfiguration;
-import com.sschakraborty.platform.damlayer.shared.audit.DataOperation;
-import com.sschakraborty.platform.damlayer.shared.core.marker.Model;
 import org.hibernate.Session;
 
 import javax.persistence.TypedQuery;

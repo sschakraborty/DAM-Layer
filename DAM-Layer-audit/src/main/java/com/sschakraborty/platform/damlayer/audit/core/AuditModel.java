@@ -1,8 +1,8 @@
-package com.sschakraborty.platform.damlayer.shared.core.marker;
+package com.sschakraborty.platform.damlayer.audit.core;
 
-import com.sschakraborty.platform.damlayer.shared.audit.DataOperation;
+import com.sschakraborty.platform.damlayer.audit.payload.DataOperation;
 
-public interface Model {
+public interface AuditModel {
     default String getModelName() {
         return this.getClass().getName();
     }
