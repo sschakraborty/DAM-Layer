@@ -1,6 +1,5 @@
 package com.sschakraborty.platform.damlayer.core.session.wrapper;
 
-import com.sschakraborty.platform.damlayer.audit.core.AuditModel;
 import com.sschakraborty.platform.damlayer.audit.core.engine.AuditEngine;
 import com.sschakraborty.platform.damlayer.audit.payload.DataOperation;
 import com.sschakraborty.platform.damlayer.core.configuration.TenantConfiguration;
@@ -29,9 +28,7 @@ public class SessionWrapperImpl implements SessionWrapper {
             session.save(model);
             success = true;
         } finally {
-            if (model instanceof AuditModel) {
-                auditEngine.generate(DataOperation.INSERT, success, (AuditModel) model, externalText, tenantConfiguration.getId(), tenantConfiguration.getName());
-            }
+            auditEngine.generate(DataOperation.INSERT, success, model, externalText, tenantConfiguration.getId(), tenantConfiguration.getName());
         }
     }
 
@@ -42,9 +39,7 @@ public class SessionWrapperImpl implements SessionWrapper {
             session.update(model);
             success = true;
         } finally {
-            if (model instanceof AuditModel) {
-                auditEngine.generate(DataOperation.UPDATE, success, (AuditModel) model, externalText, tenantConfiguration.getId(), tenantConfiguration.getName());
-            }
+            auditEngine.generate(DataOperation.UPDATE, success, model, externalText, tenantConfiguration.getId(), tenantConfiguration.getName());
         }
     }
 
@@ -55,9 +50,7 @@ public class SessionWrapperImpl implements SessionWrapper {
             session.saveOrUpdate(model);
             success = true;
         } finally {
-            if (model instanceof AuditModel) {
-                auditEngine.generate(DataOperation.SAVE, success, (AuditModel) model, externalText, tenantConfiguration.getId(), tenantConfiguration.getName());
-            }
+            auditEngine.generate(DataOperation.SAVE, success, model, externalText, tenantConfiguration.getId(), tenantConfiguration.getName());
         }
     }
 
@@ -68,9 +61,7 @@ public class SessionWrapperImpl implements SessionWrapper {
             session.delete(model);
             success = true;
         } finally {
-            if (model instanceof AuditModel) {
-                auditEngine.generate(DataOperation.DELETE, success, (AuditModel) model, externalText, tenantConfiguration.getId(), tenantConfiguration.getName());
-            }
+            auditEngine.generate(DataOperation.DELETE, success, model, externalText, tenantConfiguration.getId(), tenantConfiguration.getName());
         }
     }
 

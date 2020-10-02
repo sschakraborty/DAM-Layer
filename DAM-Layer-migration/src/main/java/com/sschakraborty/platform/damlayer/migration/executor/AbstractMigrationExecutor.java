@@ -1,6 +1,5 @@
 package com.sschakraborty.platform.damlayer.migration.executor;
 
-import com.sschakraborty.platform.damlayer.audit.core.AuditModel;
 import com.sschakraborty.platform.damlayer.core.service.DataService;
 import com.sschakraborty.platform.damlayer.migration.MigrationConfiguration;
 import com.sschakraborty.platform.damlayer.migration.context.MigrationContext;
@@ -10,7 +9,7 @@ import com.sschakraborty.platform.damlayer.transformation.entry.Entry;
 
 import java.util.List;
 
-public abstract class AbstractMigrationExecutor<S extends AuditModel, D extends AuditModel> implements Executor {
+public abstract class AbstractMigrationExecutor<S, D> implements Executor {
     private final List<Stage> stages = getStageSequence();
     private final MigrationContext migrationContext = new MigrationContextImpl();
     private final MigrationConfiguration migrationConfiguration;

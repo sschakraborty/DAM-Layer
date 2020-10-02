@@ -1,6 +1,5 @@
 package com.sschakraborty.platform.damlayer.migration.stage.minibatch;
 
-import com.sschakraborty.platform.damlayer.audit.core.AuditModel;
 import com.sschakraborty.platform.damlayer.core.session.wrapper.SessionWrapper;
 import com.sschakraborty.platform.damlayer.migration.MigrationConfiguration;
 import com.sschakraborty.platform.damlayer.migration.context.MigrationContext;
@@ -11,7 +10,7 @@ import java.util.List;
 
 public class DestinationDataWriteStage implements Stage {
     @Override
-    public <S extends AuditModel, D extends AuditModel> void runStage(
+    public <S, D> void runStage(
             MigrationConfiguration migrationConfiguration,
             MigrationContext migrationContext,
             Entry<S, D> entry

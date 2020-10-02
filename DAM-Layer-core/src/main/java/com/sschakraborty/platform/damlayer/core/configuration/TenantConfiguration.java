@@ -2,6 +2,7 @@ package com.sschakraborty.platform.damlayer.core.configuration;
 
 import com.sschakraborty.platform.damlayer.audit.annotation.AuditField;
 import com.sschakraborty.platform.damlayer.audit.annotation.AuditResource;
+import com.sschakraborty.platform.damlayer.audit.core.AuditModel;
 
 import javax.persistence.*;
 import java.io.*;
@@ -10,7 +11,7 @@ import java.util.List;
 @Entity
 @Table(name = "TENANT_CONFIG_METADATA")
 @AuditResource
-public class TenantConfiguration {
+public class TenantConfiguration implements AuditModel {
     @Id
     @Column(name = "TENANT_ID", nullable = false, length = 25)
     @AuditField(identifier = true)
