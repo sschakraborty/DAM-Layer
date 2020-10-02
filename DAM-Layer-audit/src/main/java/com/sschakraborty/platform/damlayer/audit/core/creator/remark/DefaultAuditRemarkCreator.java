@@ -21,22 +21,12 @@ public class DefaultAuditRemarkCreator extends FieldAwareConditionalResourceCrea
                 return createSaveRemark(modelName, model, success);
             case DELETE:
                 return createDeleteRemark(modelName, model, success);
-            case FETCH:
-                return createFetchRemark(modelName, model, success);
         }
         return null;
     }
 
     private String createIdentifierFromModel(Object model) {
         return Json.encode(super.createIdentifier(model));
-    }
-
-    private String createFetchRemark(String modelName, Object model, boolean success) {
-        if (success) {
-            return String.format("A record of model %s with identifier %s was fetched / read!", modelName, createIdentifierFromModel(model));
-        } else {
-            return String.format("Failed to fetch / read a record of model %s with identifier %s!", modelName, createIdentifierFromModel(model));
-        }
     }
 
     private String createDeleteRemark(String modelName, Object model, boolean success) {

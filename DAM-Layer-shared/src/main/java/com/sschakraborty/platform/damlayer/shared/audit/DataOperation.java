@@ -4,6 +4,5 @@ public enum DataOperation {
     INSERT,
     UPDATE,
     SAVE,
-    DELETE,
-    FETCH
+    DELETE
 }
