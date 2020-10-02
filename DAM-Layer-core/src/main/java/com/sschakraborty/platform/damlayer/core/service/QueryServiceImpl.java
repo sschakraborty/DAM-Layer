@@ -33,7 +33,7 @@ public class QueryServiceImpl implements QueryService {
     public <T extends Model> T fetchTree(String externalText, Class<T> clazz, Serializable id) {
         final TransactionResult result = transactionManager.executeStateful((transactionUnit, transactionResult) -> {
             final SessionWrapper session = transactionUnit.getSession();
-            final T fetchedObj = ProxyUtil.recursiveUnproxy(session.fetch(externalText, clazz, id));
+            final T fetchedObj = ProxyUtil.traverseProxyTree(session.fetch(externalText, clazz, id));
             transactionResult.put(FETCH_KEY, fetchedObj);
         });
         return result.hasKey(FETCH_KEY) ? (T) result.get(FETCH_KEY) : null;

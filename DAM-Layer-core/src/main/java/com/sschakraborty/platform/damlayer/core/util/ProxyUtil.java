@@ -18,13 +18,13 @@ public class ProxyUtil {
     private ProxyUtil() {
     }
 
-    public static <T> T recursiveUnproxy(final Object maybeProxy) throws ClassCastException {
+    public static <T> T traverseProxyTree(final Object maybeProxy) throws ClassCastException {
         if (maybeProxy == null) return null;
-        return recursiveUnproxy(maybeProxy, new HashSet<>());
+        return traverseProxyTree(maybeProxy, new HashSet<>());
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
-    private static <T> T recursiveUnproxy(final Object maybeProxy, final HashSet<Object> visitedSet) throws ClassCastException {
+    private static <T> T traverseProxyTree(final Object maybeProxy, final HashSet<Object> visitedSet) throws ClassCastException {
         if (maybeProxy == null) return null;
         Hibernate.initialize(maybeProxy);
 
@@ -37,7 +37,7 @@ public class ProxyUtil {
             clazz = maybeProxy.getClass();
         }
 
-        final T returnObject = (T) recursiveUnproxy(maybeProxy, clazz);
+        final T returnObject = (T) traverseProxyTree(maybeProxy, clazz);
         if (visitedSet.contains(returnObject)) return returnObject;
         visitedSet.add(returnObject);
 
@@ -50,7 +50,7 @@ public class ProxyUtil {
                     boolean needToSetProperty = false;
 
                     if (value instanceof HibernateProxy) {
-                        value = recursiveUnproxy(value, visitedSet);
+                        value = traverseProxyTree(value, visitedSet);
                         needToSetProperty = true;
                     }
 
@@ -58,7 +58,7 @@ public class ProxyUtil {
                         final Object[] valueArray = (Object[]) value;
                         final Object[] result = (Object[]) Array.newInstance(value.getClass(), valueArray.length);
                         for (int index = 0; index < valueArray.length; index++) {
-                            result[index] = recursiveUnproxy(valueArray[index], visitedSet);
+                            result[index] = traverseProxyTree(valueArray[index], visitedSet);
                         }
                         value = result;
                         needToSetProperty = true;
@@ -68,7 +68,7 @@ public class ProxyUtil {
                         final Set valueSet = (Set) value;
                         final Set result = new HashSet();
                         for (final Object setItem : valueSet) {
-                            result.add(recursiveUnproxy(setItem, visitedSet));
+                            result.add(traverseProxyTree(setItem, visitedSet));
                         }
                         value = result;
                         needToSetProperty = true;
@@ -78,7 +78,7 @@ public class ProxyUtil {
                         final Map valueMap = (Map) value;
                         final Map result = new HashMap();
                         for (final Object key : valueMap.keySet()) {
-                            result.put(recursiveUnproxy(key, visitedSet), recursiveUnproxy(valueMap.get(key), visitedSet));
+                            result.put(traverseProxyTree(key, visitedSet), traverseProxyTree(valueMap.get(key), visitedSet));
                         }
                         value = result;
                         needToSetProperty = true;
@@ -88,7 +88,7 @@ public class ProxyUtil {
                         final List valueList = (List) value;
                         final List result = new ArrayList(valueList.size());
                         for (final Object listObject : valueList) {
-                            result.add(recursiveUnproxy(listObject, visitedSet));
+                            result.add(traverseProxyTree(listObject, visitedSet));
                         }
                         value = result;
                         needToSetProperty = true;
@@ -103,7 +103,7 @@ public class ProxyUtil {
         return returnObject;
     }
 
-    private static <T> T recursiveUnproxy(Object maybeProxy, Class<T> baseClass) throws ClassCastException {
+    private static <T> T traverseProxyTree(Object maybeProxy, Class<T> baseClass) throws ClassCastException {
         if (maybeProxy == null) return null;
         if (maybeProxy instanceof HibernateProxy) {
             return baseClass.cast(((HibernateProxy) maybeProxy).getHibernateLazyInitializer().getImplementation());
