@@ -6,24 +6,24 @@ import com.sschakraborty.platform.damlayer.core.configuration.TenantConfiguratio
 import com.sschakraborty.platform.damlayer.core.configuration.parser.ConfigurationBuilder;
 import com.sschakraborty.platform.damlayer.core.service.DataService;
 import com.sschakraborty.platform.damlayer.core.service.DataServiceImpl;
-import com.sschakraborty.platform.damlayer.core.service.tenant.TenantService;
+import com.sschakraborty.platform.damlayer.core.service.tenant.InternalTenantService;
 import com.sschakraborty.platform.damlayer.core.session.transaction.TransactionManager;
 import com.sschakraborty.platform.damlayer.core.util.BuilderUtil;
 import org.hibernate.cfg.Configuration;
 
 public class TenantDetailsResolver {
-    private final TenantService tenantService;
+    private final InternalTenantService internalTenantService;
     private final TenantDetailsCache tenantDetailsCache;
     private final ConfigurationBuilder configurationBuilder;
     private final AuditEngine auditEngine;
 
     public TenantDetailsResolver(
-            TenantService tenantService,
+            InternalTenantService internalTenantService,
             TenantDetailsCache tenantDetailsCache,
             ConfigurationBuilder configurationBuilder,
             AuditEngine auditEngine
     ) {
-        this.tenantService = tenantService;
+        this.internalTenantService = internalTenantService;
         this.tenantDetailsCache = tenantDetailsCache;
         this.configurationBuilder = configurationBuilder;
         this.auditEngine = auditEngine;
@@ -33,7 +33,7 @@ public class TenantDetailsResolver {
         if (tenantDetailsCache.exists(tenantId)) {
             return tenantDetailsCache.getDataService(tenantId);
         }
-        final TenantConfiguration tenantConfiguration = tenantService.getTenantConfiguration(tenantId);
+        final TenantConfiguration tenantConfiguration = internalTenantService.getTenantConfiguration(tenantId);
         if (tenantConfiguration == null) {
             throw new Exception("Provided tenant with id " + tenantId + " is not registered or invalid!");
         }
@@ -53,7 +53,7 @@ public class TenantDetailsResolver {
         if (tenantDetailsCache.exists(tenantId)) {
             return tenantDetailsCache.getConfiguration(tenantId);
         }
-        final TenantConfiguration tenantConfiguration = tenantService.getTenantConfiguration(tenantId);
+        final TenantConfiguration tenantConfiguration = internalTenantService.getTenantConfiguration(tenantId);
         if (tenantConfiguration == null) {
             throw new Exception("Provided tenant with id " + tenantId + " is not registered or invalid!");
         }

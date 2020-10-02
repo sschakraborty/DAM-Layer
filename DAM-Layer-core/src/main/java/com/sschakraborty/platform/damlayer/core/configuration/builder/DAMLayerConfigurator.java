@@ -17,8 +17,8 @@ import com.sschakraborty.platform.damlayer.core.configuration.TenantConfiguratio
 import com.sschakraborty.platform.damlayer.core.configuration.TenantConfigurationBean;
 import com.sschakraborty.platform.damlayer.core.configuration.parser.ConfigurationBuilder;
 import com.sschakraborty.platform.damlayer.core.configuration.parser.ConfigurationBuilderImpl;
-import com.sschakraborty.platform.damlayer.core.service.tenant.TenantService;
-import com.sschakraborty.platform.damlayer.core.service.tenant.TenantServiceImpl;
+import com.sschakraborty.platform.damlayer.core.service.tenant.InternalTenantService;
+import com.sschakraborty.platform.damlayer.core.service.tenant.InternalTenantServiceImpl;
 import com.sschakraborty.platform.damlayer.core.session.transaction.TransactionManager;
 import com.sschakraborty.platform.damlayer.core.session.transaction.TransactionManagerImpl;
 import com.sschakraborty.platform.damlayer.core.util.BuilderUtil;
@@ -60,10 +60,10 @@ public class DAMLayerConfigurator {
             throw new Exception("Primary connector metadata has not been defined!");
         }
         final TransactionManager tenantTransactionManager = createAuditEngineAndTenantTransactionManager();
-        final TenantService tenantService = new TenantServiceImpl(tenantTransactionManager);
+        final InternalTenantService internalTenantService = new InternalTenantServiceImpl(tenantTransactionManager);
         final TenantDetailsCache tenantDetailsCache = new TenantDetailsMapCacheImpl(cacheSize);
-        final TenantDetailsResolver tenantDetailsResolver = new TenantDetailsResolver(tenantService, tenantDetailsCache, configurationBuilder, auditEngine);
-        return new DataManagerImpl(tenantService, tenantDetailsResolver);
+        final TenantDetailsResolver tenantDetailsResolver = new TenantDetailsResolver(internalTenantService, tenantDetailsCache, configurationBuilder, auditEngine);
+        return new DataManagerImpl(internalTenantService, tenantDetailsResolver);
     }
 
     private TransactionManager createAuditEngineAndTenantTransactionManager() {

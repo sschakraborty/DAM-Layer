@@ -2,28 +2,28 @@ package com.sschakraborty.platform.damlayer.core;
 
 import com.sschakraborty.platform.damlayer.core.configuration.TenantConfiguration;
 import com.sschakraborty.platform.damlayer.core.service.DataService;
-import com.sschakraborty.platform.damlayer.core.service.tenant.TenantService;
+import com.sschakraborty.platform.damlayer.core.service.tenant.InternalTenantService;
 
 public class DataManagerImpl implements DataManager {
-    private final TenantService tenantService;
+    private final InternalTenantService internalTenantService;
     private final TenantDetailsResolver tenantDetailsResolver;
 
-    public DataManagerImpl(TenantService tenantService, TenantDetailsResolver tenantDetailsResolver) {
-        this.tenantService = tenantService;
+    public DataManagerImpl(InternalTenantService internalTenantService, TenantDetailsResolver tenantDetailsResolver) {
+        this.internalTenantService = internalTenantService;
         this.tenantDetailsResolver = tenantDetailsResolver;
     }
 
     @Override
     public void saveTenant(TenantConfiguration tenantConfiguration) {
         this.tenantDetailsResolver.refresh(tenantConfiguration.getId());
-        this.tenantService.saveTenantConfiguration(tenantConfiguration);
+        this.internalTenantService.saveTenantConfiguration(tenantConfiguration);
     }
 
     @Override
     public void deleteTenant(String tenantId) {
         try {
             final TenantConfiguration tenantConfiguration = this.getTenant(tenantId);
-            this.tenantService.deleteTenantConfiguration(tenantConfiguration);
+            this.internalTenantService.deleteTenantConfiguration(tenantConfiguration);
         } catch (Exception e) {
             // TODO: Log exception if required
         } finally {

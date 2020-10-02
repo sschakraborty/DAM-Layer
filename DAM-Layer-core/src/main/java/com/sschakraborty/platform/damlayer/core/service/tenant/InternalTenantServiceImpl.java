@@ -6,12 +6,12 @@ import com.sschakraborty.platform.damlayer.core.session.transaction.TransactionM
 import com.sschakraborty.platform.damlayer.core.session.transaction.TransactionResult;
 import com.sschakraborty.platform.damlayer.core.session.wrapper.SessionWrapper;
 
-public class TenantServiceImpl implements TenantService {
+public class InternalTenantServiceImpl implements InternalTenantService {
     private static final String FETCH_EXTERNAL_TEXT = "Fetch operation performed by Tenant Service";
     private static final String CONFIG_KEY = "TENANT_CONFIG_KEY";
     private final TransactionManager transactionManager;
 
-    public TenantServiceImpl(TransactionManager transactionManager) {
+    public InternalTenantServiceImpl(TransactionManager transactionManager) {
         this.transactionManager = transactionManager;
     }
 
