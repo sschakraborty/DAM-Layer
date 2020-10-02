@@ -11,7 +11,6 @@ import com.sschakraborty.platform.damlayer.core.audit.DefaultAuditor;
 import com.sschakraborty.platform.damlayer.core.cache.TenantDetailsCache;
 import com.sschakraborty.platform.damlayer.core.cache.TenantDetailsMapCacheImpl;
 import com.sschakraborty.platform.damlayer.core.configuration.ConnectorMetadata;
-import com.sschakraborty.platform.damlayer.core.configuration.ConnectorMetadataBean;
 import com.sschakraborty.platform.damlayer.core.configuration.TenantConfiguration;
 import com.sschakraborty.platform.damlayer.core.configuration.parser.ConfigurationBuilder;
 import com.sschakraborty.platform.damlayer.core.configuration.parser.ConfigurationBuilderImpl;
@@ -76,14 +75,14 @@ public class DAMLayerConfigurator {
                 connectorMetadata,
                 Arrays.asList(
                         TenantConfiguration.class,
-                        ConnectorMetadataBean.class,
+                        ConnectorMetadata.class,
                         AuditPayloadModel.class
                 )
         );
         final TenantConfiguration tenantConfiguration = TenantConfiguration.createBean();
         tenantConfiguration.setId("DAMLayer-SYSTEM-USER");
         tenantConfiguration.setName("DAM-Layer-System-User-TENANT");
-        tenantConfiguration.setConnectorMetadata((ConnectorMetadataBean) connectorMetadata);
+        tenantConfiguration.setConnectorMetadata(connectorMetadata);
         return BuilderUtil.buildTransactionManager(configuration, tenantConfiguration, null);
     }
 }

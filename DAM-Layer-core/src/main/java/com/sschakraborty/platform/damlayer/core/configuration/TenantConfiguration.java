@@ -21,7 +21,7 @@ public class TenantConfiguration {
     private String name;
 
     @Embedded
-    private ConnectorMetadataBean connectorMetadata;
+    private ConnectorMetadata connectorMetadata;
 
     @Lob
     @Column(name = "CLASSES_BIN_BYTES", nullable = false)
@@ -68,7 +68,7 @@ public class TenantConfiguration {
         return connectorMetadata;
     }
 
-    public void setConnectorMetadata(ConnectorMetadataBean connectorMetadata) {
+    public void setConnectorMetadata(ConnectorMetadata connectorMetadata) {
         this.connectorMetadata = connectorMetadata;
     }
 

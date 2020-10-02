@@ -2,7 +2,6 @@ package com.sschakraborty.platform.damlayer.core.configuration.builder;
 
 import com.sschakraborty.platform.damlayer.core.DataManager;
 import com.sschakraborty.platform.damlayer.core.configuration.ConnectorMetadata;
-import com.sschakraborty.platform.damlayer.core.configuration.ConnectorMetadataBean;
 import com.sschakraborty.platform.damlayer.core.configuration.TenantConfiguration;
 import com.sschakraborty.platform.damlayer.core.configuration.builder.model.Item;
 import com.sschakraborty.platform.damlayer.core.configuration.builder.model.Parcel;
@@ -142,7 +141,7 @@ public class DAMLayerConfiguratorTest {
     }
 
     private ConnectorMetadata getPrimaryConnectorMetadata() {
-        final ConnectorMetadataBean primary = ConnectorMetadata.createBean();
+        final ConnectorMetadata primary = ConnectorMetadata.createBean();
         primary.setUsername("root");
         primary.setPassword("admin");
         primary.setDialectClass("org.hibernate.dialect.MySQL57Dialect");
@@ -157,7 +156,7 @@ public class DAMLayerConfiguratorTest {
     }
 
     private TenantConfiguration getTenantConfiguration() {
-        final ConnectorMetadataBean conf = ConnectorMetadata.createBean();
+        final ConnectorMetadata conf = ConnectorMetadata.createBean();
         conf.setUsername("root");
         conf.setPassword("admin");
         conf.setDialectClass("org.hibernate.dialect.MySQL57Dialect");
