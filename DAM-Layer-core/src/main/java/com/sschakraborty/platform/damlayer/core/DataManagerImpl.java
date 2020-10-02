@@ -14,15 +14,15 @@ public class DataManagerImpl implements DataManager {
     }
 
     @Override
-    public void registerTenant(TenantConfiguration tenantConfiguration) {
+    public void saveTenant(TenantConfiguration tenantConfiguration) {
         this.tenantDetailsResolver.refresh(tenantConfiguration.getId());
         this.tenantService.saveTenantConfiguration(tenantConfiguration);
     }
 
     @Override
-    public void unregisterTenant(String tenantId) {
+    public void deleteTenant(String tenantId) {
         try {
-            final TenantConfiguration tenantConfiguration = this.resolveConfiguration(tenantId);
+            final TenantConfiguration tenantConfiguration = this.getTenant(tenantId);
             this.tenantService.deleteTenantConfiguration(tenantConfiguration);
         } catch (Exception e) {
             // TODO: Log exception if required
@@ -32,12 +32,12 @@ public class DataManagerImpl implements DataManager {
     }
 
     @Override
-    public TenantConfiguration resolveConfiguration(String tenantId) throws Exception {
+    public TenantConfiguration getTenant(String tenantId) throws Exception {
         return this.tenantDetailsResolver.resolveConfiguration(tenantId);
     }
 
     @Override
-    public DataService resolveDataService(String tenantId) throws Exception {
+    public DataService getDataService(String tenantId) throws Exception {
         return this.tenantDetailsResolver.resolveDataService(tenantId);
     }
 }

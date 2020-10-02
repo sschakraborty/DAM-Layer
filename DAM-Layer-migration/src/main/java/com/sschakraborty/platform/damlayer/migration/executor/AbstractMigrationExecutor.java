@@ -44,12 +44,12 @@ public abstract class AbstractMigrationExecutor<S extends Model, D extends Model
 
     private DataService getDestinationDataService() throws Exception {
         final String destinationTenantId = migrationConfiguration.getDestinationTenantId();
-        return migrationConfiguration.getGenericDAO().resolveDataService(destinationTenantId);
+        return migrationConfiguration.getGenericDAO().getDataService(destinationTenantId);
     }
 
     private DataService getSourceDataService() throws Exception {
         final String sourceTenantId = migrationConfiguration.getSourceTenantId();
-        return migrationConfiguration.getGenericDAO().resolveDataService(sourceTenantId);
+        return migrationConfiguration.getGenericDAO().getDataService(sourceTenantId);
     }
 
     protected abstract List<Stage> getStageSequence();

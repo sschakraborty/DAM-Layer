@@ -30,29 +30,29 @@ public class DAMLayerConfiguratorTest {
         final TenantConfiguration tenantConfiguration = getTenantConfiguration();
 
         try {
-            dataManager.resolveConfiguration(tenantConfiguration.getId());
+            dataManager.getTenant(tenantConfiguration.getId());
             Assert.fail();
         } catch (Exception e) {
             Assert.assertTrue(true);
         }
 
         try {
-            dataManager.resolveDataService(tenantConfiguration.getId());
+            dataManager.getDataService(tenantConfiguration.getId());
             Assert.fail();
         } catch (Exception e) {
             Assert.assertTrue(true);
         }
 
-        dataManager.registerTenant(tenantConfiguration);
+        dataManager.saveTenant(tenantConfiguration);
 
-        TenantConfiguration fetchedConfig = dataManager.resolveConfiguration(tenantConfiguration.getId());
+        TenantConfiguration fetchedConfig = dataManager.getTenant(tenantConfiguration.getId());
         Assert.assertNotNull(fetchedConfig);
         Assert.assertEquals(tenantConfiguration.getName(), fetchedConfig.getName());
 
-        DataService dataService = dataManager.resolveDataService(tenantConfiguration.getId());
+        DataService dataService = dataManager.getDataService(tenantConfiguration.getId());
         Assert.assertNotNull(dataService);
 
-        fetchedConfig = dataManager.resolveConfiguration(tenantConfiguration.getId());
+        fetchedConfig = dataManager.getTenant(tenantConfiguration.getId());
         Assert.assertNotNull(fetchedConfig);
 
         testDataOperationsWithDummyDataAndDataService(dataService, parcel);
@@ -60,17 +60,17 @@ public class DAMLayerConfiguratorTest {
             testPerformance(dataService);
         }
 
-        dataManager.unregisterTenant(tenantConfiguration.getId());
+        dataManager.deleteTenant(tenantConfiguration.getId());
 
         try {
-            dataManager.resolveConfiguration(tenantConfiguration.getId());
+            dataManager.getTenant(tenantConfiguration.getId());
             Assert.fail();
         } catch (Exception e) {
             Assert.assertTrue(true);
         }
 
         try {
-            dataManager.resolveDataService(tenantConfiguration.getId());
+            dataManager.getDataService(tenantConfiguration.getId());
             Assert.fail();
         } catch (Exception e) {
             Assert.assertTrue(true);

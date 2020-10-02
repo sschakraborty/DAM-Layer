@@ -4,11 +4,28 @@ import com.sschakraborty.platform.damlayer.core.configuration.TenantConfiguratio
 import com.sschakraborty.platform.damlayer.core.service.DataService;
 
 public interface DataManager {
-    void registerTenant(TenantConfiguration tenantConfiguration);
+    String TENANT_ID_NULL_ERROR = "Tenant configuration or tenant ID cannot be null!";
 
-    void unregisterTenant(String tenantId);
+    void saveTenant(TenantConfiguration tenantConfiguration) throws Exception;
 
-    TenantConfiguration resolveConfiguration(String tenantId) throws Exception;
+    default void deleteTenant(TenantConfiguration tenantConfiguration) throws Exception {
+        if (tenantConfiguration != null && tenantConfiguration.getId() != null) {
+            deleteTenant(tenantConfiguration.getId());
+        } else {
+            throw new Exception(TENANT_ID_NULL_ERROR);
+        }
+    }
 
-    DataService resolveDataService(String tenantId) throws Exception;
+    void deleteTenant(String tenantId) throws Exception;
+
+    TenantConfiguration getTenant(String tenantId) throws Exception;
+
+    default DataService getDataService(TenantConfiguration tenantConfiguration) throws Exception {
+        if (tenantConfiguration != null && tenantConfiguration.getId() != null) {
+            return getDataService(tenantConfiguration.getId());
+        }
+        throw new Exception(TENANT_ID_NULL_ERROR);
+    }
+
+    DataService getDataService(String tenantId) throws Exception;
 }
