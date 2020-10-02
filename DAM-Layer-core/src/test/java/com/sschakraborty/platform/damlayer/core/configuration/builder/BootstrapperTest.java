@@ -13,13 +13,13 @@ import org.junit.Test;
 
 import java.util.Arrays;
 
-public class DAMLayerConfiguratorTest {
+public class BootstrapperTest {
     private static final boolean RUN_PERFORMANCE_TESTS = false;
 
     @Test
     public void testMultiTenancy() throws Exception {
         ConnectorMetadata primaryConnectorMetadata = getPrimaryConnectorMetadata();
-        DAMLayerConfigurator configurator = new DAMLayerConfigurator();
+        Bootstrapper configurator = new Bootstrapper();
         configurator.withPrimaryConnectorMetadata(primaryConnectorMetadata);
         DataManager dataManager = configurator.build();
 

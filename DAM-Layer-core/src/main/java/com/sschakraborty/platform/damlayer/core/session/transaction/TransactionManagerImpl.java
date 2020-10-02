@@ -1,7 +1,7 @@
 package com.sschakraborty.platform.damlayer.core.session.transaction;
 
-import com.sschakraborty.platform.damlayer.audit.core.engine.AuditEngine;
 import com.sschakraborty.platform.damlayer.core.configuration.TenantConfiguration;
+import com.sschakraborty.platform.damlayer.core.processor.CallbackHandlerManager;
 import com.sschakraborty.platform.damlayer.core.session.IsolationMode;
 import com.sschakraborty.platform.damlayer.core.session.wrapper.SessionWrapper;
 import com.sschakraborty.platform.damlayer.core.session.wrapper.SessionWrapperImpl;
@@ -12,16 +12,16 @@ import org.hibernate.Transaction;
 public class TransactionManagerImpl implements TransactionManager {
     private final SessionFactory sessionFactory;
     private final TenantConfiguration tenantConfiguration;
-    private AuditEngine auditEngine;
+    private CallbackHandlerManager callbackHandlerManager;
 
-    public TransactionManagerImpl(SessionFactory sessionFactory, TenantConfiguration tenantConfiguration, AuditEngine auditEngine) {
+    public TransactionManagerImpl(SessionFactory sessionFactory, TenantConfiguration tenantConfiguration, CallbackHandlerManager callbackHandlerManager) {
         this.sessionFactory = sessionFactory;
         this.tenantConfiguration = tenantConfiguration;
-        this.auditEngine = auditEngine;
+        this.callbackHandlerManager = callbackHandlerManager;
     }
 
-    public void setAuditEngine(AuditEngine auditEngine) {
-        this.auditEngine = auditEngine;
+    public void setCallbackHandlerManager(CallbackHandlerManager callbackHandlerManager) {
+        this.callbackHandlerManager = callbackHandlerManager;
     }
 
     @Override
@@ -29,7 +29,7 @@ public class TransactionManagerImpl implements TransactionManager {
         final TransactionResultImpl transactionResult = new TransactionResultImpl();
         try (final Session session = buildSession(isolationMode)) {
             final Transaction transaction = session.beginTransaction();
-            final SessionWrapper sessionWrapper = new SessionWrapperImpl(session, auditEngine, tenantConfiguration);
+            final SessionWrapper sessionWrapper = new SessionWrapperImpl(session, callbackHandlerManager, tenantConfiguration);
             final TransactionUnit transactionUnit = new TransactionUnit() {
                 @Override
                 public SessionWrapper getSession() {

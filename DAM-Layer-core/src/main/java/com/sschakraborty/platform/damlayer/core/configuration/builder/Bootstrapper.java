@@ -15,6 +15,9 @@ import com.sschakraborty.platform.damlayer.core.configuration.ConnectorMetadata;
 import com.sschakraborty.platform.damlayer.core.configuration.TenantConfiguration;
 import com.sschakraborty.platform.damlayer.core.configuration.parser.ConfigurationBuilder;
 import com.sschakraborty.platform.damlayer.core.configuration.parser.ConfigurationBuilderImpl;
+import com.sschakraborty.platform.damlayer.core.processor.CallbackHandler;
+import com.sschakraborty.platform.damlayer.core.processor.CallbackHandlerManager;
+import com.sschakraborty.platform.damlayer.core.processor.DefaultCallbackHandlerWrapper;
 import com.sschakraborty.platform.damlayer.core.service.tenant.InternalTenantService;
 import com.sschakraborty.platform.damlayer.core.service.tenant.InternalTenantServiceImpl;
 import com.sschakraborty.platform.damlayer.core.session.transaction.TransactionManager;
@@ -27,28 +30,35 @@ import java.util.Arrays;
 /**
  * Implementation of a configurator in builder pattern for DAM Layer
  */
-public class DAMLayerConfigurator {
+public class Bootstrapper {
     private final ConfigurationBuilder configurationBuilder = new ConfigurationBuilderImpl();
+    private CallbackHandler defaultCallbackHandler = null;
     private ConnectorMetadata primaryConnectorMetadata;
     private int cacheSize;
-    private AuditEngine auditEngine = null;
+    private AuditEngine auditEngine;
+    private CallbackHandlerManager callbackHandlerManager;
 
-    public final DAMLayerConfigurator withPrimaryConnectorMetadata(final ConnectorMetadata connectorMetadata) {
+    public final Bootstrapper withPrimaryConnectorMetadata(final ConnectorMetadata connectorMetadata) {
         this.primaryConnectorMetadata = connectorMetadata;
         return this;
     }
 
-    public final DAMLayerConfigurator withAuditor(Auditor auditor) {
+    public final Bootstrapper withDefaultCallbackHandler(CallbackHandler defaultCallbackHandler) {
+        this.defaultCallbackHandler = defaultCallbackHandler;
+        return this;
+    }
+
+    public final Bootstrapper withAuditor(Auditor auditor) {
         this.auditEngine = new AuditEngineImpl(auditor, new AuditConfiguration());
         return this;
     }
 
-    public final DAMLayerConfigurator withAuditorAndAuditConfiguration(Auditor auditor, AuditConfiguration auditConfiguration) {
+    public final Bootstrapper withAuditorAndAuditConfiguration(Auditor auditor, AuditConfiguration auditConfiguration) {
         this.auditEngine = new AuditEngineImpl(auditor, auditConfiguration);
         return this;
     }
 
-    public final DAMLayerConfigurator withCacheSize(int cacheSize) {
+    public final Bootstrapper withCacheSize(int cacheSize) {
         this.cacheSize = cacheSize;
         return this;
     }
@@ -57,17 +67,18 @@ public class DAMLayerConfigurator {
         if (this.primaryConnectorMetadata == null) {
             throw new Exception("Primary connector metadata has not been defined!");
         }
-        final TransactionManager tenantTransactionManager = createAuditEngineAndTenantTransactionManager();
+        final TransactionManager tenantTransactionManager = createCallbackHandlerManagerAndTenantTransactionManager();
         final InternalTenantService internalTenantService = new InternalTenantServiceImpl(tenantTransactionManager);
         final TenantDetailsCache tenantDetailsCache = new TenantDetailsMapCacheImpl(cacheSize);
-        final TenantDetailsResolver tenantDetailsResolver = new TenantDetailsResolver(internalTenantService, tenantDetailsCache, configurationBuilder, auditEngine);
+        final TenantDetailsResolver tenantDetailsResolver = new TenantDetailsResolver(internalTenantService, tenantDetailsCache, configurationBuilder, callbackHandlerManager);
         return new DataManagerImpl(internalTenantService, tenantDetailsResolver);
     }
 
-    private TransactionManager createAuditEngineAndTenantTransactionManager() {
+    private TransactionManager createCallbackHandlerManagerAndTenantTransactionManager() {
         final TransactionManagerImpl transactionManager = (TransactionManagerImpl) buildTenantTransactionManagerWithoutAuditEngine(primaryConnectorMetadata);
         this.auditEngine = (this.auditEngine == null) ? new AuditEngineImpl(new DefaultAuditor(transactionManager), new AuditConfiguration()) : this.auditEngine;
-        transactionManager.setAuditEngine(auditEngine);
+        this.callbackHandlerManager = new CallbackHandlerManager(new DefaultCallbackHandlerWrapper(defaultCallbackHandler, auditEngine));
+        transactionManager.setCallbackHandlerManager(callbackHandlerManager);
         return transactionManager;
     }
 
