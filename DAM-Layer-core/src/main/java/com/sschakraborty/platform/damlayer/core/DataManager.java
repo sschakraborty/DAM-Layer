@@ -1,6 +1,7 @@
 package com.sschakraborty.platform.damlayer.core;
 
 import com.sschakraborty.platform.damlayer.core.configuration.TenantConfiguration;
+import com.sschakraborty.platform.damlayer.core.processor.CallbackHandlerManager;
 import com.sschakraborty.platform.damlayer.core.service.DataService;
 
 public interface DataManager {
@@ -28,4 +29,6 @@ public interface DataManager {
     }
 
     DataService getDataService(String tenantId) throws Exception;
+
+    CallbackHandlerManager getCallbackHandlerManager() throws Exception;
 }

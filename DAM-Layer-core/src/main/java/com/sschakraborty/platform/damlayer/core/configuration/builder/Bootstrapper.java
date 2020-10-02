@@ -71,7 +71,7 @@ public class Bootstrapper {
         final InternalTenantService internalTenantService = new InternalTenantServiceImpl(tenantTransactionManager);
         final TenantDetailsCache tenantDetailsCache = new TenantDetailsMapCacheImpl(cacheSize);
         final TenantDetailsResolver tenantDetailsResolver = new TenantDetailsResolver(internalTenantService, tenantDetailsCache, configurationBuilder, callbackHandlerManager);
-        return new DataManagerImpl(internalTenantService, tenantDetailsResolver);
+        return new DataManagerImpl(internalTenantService, tenantDetailsResolver, callbackHandlerManager);
     }
 
     private TransactionManager createCallbackHandlerManagerAndTenantTransactionManager() {

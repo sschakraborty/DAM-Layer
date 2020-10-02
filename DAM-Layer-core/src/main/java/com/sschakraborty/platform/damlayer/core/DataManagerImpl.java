@@ -1,16 +1,19 @@
 package com.sschakraborty.platform.damlayer.core;
 
 import com.sschakraborty.platform.damlayer.core.configuration.TenantConfiguration;
+import com.sschakraborty.platform.damlayer.core.processor.CallbackHandlerManager;
 import com.sschakraborty.platform.damlayer.core.service.DataService;
 import com.sschakraborty.platform.damlayer.core.service.tenant.InternalTenantService;
 
 public class DataManagerImpl implements DataManager {
     private final InternalTenantService internalTenantService;
     private final TenantDetailsResolver tenantDetailsResolver;
+    private final CallbackHandlerManager callbackHandlerManager;
 
-    public DataManagerImpl(InternalTenantService internalTenantService, TenantDetailsResolver tenantDetailsResolver) {
+    public DataManagerImpl(InternalTenantService internalTenantService, TenantDetailsResolver tenantDetailsResolver, CallbackHandlerManager callbackHandlerManager) {
         this.internalTenantService = internalTenantService;
         this.tenantDetailsResolver = tenantDetailsResolver;
+        this.callbackHandlerManager = callbackHandlerManager;
     }
 
     @Override
@@ -39,5 +42,10 @@ public class DataManagerImpl implements DataManager {
     @Override
     public DataService getDataService(String tenantId) throws Exception {
         return this.tenantDetailsResolver.resolveDataService(tenantId);
+    }
+
+    @Override
+    public CallbackHandlerManager getCallbackHandlerManager() {
+        return this.callbackHandlerManager;
     }
 }

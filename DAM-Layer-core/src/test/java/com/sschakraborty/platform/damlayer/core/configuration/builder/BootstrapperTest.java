@@ -5,12 +5,14 @@ import com.sschakraborty.platform.damlayer.core.configuration.ConnectorMetadata;
 import com.sschakraborty.platform.damlayer.core.configuration.TenantConfiguration;
 import com.sschakraborty.platform.damlayer.core.configuration.builder.model.Item;
 import com.sschakraborty.platform.damlayer.core.configuration.builder.model.Parcel;
+import com.sschakraborty.platform.damlayer.core.processor.CallbackHandler;
 import com.sschakraborty.platform.damlayer.core.service.DataManipulationService;
 import com.sschakraborty.platform.damlayer.core.service.DataService;
 import com.sschakraborty.platform.damlayer.core.service.QueryService;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.io.Serializable;
 import java.util.Arrays;
 
 public class BootstrapperTest {
@@ -42,6 +44,32 @@ public class BootstrapperTest {
         }
 
         dataManager.saveTenant(tenantConfiguration);
+        dataManager.getCallbackHandlerManager().registerHandler(Parcel.class, new CallbackHandler() {
+            @Override
+            public void preInsert(Object model, String externalText, TenantConfiguration tenantConfiguration) {
+                System.out.println("Pre-inserted parcel ID: " + ((Parcel) model).getId());
+            }
+
+            @Override
+            public void postInsert(Object model, boolean success, String externalText, TenantConfiguration tenantConfiguration) {
+                System.out.println("Post-inserted parcel ID: " + ((Parcel) model).getId());
+            }
+
+            @Override
+            public void preDelete(Object model, String externalText, TenantConfiguration tenantConfiguration) {
+                System.out.println("Deleted parcel ID: " + ((Parcel) model).getId());
+            }
+
+            @Override
+            public void preFetch(Class<Object> clazz, Serializable id, String externalText, TenantConfiguration tenantConfiguration) {
+                System.out.println("Trying to fetch " + clazz.getSimpleName() + " with ID " + id);
+            }
+
+            @Override
+            public void postFetch(Class<Object> clazz, Serializable id, Object model, String externalText, TenantConfiguration tenantConfiguration) {
+                System.out.println("Fetched " + clazz.getSimpleName() + ": " + model);
+            }
+        });
 
         TenantConfiguration fetchedConfig = dataManager.getTenant(tenantConfiguration.getId());
         Assert.assertNotNull(fetchedConfig);
