@@ -3,7 +3,7 @@ package com.sschakraborty.platform.damlayer.core;
 import com.sschakraborty.platform.damlayer.core.configuration.TenantConfiguration;
 import com.sschakraborty.platform.damlayer.core.service.DataService;
 
-public interface GenericDAO {
+public interface DataManager {
     void registerTenant(TenantConfiguration tenantConfiguration);
 
     void unregisterTenant(String tenantId);

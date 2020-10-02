@@ -1,12 +1,12 @@
 package com.sschakraborty.platform.damlayer.migration;
 
-import com.sschakraborty.platform.damlayer.core.GenericDAO;
+import com.sschakraborty.platform.damlayer.core.DataManager;
 import com.sschakraborty.platform.damlayer.transformation.Transformer;
 
 public class MigrationConfiguration {
     private int maxThreadCount;
     private Transformer transformer;
-    private GenericDAO genericDAO;
+    private DataManager dataManager;
     private String sourceTenantId;
     private String destinationTenantId;
     private int batchSize = 0;
@@ -27,12 +27,12 @@ public class MigrationConfiguration {
         this.transformer = transformer;
     }
 
-    public GenericDAO getGenericDAO() {
-        return genericDAO;
+    public DataManager getGenericDAO() {
+        return dataManager;
     }
 
-    public void setGenericDAO(GenericDAO genericDAO) {
-        this.genericDAO = genericDAO;
+    public void setGenericDAO(DataManager dataManager) {
+        this.dataManager = dataManager;
     }
 
     public String getSourceTenantId() {

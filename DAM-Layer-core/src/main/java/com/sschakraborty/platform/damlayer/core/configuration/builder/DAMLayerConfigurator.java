@@ -5,8 +5,8 @@ import com.sschakraborty.platform.damlayer.audit.core.Auditor;
 import com.sschakraborty.platform.damlayer.audit.core.engine.AuditEngine;
 import com.sschakraborty.platform.damlayer.audit.core.engine.AuditEngineImpl;
 import com.sschakraborty.platform.damlayer.audit.payload.AuditPayload;
-import com.sschakraborty.platform.damlayer.core.GenericDAO;
-import com.sschakraborty.platform.damlayer.core.GenericDAOImpl;
+import com.sschakraborty.platform.damlayer.core.DataManager;
+import com.sschakraborty.platform.damlayer.core.DataManagerImpl;
 import com.sschakraborty.platform.damlayer.core.TenantDetailsResolver;
 import com.sschakraborty.platform.damlayer.core.audit.DefaultAuditor;
 import com.sschakraborty.platform.damlayer.core.cache.TenantDetailsCache;
@@ -55,7 +55,7 @@ public class DAMLayerConfigurator {
         return this;
     }
 
-    public GenericDAO build() throws Exception {
+    public DataManager build() throws Exception {
         if (this.primaryConnectorMetadata == null) {
             throw new Exception("Primary connector metadata has not been defined!");
         }
@@ -63,7 +63,7 @@ public class DAMLayerConfigurator {
         final TenantService tenantService = new TenantServiceImpl(tenantTransactionManager);
         final TenantDetailsCache tenantDetailsCache = new TenantDetailsMapCacheImpl(cacheSize);
         final TenantDetailsResolver tenantDetailsResolver = new TenantDetailsResolver(tenantService, tenantDetailsCache, configurationBuilder, auditEngine);
-        return new GenericDAOImpl(tenantService, tenantDetailsResolver);
+        return new DataManagerImpl(tenantService, tenantDetailsResolver);
     }
 
     private TransactionManager createAuditEngineAndTenantTransactionManager() {

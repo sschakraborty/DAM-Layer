@@ -4,11 +4,11 @@ import com.sschakraborty.platform.damlayer.core.configuration.TenantConfiguratio
 import com.sschakraborty.platform.damlayer.core.service.DataService;
 import com.sschakraborty.platform.damlayer.core.service.tenant.TenantService;
 
-public class GenericDAOImpl implements GenericDAO {
+public class DataManagerImpl implements DataManager {
     private final TenantService tenantService;
     private final TenantDetailsResolver tenantDetailsResolver;
 
-    public GenericDAOImpl(TenantService tenantService, TenantDetailsResolver tenantDetailsResolver) {
+    public DataManagerImpl(TenantService tenantService, TenantDetailsResolver tenantDetailsResolver) {
         this.tenantService = tenantService;
         this.tenantDetailsResolver = tenantDetailsResolver;
     }

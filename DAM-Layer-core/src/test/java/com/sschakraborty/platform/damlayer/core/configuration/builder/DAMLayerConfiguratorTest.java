@@ -1,6 +1,6 @@
 package com.sschakraborty.platform.damlayer.core.configuration.builder;
 
-import com.sschakraborty.platform.damlayer.core.GenericDAO;
+import com.sschakraborty.platform.damlayer.core.DataManager;
 import com.sschakraborty.platform.damlayer.core.configuration.ConnectorMetadata;
 import com.sschakraborty.platform.damlayer.core.configuration.ConnectorMetadataBean;
 import com.sschakraborty.platform.damlayer.core.configuration.TenantConfiguration;
@@ -23,36 +23,36 @@ public class DAMLayerConfiguratorTest {
         ConnectorMetadata primaryConnectorMetadata = getPrimaryConnectorMetadata();
         DAMLayerConfigurator configurator = new DAMLayerConfigurator();
         configurator.withPrimaryConnectorMetadata(primaryConnectorMetadata);
-        GenericDAO genericDAO = configurator.build();
+        DataManager dataManager = configurator.build();
 
         Parcel parcel = createDummyData();
 
         final TenantConfiguration tenantConfiguration = getTenantConfiguration();
 
         try {
-            genericDAO.resolveConfiguration(tenantConfiguration.getId());
+            dataManager.resolveConfiguration(tenantConfiguration.getId());
             Assert.fail();
         } catch (Exception e) {
             Assert.assertTrue(true);
         }
 
         try {
-            genericDAO.resolveDataService(tenantConfiguration.getId());
+            dataManager.resolveDataService(tenantConfiguration.getId());
             Assert.fail();
         } catch (Exception e) {
             Assert.assertTrue(true);
         }
 
-        genericDAO.registerTenant(tenantConfiguration);
+        dataManager.registerTenant(tenantConfiguration);
 
-        TenantConfiguration fetchedConfig = genericDAO.resolveConfiguration(tenantConfiguration.getId());
+        TenantConfiguration fetchedConfig = dataManager.resolveConfiguration(tenantConfiguration.getId());
         Assert.assertNotNull(fetchedConfig);
         Assert.assertEquals(tenantConfiguration.getName(), fetchedConfig.getName());
 
-        DataService dataService = genericDAO.resolveDataService(tenantConfiguration.getId());
+        DataService dataService = dataManager.resolveDataService(tenantConfiguration.getId());
         Assert.assertNotNull(dataService);
 
-        fetchedConfig = genericDAO.resolveConfiguration(tenantConfiguration.getId());
+        fetchedConfig = dataManager.resolveConfiguration(tenantConfiguration.getId());
         Assert.assertNotNull(fetchedConfig);
 
         testDataOperationsWithDummyDataAndDataService(dataService, parcel);
@@ -60,17 +60,17 @@ public class DAMLayerConfiguratorTest {
             testPerformance(dataService);
         }
 
-        genericDAO.unregisterTenant(tenantConfiguration.getId());
+        dataManager.unregisterTenant(tenantConfiguration.getId());
 
         try {
-            genericDAO.resolveConfiguration(tenantConfiguration.getId());
+            dataManager.resolveConfiguration(tenantConfiguration.getId());
             Assert.fail();
         } catch (Exception e) {
             Assert.assertTrue(true);
         }
 
         try {
-            genericDAO.resolveDataService(tenantConfiguration.getId());
+            dataManager.resolveDataService(tenantConfiguration.getId());
             Assert.fail();
         } catch (Exception e) {
             Assert.assertTrue(true);
