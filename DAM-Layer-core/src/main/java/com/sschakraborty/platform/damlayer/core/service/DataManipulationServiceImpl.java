@@ -1,6 +1,5 @@
 package com.sschakraborty.platform.damlayer.core.service;
 
-import com.sschakraborty.platform.damlayer.core.Model;
 import com.sschakraborty.platform.damlayer.core.session.transaction.TransactionManager;
 import com.sschakraborty.platform.damlayer.core.session.wrapper.SessionWrapper;
 

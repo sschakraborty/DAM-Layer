@@ -1,6 +1,6 @@
 package com.sschakraborty.platform.damlayer.migration.executor;
 
-import com.sschakraborty.platform.damlayer.core.Model;
+import com.sschakraborty.platform.damlayer.audit.core.AuditModel;
 import com.sschakraborty.platform.damlayer.migration.MigrationConfiguration;
 import com.sschakraborty.platform.damlayer.migration.stage.Stage;
 import com.sschakraborty.platform.damlayer.migration.stage.minibatch.DestinationDataWriteStage;
@@ -12,7 +12,7 @@ import com.sschakraborty.platform.damlayer.transformation.entry.Entry;
 import java.util.Arrays;
 import java.util.List;
 
-public class EntityMigrationExecutor<S extends Model, D extends Model> extends AbstractMigrationExecutor<S, D> {
+public class EntityMigrationExecutor<S extends AuditModel, D extends AuditModel> extends AbstractMigrationExecutor<S, D> {
     private final int batchSize;
 
     public EntityMigrationExecutor(MigrationConfiguration migrationConfiguration, Entry<S, D> currentEntry) {

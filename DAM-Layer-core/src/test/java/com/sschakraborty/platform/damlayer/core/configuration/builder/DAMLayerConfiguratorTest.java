@@ -4,7 +4,6 @@ import com.sschakraborty.platform.damlayer.core.DataManager;
 import com.sschakraborty.platform.damlayer.core.configuration.ConnectorMetadata;
 import com.sschakraborty.platform.damlayer.core.configuration.ConnectorMetadataBean;
 import com.sschakraborty.platform.damlayer.core.configuration.TenantConfiguration;
-import com.sschakraborty.platform.damlayer.core.configuration.TenantConfigurationBean;
 import com.sschakraborty.platform.damlayer.core.configuration.builder.model.Item;
 import com.sschakraborty.platform.damlayer.core.configuration.builder.model.Parcel;
 import com.sschakraborty.platform.damlayer.core.service.DataManipulationService;
@@ -172,7 +171,7 @@ public class DAMLayerConfiguratorTest {
         conf.setIdleTimeout(1500);
         conf.setConnectionTimeout(1500);
 
-        TenantConfigurationBean tenantConfiguration = TenantConfiguration.createBean();
+        TenantConfiguration tenantConfiguration = TenantConfiguration.createBean();
         tenantConfiguration.setName("Test_tenant");
         tenantConfiguration.setId("too_too");
         tenantConfiguration.setConnectorMetadata(conf);

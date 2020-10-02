@@ -7,14 +7,12 @@ import com.sschakraborty.platform.damlayer.audit.core.engine.AuditEngineImpl;
 import com.sschakraborty.platform.damlayer.core.DataManager;
 import com.sschakraborty.platform.damlayer.core.DataManagerImpl;
 import com.sschakraborty.platform.damlayer.core.TenantDetailsResolver;
-import com.sschakraborty.platform.damlayer.core.audit.AuditPayloadModel;
 import com.sschakraborty.platform.damlayer.core.audit.DefaultAuditor;
 import com.sschakraborty.platform.damlayer.core.cache.TenantDetailsCache;
 import com.sschakraborty.platform.damlayer.core.cache.TenantDetailsMapCacheImpl;
 import com.sschakraborty.platform.damlayer.core.configuration.ConnectorMetadata;
 import com.sschakraborty.platform.damlayer.core.configuration.ConnectorMetadataBean;
 import com.sschakraborty.platform.damlayer.core.configuration.TenantConfiguration;
-import com.sschakraborty.platform.damlayer.core.configuration.TenantConfigurationBean;
 import com.sschakraborty.platform.damlayer.core.configuration.parser.ConfigurationBuilder;
 import com.sschakraborty.platform.damlayer.core.configuration.parser.ConfigurationBuilderImpl;
 import com.sschakraborty.platform.damlayer.core.service.tenant.InternalTenantService;
@@ -77,12 +75,12 @@ public class DAMLayerConfigurator {
         final Configuration configuration = configurationBuilder.build(
                 connectorMetadata,
                 Arrays.asList(
-                        TenantConfigurationBean.class,
+                        TenantConfiguration.class,
                         ConnectorMetadataBean.class,
                         AuditPayloadModel.class
                 )
         );
-        final TenantConfigurationBean tenantConfiguration = TenantConfiguration.createBean();
+        final TenantConfiguration tenantConfiguration = TenantConfiguration.createBean();
         tenantConfiguration.setId("DAMLayer-SYSTEM-USER");
         tenantConfiguration.setName("DAM-Layer-System-User-TENANT");
         tenantConfiguration.setConnectorMetadata((ConnectorMetadataBean) connectorMetadata);

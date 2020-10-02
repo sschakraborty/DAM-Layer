@@ -1,9 +1,9 @@
 package com.sschakraborty.platform.damlayer.core.configuration;
 
-import com.sschakraborty.platform.damlayer.core.Model;
+import com.sschakraborty.platform.damlayer.audit.core.AuditModel;
 import com.sschakraborty.platform.damlayer.core.session.IsolationMode;
 
-public interface ConnectorMetadata extends Model {
+public interface ConnectorMetadata extends AuditModel {
     static ConnectorMetadataBean createBean() {
         return new ConnectorMetadataBean();
     }

@@ -1,8 +1,8 @@
 package com.sschakraborty.platform.damlayer.core.session.wrapper;
 
+import com.sschakraborty.platform.damlayer.audit.core.AuditModel;
 import com.sschakraborty.platform.damlayer.audit.core.engine.AuditEngine;
 import com.sschakraborty.platform.damlayer.audit.payload.DataOperation;
-import com.sschakraborty.platform.damlayer.core.Model;
 import com.sschakraborty.platform.damlayer.core.configuration.TenantConfiguration;
 import org.hibernate.Session;
 
@@ -67,7 +67,7 @@ public class SessionWrapperImpl implements SessionWrapper {
     }
 
     @Override
-    public <T extends Model> T fetch(String externalText, Class<T> clazz, Serializable id) {
+    public <T extends AuditModel> T fetch(String externalText, Class<T> clazz, Serializable id) {
         return session.get(clazz, id);
     }
 
@@ -77,7 +77,7 @@ public class SessionWrapperImpl implements SessionWrapper {
     }
 
     @Override
-    public <T extends Model> TypedQuery<T> createQuery(CriteriaQuery<T> criteriaQuery) {
+    public <T extends AuditModel> TypedQuery<T> createQuery(CriteriaQuery<T> criteriaQuery) {
         return session.createQuery(criteriaQuery);
     }
 }

@@ -1,6 +1,6 @@
 package com.sschakraborty.platform.damlayer.core.session.wrapper;
 
-import com.sschakraborty.platform.damlayer.core.Model;
+import com.sschakraborty.platform.damlayer.audit.core.AuditModel;
 
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -16,9 +16,9 @@ public interface SessionWrapper {
 
     void delete(String externalText, Model model);
 
-    <T extends Model> T fetch(String externalText, Class<T> clazz, Serializable id);
+    <T extends AuditModel> T fetch(String externalText, Class<T> clazz, Serializable id);
 
     CriteriaBuilder criteriaBuilder();
 
-    <T extends Model> TypedQuery<T> createQuery(CriteriaQuery<T> criteriaQuery);
+    <T extends AuditModel> TypedQuery<T> createQuery(CriteriaQuery<T> criteriaQuery);
 }

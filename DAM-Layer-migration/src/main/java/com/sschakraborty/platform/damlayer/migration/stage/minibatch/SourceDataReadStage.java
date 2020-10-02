@@ -1,6 +1,6 @@
 package com.sschakraborty.platform.damlayer.migration.stage.minibatch;
 
-import com.sschakraborty.platform.damlayer.core.Model;
+import com.sschakraborty.platform.damlayer.audit.core.AuditModel;
 import com.sschakraborty.platform.damlayer.core.session.wrapper.SessionWrapper;
 import com.sschakraborty.platform.damlayer.migration.MigrationConfiguration;
 import com.sschakraborty.platform.damlayer.migration.context.MigrationContext;
@@ -20,7 +20,7 @@ public class SourceDataReadStage implements Stage {
     }
 
     @Override
-    public <S extends Model, D extends Model> void runStage(
+    public <S extends AuditModel, D extends AuditModel> void runStage(
             MigrationConfiguration migrationConfiguration,
             MigrationContext migrationContext,
             Entry<S, D> entry

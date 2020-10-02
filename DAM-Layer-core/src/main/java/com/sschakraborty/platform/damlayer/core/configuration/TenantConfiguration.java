@@ -1,37 +1,118 @@
 package com.sschakraborty.platform.damlayer.core.configuration;
 
-import com.sschakraborty.platform.damlayer.core.Model;
+import com.sschakraborty.platform.damlayer.audit.annotation.AuditField;
+import com.sschakraborty.platform.damlayer.audit.annotation.AuditResource;
 
+import javax.persistence.*;
+import java.io.*;
 import java.util.List;
 
-public interface TenantConfiguration extends Model {
-    static TenantConfigurationBean createBean() {
-        return new TenantConfigurationBean();
-    }
+@Entity
+@Table(name = "TENANT_CONFIG_METADATA")
+@AuditResource
+public class TenantConfiguration {
+    @Id
+    @Column(name = "TENANT_ID", nullable = false, length = 25)
+    @AuditField(identifier = true)
+    private String id;
+
+    @Column(name = "TENANT_NAME", nullable = false)
+    @AuditField(identifier = true)
+    private String name;
+
+    @Embedded
+    private ConnectorMetadataBean connectorMetadata;
+
+    @Lob
+    @Column(name = "CLASSES_BIN_BYTES", nullable = false)
+    private byte[] annotatedClassesBytes;
+
+    @Transient
+    private transient List<Class<? extends Model>> annotatedClasses;
 
     /**
      * Unique identifier for the tenant (used as a key for cache)
      *
      * @return id
      */
-    String getId();
+    @Override
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     /**
      * This is used to get a (displayable) name for the tenant
      *
      * @return Name of the tenant
      */
-    String getName();
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     /**
      * Returns the connector metadata for tenant
      *
      * @return Connector metadata for tenant
      */
-    ConnectorMetadata getConnectorMetadata();
+    @Override
+    public ConnectorMetadata getConnectorMetadata() {
+        return connectorMetadata;
+    }
+
+    public void setConnectorMetadata(ConnectorMetadataBean connectorMetadata) {
+        this.connectorMetadata = connectorMetadata;
+    }
+
+    public byte[] getAnnotatedClassesBytes() {
+        return annotatedClassesBytes;
+    }
+
+    public void setAnnotatedClassesBytes(byte[] annotatedClassesBytes) {
+        this.annotatedClassesBytes = annotatedClassesBytes;
+    }
 
     /**
      * Returns the list of annotated classes
      */
-    List<Class<? extends Model>> getAnnotatedClasses();
+    @Override
+    public List<Class<? extends Model>> getAnnotatedClasses() {
+        return annotatedClasses;
+    }
+
+    public void setAnnotatedClasses(List<Class<? extends Model>> annotatedClasses) {
+        this.annotatedClasses = annotatedClasses;
+    }
+
+    @PrePersist
+    @PreUpdate
+    @PreRemove
+    private void createClassesBytes() throws IOException {
+        try (final ByteArrayOutputStream byteWriter = new ByteArrayOutputStream()) {
+            try (final ObjectOutputStream classWriter = new ObjectOutputStream(byteWriter)) {
+                if (annotatedClasses != null) {
+                    classWriter.writeObject(annotatedClasses);
+                }
+            }
+            annotatedClassesBytes = byteWriter.toByteArray();
+        }
+    }
+
+    @PostLoad
+    @SuppressWarnings("unchecked")
+    private void createClassesList() throws IOException, ClassNotFoundException {
+        try (final ByteArrayInputStream byteReader = new ByteArrayInputStream(annotatedClassesBytes)) {
+            try (final ObjectInputStream objectReader = new ObjectInputStream(byteReader)) {
+                annotatedClasses = (List<Class<? extends Model>>) objectReader.readObject();
+            }
+        }
+    }
 }

@@ -2,7 +2,7 @@ package com.sschakraborty.platform.damlayer.core.configuration.builder.model;
 
 import com.sschakraborty.platform.damlayer.audit.annotation.AuditField;
 import com.sschakraborty.platform.damlayer.audit.annotation.AuditResource;
-import com.sschakraborty.platform.damlayer.core.Model;
+import com.sschakraborty.platform.damlayer.audit.core.AuditModel;
 
 import javax.persistence.*;
 import java.util.List;
@@ -10,7 +10,7 @@ import java.util.List;
 @Entity
 @Table(name = "PARCEL")
 @AuditResource
-public class Parcel implements Model {
+public class Parcel implements AuditModel {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ID")

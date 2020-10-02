@@ -2,14 +2,14 @@ package com.sschakraborty.platform.damlayer.core.configuration.builder.model;
 
 import com.sschakraborty.platform.damlayer.audit.annotation.AuditField;
 import com.sschakraborty.platform.damlayer.audit.annotation.AuditResource;
-import com.sschakraborty.platform.damlayer.core.Model;
+import com.sschakraborty.platform.damlayer.audit.core.AuditModel;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "ITEM")
 @AuditResource
-public class Item implements Model {
+public class Item implements AuditModel {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @AuditField(identifier = true)
