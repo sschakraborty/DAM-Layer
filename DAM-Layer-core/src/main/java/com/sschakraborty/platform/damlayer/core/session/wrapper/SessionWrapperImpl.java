@@ -6,10 +6,10 @@ import com.sschakraborty.platform.damlayer.core.processor.CallbackHandlerManager
 import org.hibernate.Session;
 
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import java.io.Serializable;
 import java.util.LinkedList;
+import java.util.List;
 
 public class SessionWrapperImpl implements SessionWrapper {
     private final Session session;
@@ -119,12 +119,28 @@ public class SessionWrapperImpl implements SessionWrapper {
     }
 
     @Override
-    public CriteriaBuilder criteriaBuilder() {
-        return session.getCriteriaBuilder();
+    public <S> CriteriaQuery<S> createCriteriaQuery(Class<S> clazz) {
+        return session.getCriteriaBuilder().createQuery(clazz);
     }
 
     @Override
-    public <T> TypedQuery<T> createQuery(CriteriaQuery<T> criteriaQuery) {
-        return session.createQuery(criteriaQuery);
+    public <S> List<S> executeSelect(CriteriaQuery<S> criteriaQuery, int offset, int limit) {
+        return executeTypedSelectI(offset, limit, session.createQuery(criteriaQuery));
+    }
+
+    @Override
+    public <S> int executeUpdate(CriteriaQuery<S> criteriaQuery) {
+        return session.createQuery(criteriaQuery).executeUpdate();
+    }
+
+    @Override
+    public <S> List<S> executeSelect(Class<S> clazz, String jpql, int offset, int limit) {
+        return executeTypedSelectI(offset, limit, session.createQuery(jpql, clazz));
+    }
+
+    private <S> List<S> executeTypedSelectI(int offset, int limit, TypedQuery<S> query) {
+        query.setFirstResult(Math.max(0, offset));
+        query.setMaxResults(Math.max(0, limit));
+        return query.getResultList();
     }
 }

@@ -6,8 +6,6 @@ import com.sschakraborty.platform.damlayer.migration.context.MigrationContext;
 import com.sschakraborty.platform.damlayer.migration.stage.Stage;
 import com.sschakraborty.platform.damlayer.transformation.entry.Entry;
 
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import java.util.List;
 
@@ -25,13 +23,9 @@ public class SourceDataReadStage implements Stage {
             Entry<S, D> entry
     ) {
         final SessionWrapper sourceSession = migrationContext.getSourceSession();
-        final CriteriaBuilder criteriaBuilder = sourceSession.criteriaBuilder();
-        final CriteriaQuery<S> criteriaQuery = criteriaBuilder.createQuery(entry.getSourceClass());
+        final CriteriaQuery<S> criteriaQuery = sourceSession.createCriteriaQuery(entry.getSourceClass());
         criteriaQuery.select(criteriaQuery.from(entry.getSourceClass()));
-        TypedQuery<S> sourceObjectsQuery = sourceSession.createQuery(criteriaQuery);
-        sourceObjectsQuery.setMaxResults(batchSize);
-        sourceObjectsQuery.setFirstResult(migrationContext.getFetchOffset());
-        final List<S> sourceObjects = sourceObjectsQuery.getResultList();
+        final List<S> sourceObjects = sourceSession.executeSelect(criteriaQuery, migrationContext.getFetchOffset(), batchSize);
         migrationContext.setSourceObjects(sourceObjects);
     }
 }

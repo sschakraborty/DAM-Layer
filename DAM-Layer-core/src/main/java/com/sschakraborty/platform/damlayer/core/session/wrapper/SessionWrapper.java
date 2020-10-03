@@ -1,9 +1,8 @@
 package com.sschakraborty.platform.damlayer.core.session.wrapper;
 
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import java.io.Serializable;
+import java.util.List;
 
 public interface SessionWrapper {
     void insert(String externalText, Object model);
@@ -16,7 +15,15 @@ public interface SessionWrapper {
 
     <T> T fetch(String externalText, Class<T> clazz, Serializable id);
 
-    CriteriaBuilder criteriaBuilder();
+    <S> CriteriaQuery<S> createCriteriaQuery(Class<S> clazz);
 
-    <T> TypedQuery<T> createQuery(CriteriaQuery<T> criteriaQuery);
+    <S> List<S> executeSelect(CriteriaQuery<S> criteriaQuery, int offset, int limit);
+
+    default <S> List<S> executeSelect(CriteriaQuery<S> criteriaQuery, int limit) {
+        return executeSelect(criteriaQuery, 0, limit);
+    }
+
+    <S> int executeUpdate(CriteriaQuery<S> criteriaQuery);
+
+    <S> List<S> executeSelect(Class<S> clazz, String jpql, int offset, int limit);
 }
