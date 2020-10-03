@@ -23,7 +23,5 @@ public interface SessionWrapper {
         return executeSelect(criteriaQuery, 0, limit);
     }
 
-    <S> int executeUpdate(CriteriaQuery<S> criteriaQuery);
-
     <S> List<S> executeSelect(Class<S> clazz, String jpql, int offset, int limit);
 }

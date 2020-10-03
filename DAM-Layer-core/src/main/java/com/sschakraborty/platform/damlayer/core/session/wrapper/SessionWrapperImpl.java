@@ -129,11 +129,6 @@ public class SessionWrapperImpl implements SessionWrapper {
     }
 
     @Override
-    public <S> int executeUpdate(CriteriaQuery<S> criteriaQuery) {
-        return session.createQuery(criteriaQuery).executeUpdate();
-    }
-
-    @Override
     public <S> List<S> executeSelect(Class<S> clazz, String jpql, int offset, int limit) {
         return executeTypedSelectI(offset, limit, session.createQuery(jpql, clazz));
     }
