@@ -2,6 +2,7 @@ package com.sschakraborty.platform.damlayer.core.configuration.builder;
 
 import com.sschakraborty.platform.damlayer.core.DataManager;
 import com.sschakraborty.platform.damlayer.core.configuration.ConnectorMetadata;
+import com.sschakraborty.platform.damlayer.core.configuration.Dialect;
 import com.sschakraborty.platform.damlayer.core.configuration.TenantConfiguration;
 import com.sschakraborty.platform.damlayer.core.configuration.builder.model.Item;
 import com.sschakraborty.platform.damlayer.core.configuration.builder.model.Parcel;
@@ -172,7 +173,7 @@ public class BootstrapperTest {
         final ConnectorMetadata primary = ConnectorMetadata.createBean();
         primary.setUsername("root");
         primary.setPassword("admin");
-        primary.setDialectClass("org.hibernate.dialect.MySQL57Dialect");
+        primary.setDialectClass(Dialect.MySQL_57.getDialectClassName());
         primary.setDriverClass("com.mysql.cj.jdbc.Driver");
         primary.setConnectionURLPrefix("jdbc:mysql:");
         primary.setConnectionHost("localhost");
@@ -187,7 +188,7 @@ public class BootstrapperTest {
         final ConnectorMetadata conf = ConnectorMetadata.createBean();
         conf.setUsername("root");
         conf.setPassword("admin");
-        conf.setDialectClass("org.hibernate.dialect.MySQL57Dialect");
+        conf.setDialectClass(Dialect.MySQL_57.getDialectClassName());
         conf.setDriverClass("com.mysql.cj.jdbc.Driver");
         conf.setConnectionURLPrefix("jdbc:mysql:");
         conf.setConnectionHost("localhost");
