@@ -10,7 +10,7 @@ import com.sschakraborty.platform.damlayer.core.DataManagerImpl;
 import com.sschakraborty.platform.damlayer.core.TenantDetailsResolver;
 import com.sschakraborty.platform.damlayer.core.audit.DefaultAuditor;
 import com.sschakraborty.platform.damlayer.core.cache.TenantDetailsCache;
-import com.sschakraborty.platform.damlayer.core.cache.TenantDetailsMapCacheImpl;
+import com.sschakraborty.platform.damlayer.core.cache.TenantDetailsLRUCacheImpl;
 import com.sschakraborty.platform.damlayer.core.configuration.ConnectorMetadata;
 import com.sschakraborty.platform.damlayer.core.configuration.TenantConfiguration;
 import com.sschakraborty.platform.damlayer.core.configuration.parser.ConfigurationBuilder;
@@ -69,7 +69,7 @@ public class Bootstrapper {
         }
         final TransactionManager tenantTransactionManager = createCallbackHandlerManagerAndTenantTransactionManager();
         final InternalTenantService internalTenantService = new InternalTenantServiceImpl(tenantTransactionManager);
-        final TenantDetailsCache tenantDetailsCache = new TenantDetailsMapCacheImpl(cacheSize);
+        final TenantDetailsCache tenantDetailsCache = new TenantDetailsLRUCacheImpl(cacheSize);
         final TenantDetailsResolver tenantDetailsResolver = new TenantDetailsResolver(internalTenantService, tenantDetailsCache, configurationBuilder, callbackHandlerManager);
         return new DataManagerImpl(internalTenantService, tenantDetailsResolver, callbackHandlerManager);
     }

@@ -33,5 +33,6 @@
         <mysql.driver.version>8.0.20</mysql.driver.version>
         <beanshell.version>2.0b5</beanshell.version>
         <junit.version>4.12</junit.version>
+        <mockito.version>3.5.13</mockito.version>
     </properties>
 </project>

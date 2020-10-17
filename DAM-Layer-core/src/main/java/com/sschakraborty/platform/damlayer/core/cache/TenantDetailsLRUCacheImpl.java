@@ -3,10 +3,10 @@ package com.sschakraborty.platform.damlayer.core.cache;
 import com.sschakraborty.platform.damlayer.core.configuration.TenantConfiguration;
 import com.sschakraborty.platform.damlayer.core.service.DataService;
 
-public class TenantDetailsMapCacheImpl implements TenantDetailsCache {
+public class TenantDetailsLRUCacheImpl implements TenantDetailsCache {
     private final Cache<String, TenantDetails> lruCache;
 
-    public TenantDetailsMapCacheImpl(int maxSize) {
+    public TenantDetailsLRUCacheImpl(int maxSize) {
         lruCache = new LRUCache<>(maxSize);
     }
 
