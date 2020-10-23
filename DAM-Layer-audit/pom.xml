@@ -14,14 +14,14 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.sschakraborty.platform</groupId>
-            <artifactId>damlayer-shared</artifactId>
-            <version>${damlayer.version}</version>
-        </dependency>
-        <dependency>
             <groupId>io.vertx</groupId>
             <artifactId>vertx-core</artifactId>
             <version>${vertx.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.persistence</groupId>
+            <artifactId>javax.persistence-api</artifactId>
+            <version>${javax.persistence-api.version}</version>
         </dependency>
     </dependencies>
 

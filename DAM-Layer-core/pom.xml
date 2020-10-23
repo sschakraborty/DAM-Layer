@@ -15,11 +15,6 @@
     <dependencies>
         <dependency>
             <groupId>com.sschakraborty.platform</groupId>
-            <artifactId>damlayer-shared</artifactId>
-            <version>${damlayer.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.sschakraborty.platform</groupId>
             <artifactId>damlayer-audit</artifactId>
             <version>${damlayer.version}</version>
         </dependency>
