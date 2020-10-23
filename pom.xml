@@ -6,7 +6,7 @@
     <groupId>com.sschakraborty.platform</groupId>
     <artifactId>damlayer</artifactId>
     <packaging>pom</packaging>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.1.0.Preview</version>
     <name>DAM-Layer</name>
     <description>Data Access and Management Layer</description>
 
@@ -18,7 +18,7 @@
     </modules>
 
     <properties>
-        <damlayer.version>0.0.1-SNAPSHOT</damlayer.version>
+        <damlayer.version>0.1.0.Preview</damlayer.version>
         <java.version>11</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
