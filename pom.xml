@@ -30,7 +30,7 @@
         <javax.persistence-api.version>2.2</javax.persistence-api.version>
         <hikaricp.version>3.4.5</hikaricp.version>
         <vertx.version>3.9.2</vertx.version>
-        <mysql.driver.version>8.0.20</mysql.driver.version>
+        <mysql.driver.version>8.0.25</mysql.driver.version>
         <beanshell.version>2.0b5</beanshell.version>
         <junit.version>4.12</junit.version>
         <mockito.version>3.5.13</mockito.version>
